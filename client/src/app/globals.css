@@ -238,6 +238,20 @@
   display: none;                  /* Chrome/Safari/Opera */
 }
 
+/* ── Theme transition (View Transitions API) ───────────────────── */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 350ms;
+  animation-timing-function: ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0ms;
+  }
+}
+
 /* ── Step transition ────────────────────────────────────────────── */
 @keyframes stepIn {
   from { opacity: 0; transform: translateY(10px); }

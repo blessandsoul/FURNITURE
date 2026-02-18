@@ -1,30 +1,16 @@
 import axios from 'axios';
 import { store } from '@/store';
-import { updateTokens, logout } from '@/features/auth/store/authSlice';
+import { logout } from '@/features/auth/store/authSlice';
 import { API_ENDPOINTS } from '@/lib/constants/api-endpoints';
 
 const apiClient = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
     timeout: 30000,
+    withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
     },
 });
-
-// Request interceptor: attach Bearer token
-apiClient.interceptors.request.use(
-    (config) => {
-        if (typeof window !== 'undefined') {
-            const state = store.getState();
-            const token = state.auth.tokens?.accessToken;
-            if (token) {
-                config.headers.Authorization = `Bearer ${token}`;
-            }
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
 
 // Response interceptor: handle 401 with token refresh
 let isRefreshing = false;
@@ -35,16 +21,29 @@ let failedQueue: Array<{
 
 const processQueue = (
     error: unknown,
-    token: string | null = null
 ): void => {
     failedQueue.forEach(({ resolve, reject }) => {
         if (error) {
             reject(error);
         } else {
-            resolve(token);
+            resolve(undefined);
         }
     });
     failedQueue = [];
+};
+
+// Auth endpoints that should never trigger a token refresh attempt
+const SKIP_REFRESH_URLS = [
+    API_ENDPOINTS.AUTH.ME,
+    API_ENDPOINTS.AUTH.REFRESH,
+    API_ENDPOINTS.AUTH.LOGIN,
+    API_ENDPOINTS.AUTH.REGISTER,
+    API_ENDPOINTS.AUTH.LOGOUT,
+];
+
+const shouldSkipRefresh = (url: string | undefined): boolean => {
+    if (!url) return true;
+    return SKIP_REFRESH_URLS.some((endpoint) => url.includes(endpoint));
 };
 
 apiClient.interceptors.response.use(
@@ -52,12 +51,15 @@ apiClient.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        if (
+            error.response?.status === 401 &&
+            !originalRequest._retry &&
+            !shouldSkipRefresh(originalRequest.url)
+        ) {
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
-                }).then((token) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                }).then(() => {
                     return apiClient(originalRequest);
                 });
             }
@@ -66,29 +68,20 @@ apiClient.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                const refreshToken = store.getState().auth.tokens?.refreshToken;
-                if (!refreshToken) {
-                    throw new Error('No refresh token');
-                }
-
-                const { data } = await axios.post(
+                // Refresh token is sent automatically via httpOnly cookie
+                await axios.post(
                     `${process.env.NEXT_PUBLIC_API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH}`,
-                    { refreshToken }
+                    {},
+                    { withCredentials: true }
                 );
 
-                const newTokens = data.data;
-                store.dispatch(updateTokens(newTokens));
-                processQueue(null, newTokens.accessToken);
+                processQueue(null);
 
-                originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+                // Retry with new cookies (set automatically by the server)
                 return apiClient(originalRequest);
             } catch (refreshError) {
-                processQueue(refreshError, null);
+                processQueue(refreshError);
                 store.dispatch(logout());
-                if (typeof window !== 'undefined') {
-                    localStorage.removeItem('auth');
-                    window.location.href = '/login';
-                }
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

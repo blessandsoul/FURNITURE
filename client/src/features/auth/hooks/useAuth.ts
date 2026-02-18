@@ -4,28 +4,42 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useMutation } from '@tanstack/react-query';
 import { authService } from '../services/auth.service';
 import { setCredentials, logout as logoutAction } from '../store/authSlice';
-import { useRouter } from 'next/navigation';
-import type { ILoginRequest } from '../types/auth.types';
+import { useRouter, useSearchParams } from 'next/navigation';
+import type { ILoginRequest, IRegisterRequest, IUser } from '../types/auth.types';
 
-export const useAuth = () => {
+interface UseAuthReturn {
+    user: IUser | null;
+    isAuthenticated: boolean;
+    login: (data: ILoginRequest) => void;
+    register: (data: IRegisterRequest) => void;
+    logout: () => Promise<void>;
+    isLoggingIn: boolean;
+    isRegistering: boolean;
+    loginError: Error | null;
+    registerError: Error | null;
+}
+
+export const useAuth = (): UseAuthReturn => {
     const dispatch = useAppDispatch();
     const router = useRouter();
-    const { user, isAuthenticated, tokens } = useAppSelector(
+    const searchParams = useSearchParams();
+    const { user, isAuthenticated } = useAppSelector(
         (state) => state.auth
     );
 
     const loginMutation = useMutation({
         mutationFn: (data: ILoginRequest) => authService.login(data),
         onSuccess: (data) => {
-            dispatch(setCredentials(data));
-            router.push('/dashboard');
+            dispatch(setCredentials({ user: data.user }));
+            const redirectTo = searchParams.get('from') || '/dashboard';
+            router.push(redirectTo);
         },
     });
 
     const registerMutation = useMutation({
-        mutationFn: authService.register,
+        mutationFn: (data: IRegisterRequest) => authService.register(data),
         onSuccess: (data) => {
-            dispatch(setCredentials(data));
+            dispatch(setCredentials({ user: data.user }));
             router.push('/dashboard');
         },
     });
@@ -35,10 +49,6 @@ export const useAuth = () => {
             await authService.logout();
         } finally {
             dispatch(logoutAction());
-            if (typeof window !== 'undefined') {
-                localStorage.removeItem('auth');
-                sessionStorage.clear();
-            }
             router.push('/login');
         }
     };
@@ -46,7 +56,6 @@ export const useAuth = () => {
     return {
         user,
         isAuthenticated,
-        tokens,
         login: loginMutation.mutate,
         register: registerMutation.mutate,
         logout,

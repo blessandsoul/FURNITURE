@@ -16,6 +16,7 @@
 | Handling or throwing errors | `response-handling.md` |
 | Writing service or business logic | `project-conventions.md` (Layer Responsibilities) |
 | Changing DB schema, migrations, indexes | `database.md` |
+| Adding, removing, or changing API endpoints | `postman.md` |
 | Unsure where to start | This file |
 
 ---
@@ -46,3 +47,4 @@ Request
 4. **Database changes**: Always via Prisma migrations. Never raw DDL.
 5. **Logging**: Use `logger` from `src/libs/logger`. Never `console.log`.
 6. **Routes**: All prefixed with `/api/v1`. Registered as Fastify plugins.
+7. **Postman**: Update `server/postman/furniture-api.postman_collection.json` whenever endpoints are added, removed, or changed. See `postman.md`.

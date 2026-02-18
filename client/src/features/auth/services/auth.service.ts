@@ -4,41 +4,30 @@ import type {
     ILoginRequest,
     IRegisterRequest,
     IUser,
-    IAuthTokens,
 } from '../types/auth.types';
 import type { ApiResponse } from '@/lib/api/api.types';
 
 class AuthService {
     async register(
         data: IRegisterRequest
-    ): Promise<{ user: IUser; tokens: IAuthTokens }> {
+    ): Promise<{ user: IUser }> {
         const response = await apiClient.post<
-            ApiResponse<{ user: IUser; tokens: IAuthTokens }>
+            ApiResponse<{ user: IUser }>
         >(API_ENDPOINTS.AUTH.REGISTER, data);
         return response.data.data;
     }
 
     async login(
         data: ILoginRequest
-    ): Promise<{ user: IUser; tokens: IAuthTokens }> {
+    ): Promise<{ user: IUser }> {
         const response = await apiClient.post<
-            ApiResponse<{ user: IUser; tokens: IAuthTokens }>
+            ApiResponse<{ user: IUser }>
         >(API_ENDPOINTS.AUTH.LOGIN, data);
         return response.data.data;
     }
 
     async logout(): Promise<void> {
         await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
-    }
-
-    async refreshToken(
-        refreshToken: string
-    ): Promise<IAuthTokens> {
-        const response = await apiClient.post<ApiResponse<IAuthTokens>>(
-            API_ENDPOINTS.AUTH.REFRESH,
-            { refreshToken }
-        );
-        return response.data.data;
     }
 
     async getMe(): Promise<IUser> {

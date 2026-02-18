@@ -8,6 +8,7 @@ import { Toaster } from 'sonner';
 import { useState } from 'react';
 import { Agentation } from 'agentation';
 import { store } from '@/store';
+import { AuthInitializer } from '@/features/auth/components/AuthInitializer';
 
 export function Providers({
     children,
@@ -35,9 +36,8 @@ export function Providers({
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
-                    disableTransitionOnChange
-                >
-                    {children}
+>
+                    <AuthInitializer>{children}</AuthInitializer>
                     <Toaster position="top-right" richColors />
                     {process.env.NODE_ENV === 'development' && <Agentation />}
                 </ThemeProvider>

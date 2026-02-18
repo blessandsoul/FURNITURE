@@ -126,7 +126,7 @@ export const ROUTES = {
 // lib/constants/app.constants.ts
 export const APP_NAME = 'My App';
 export const PAGINATION = { DEFAULT_PAGE: 1, DEFAULT_LIMIT: 10, MAX_LIMIT: 100 } as const;
-export const USER_ROLES = { USER: 'USER', COMPANY: 'COMPANY', ADMIN: 'ADMIN', DESIGNER: 'DESIGNER' } as const;
+export const USER_ROLES = { USER: 'USER', ADMIN: 'ADMIN' } as const;
 export const CURRENCIES = { GEL: 'GEL', USD: 'USD', EUR: 'EUR' } as const;
 ```
 

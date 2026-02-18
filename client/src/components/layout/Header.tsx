@@ -5,7 +5,7 @@ import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Moon, Sun, List, X } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { APP_NAME } from '@/lib/constants/app.constants';
 
 export function Header(): React.ReactElement {
@@ -13,9 +13,16 @@ export function Header(): React.ReactElement {
     const { theme, setTheme } = useTheme();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const toggleTheme = (): void => {
-        setTheme(theme === 'dark' ? 'light' : 'dark');
-    };
+    const toggleTheme = useCallback((): void => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+
+        if (!document.startViewTransition) {
+            setTheme(next);
+            return;
+        }
+
+        document.startViewTransition(() => setTheme(next));
+    }, [theme, setTheme]);
 
     return (
         <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
@@ -30,17 +37,16 @@ export function Header(): React.ReactElement {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-4 md:flex">
-                    <Link
-                        href="/dashboard"
-                        className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
-                    >
-                        My Designs
-                    </Link>
+                    {isAuthenticated && (
+                        <Link
+                            href="/dashboard"
+                            className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
+                        >
+                            My Designs
+                        </Link>
+                    )}
                     {isAuthenticated ? (
                         <>
-                            <span className="text-sm text-muted-foreground">
-                                {user?.firstName}
-                            </span>
                             <Button variant="outline" size="sm" onClick={logout}>
                                 Sign Out
                             </Button>
@@ -97,13 +103,15 @@ export function Header(): React.ReactElement {
             {isMobileMenuOpen && (
                 <div className="border-t border-border/50 bg-background px-4 py-4 md:hidden">
                     <nav className="flex flex-col gap-3">
-                        <Link
-                            href="/dashboard"
-                            className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            My Designs
-                        </Link>
+                        {isAuthenticated && (
+                            <Link
+                                href="/dashboard"
+                                className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                My Designs
+                            </Link>
+                        )}
                         {isAuthenticated ? (
                             <>
                                 <Button

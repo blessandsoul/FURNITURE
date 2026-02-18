@@ -1,26 +1,39 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const protectedPaths = ['/profile', '/my-tours', '/admin'];
+const protectedPaths = ['/dashboard', '/profile', '/my-products', '/admin'];
 const authPaths = ['/login', '/register'];
+
+function isTokenValid(token: string): boolean {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return typeof payload.exp === 'number' && payload.exp * 1000 > Date.now();
+    } catch {
+        return false;
+    }
+}
 
 export function middleware(request: NextRequest): NextResponse {
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('accessToken')?.value;
+    const hasValidToken = !!token && isTokenValid(token);
 
     const isProtectedPath = protectedPaths.some((path) =>
         pathname.startsWith(path)
     );
 
-    if (isProtectedPath && !token) {
+    if (isProtectedPath && !hasValidToken) {
         const loginUrl = new URL('/login', request.url);
         loginUrl.searchParams.set('from', pathname);
-        return NextResponse.redirect(loginUrl);
+        const response = NextResponse.redirect(loginUrl);
+        if (token) {
+            response.cookies.delete('accessToken');
+        }
+        return response;
     }
 
     const isAuthPath = authPaths.some((path) => pathname.startsWith(path));
-
-    if (isAuthPath && token) {
+    if (isAuthPath && hasValidToken) {
         return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
@@ -29,8 +42,9 @@ export function middleware(request: NextRequest): NextResponse {
 
 export const config = {
     matcher: [
+        '/dashboard/:path*',
         '/profile/:path*',
-        '/my-tours/:path*',
+        '/my-products/:path*',
         '/admin/:path*',
         '/login',
         '/register',
