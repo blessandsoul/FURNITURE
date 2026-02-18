@@ -40,7 +40,7 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
         formState: { errors },
     } = useForm<QuoteFormValues>({
         resolver: zodResolver(quoteRequestSchema),
-        defaultValues: { name: '', email: '', phone: '', city: '', message: '' },
+        defaultValues: { name: '', phone: '', email: '', city: '', message: '' },
     });
 
     const onSubmit = useCallback(async (formData: QuoteFormValues) => {
@@ -49,8 +49,9 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
         setIsSubmitting(true);
         try {
             const quoteData: QuoteRequest = {
-                ...formData,
-                phone: formData.phone || undefined,
+                name: formData.name,
+                phone: formData.phone,
+                email: formData.email || undefined,
                 city: formData.city || undefined,
                 message: formData.message || undefined,
                 design: {
@@ -131,7 +132,30 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="quote-email">Email *</Label>
+                        <Label htmlFor="quote-phone">Phone *</Label>
+                        <Input
+                            id="quote-phone"
+                            type="tel"
+                            placeholder="+995 555 000 000"
+                            aria-invalid={!!errors.phone}
+                            {...register('phone')}
+                        />
+                        {errors.phone && (
+                            <p className="text-xs text-destructive">{errors.phone.message}</p>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="quote-city">City</Label>
+                        <Input
+                            id="quote-city"
+                            placeholder="Your city"
+                            {...register('city')}
+                        />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="quote-email">Email (optional)</Label>
                         <Input
                             id="quote-email"
                             type="email"
@@ -142,26 +166,6 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
                         {errors.email && (
                             <p className="text-xs text-destructive">{errors.email.message}</p>
                         )}
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-2">
-                            <Label htmlFor="quote-phone">Phone</Label>
-                            <Input
-                                id="quote-phone"
-                                type="tel"
-                                placeholder="+1 (555) 000-0000"
-                                {...register('phone')}
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="quote-city">City</Label>
-                            <Input
-                                id="quote-city"
-                                placeholder="Your city"
-                                {...register('city')}
-                            />
-                        </div>
                     </div>
 
                     <div className="space-y-2">

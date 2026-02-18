@@ -6,6 +6,7 @@ import type {
     ConfiguratorAction,
     ConfiguratorState,
     OptionCategory,
+    RoomRedesignState,
 } from '../types/configurator.types';
 import { decodeDesignFromParams, hasDesignInParams } from '../lib/share';
 
@@ -19,12 +20,22 @@ const EMPTY_OPTIONS: Record<OptionCategory, string | null> = {
     upholstery: null,
 };
 
+const EMPTY_ROOM_REDESIGN: RoomRedesignState = {
+    roomImageUrl: null,
+    roomType: null,
+    transformationMode: null,
+    roomStyle: null,
+    resultImageUrl: null,
+};
+
 const initialState: ConfiguratorState = {
+    mode: 'scratch',
     selections: {
         style: null,
         options: { ...EMPTY_OPTIONS },
     },
     generatedImageUrls: [],
+    roomRedesign: { ...EMPTY_ROOM_REDESIGN },
 };
 
 function loadInitialState(searchParams: URLSearchParams): ConfiguratorState {
@@ -33,8 +44,10 @@ function loadInitialState(searchParams: URLSearchParams): ConfiguratorState {
         const selections = decodeDesignFromParams(searchParams);
         if (selections) {
             return {
+                mode: 'scratch',
                 selections,
                 generatedImageUrls: [],
+                roomRedesign: { ...EMPTY_ROOM_REDESIGN },
             };
         }
     }
@@ -61,6 +74,13 @@ function loadFromSession(): ConfiguratorState | null {
                     ...(parsed.selections?.options ?? {}),
                 },
             },
+            roomRedesign: {
+                ...EMPTY_ROOM_REDESIGN,
+                ...(parsed.roomRedesign ?? {}),
+                // Don't restore base64 image from session — too large
+                roomImageUrl: null,
+                resultImageUrl: null,
+            },
         };
     } catch {
         return null;
@@ -69,6 +89,11 @@ function loadFromSession(): ConfiguratorState | null {
 
 function configuratorReducer(state: ConfiguratorState, action: ConfiguratorAction): ConfiguratorState {
     switch (action.type) {
+        case 'SET_MODE':
+            return {
+                ...initialState,
+                mode: action.payload,
+            };
         case 'SET_STYLE':
             return {
                 ...state,
@@ -104,6 +129,8 @@ function configuratorReducer(state: ConfiguratorState, action: ConfiguratorActio
             return { ...state, generatedImageUrls: action.payload };
         case 'LOAD_DESIGN':
             return {
+                ...initialState,
+                mode: 'scratch',
                 selections: {
                     ...action.payload.selections,
                     options: {
@@ -113,6 +140,18 @@ function configuratorReducer(state: ConfiguratorState, action: ConfiguratorActio
                 },
                 generatedImageUrls: action.payload.imageUrls ?? [],
             };
+        case 'SET_ROOM_IMAGE':
+            return { ...state, roomRedesign: { ...state.roomRedesign, roomImageUrl: action.payload, resultImageUrl: null } };
+        case 'SET_ROOM_TYPE':
+            return { ...state, roomRedesign: { ...state.roomRedesign, roomType: action.payload } };
+        case 'SET_TRANSFORMATION_MODE':
+            return { ...state, roomRedesign: { ...state.roomRedesign, transformationMode: action.payload, resultImageUrl: null } };
+        case 'SET_ROOM_STYLE':
+            return { ...state, roomRedesign: { ...state.roomRedesign, roomStyle: action.payload, resultImageUrl: null } };
+        case 'SET_ROOM_RESULT':
+            return { ...state, roomRedesign: { ...state.roomRedesign, resultImageUrl: action.payload } };
+        case 'RESET_ROOM_REDESIGN':
+            return { ...state, roomRedesign: { ...EMPTY_ROOM_REDESIGN } };
         case 'HYDRATE_SESSION':
             return action.payload;
         case 'RESET':
@@ -152,10 +191,19 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }): Rea
         }
     }, [searchParams]);
 
-    // Persist to sessionStorage on every state change
+    // Persist to sessionStorage on every state change.
+    // Strip base64 images to avoid exceeding sessionStorage quota.
     useEffect(() => {
         try {
-            sessionStorage.setItem(SESSION_KEY, JSON.stringify(state));
+            const toSave: ConfiguratorState = {
+                ...state,
+                roomRedesign: {
+                    ...state.roomRedesign,
+                    roomImageUrl: null,
+                    resultImageUrl: null,
+                },
+            };
+            sessionStorage.setItem(SESSION_KEY, JSON.stringify(toSave));
         } catch {
             // sessionStorage might be unavailable (private mode quota, etc.)
         }

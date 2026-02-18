@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Couch, Sliders, Images, CheckCircle, FilmStrip, type Icon } from '@phosphor-icons/react';
+import { Couch, Sliders, Images, CheckCircle, FilmStrip, Camera, Sparkle, MagicWand, type Icon } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import type { ConfiguratorStep } from '@/features/configurator/types/configurator.types';
 
@@ -11,16 +11,27 @@ function parseStep(raw: string | null): ConfiguratorStep {
     return 1;
 }
 
-const STEP_CONTENT: Record<
-    ConfiguratorStep,
-    {
-        badge: string;
-        title: string;
-        subtitle: string;
-        tips: { icon: Icon; text: string }[];
-        hint: string;
-    }
-> = {
+const MODE_SELECT_CONTENT = {
+    badge: 'Let\'s get started',
+    title: 'What would you like to create?',
+    subtitle: 'Choose your path — design new furniture or transform an existing room.',
+    tips: [
+        { icon: Couch, text: 'Design custom furniture from scratch' },
+        { icon: Camera, text: 'Reimagine any room with AI' },
+        { icon: MagicWand, text: 'Photorealistic renders in seconds' },
+    ],
+    hint: 'Pick a path to begin. You can always start over.',
+};
+
+interface StepContent {
+    badge: string;
+    title: string;
+    subtitle: string;
+    tips: { icon: Icon; text: string }[];
+    hint: string;
+}
+
+const SCRATCH_CONTENT: Record<ConfiguratorStep, StepContent> = {
     1: {
         badge: 'Step 1 of 4',
         title: 'Choose your furniture type.',
@@ -67,21 +78,67 @@ const STEP_CONTENT: Record<
     },
 };
 
+const REIMAGINE_CONTENT: Record<1 | 2 | 3, StepContent> = {
+    1: {
+        badge: 'Step 1 of 3',
+        title: 'Upload your room photo.',
+        subtitle: 'Take a photo of the room you want to transform.',
+        tips: [
+            { icon: Camera, text: 'JPEG, PNG, or WebP up to 10MB' },
+            { icon: Couch, text: '5 room types supported' },
+            { icon: Sparkle, text: 'AI transforms your space' },
+        ],
+        hint: 'Upload a clear, well-lit photo for best results.',
+    },
+    2: {
+        badge: 'Step 2 of 3',
+        title: 'Choose your transformation.',
+        subtitle: 'Select what to change and pick a design style.',
+        tips: [
+            { icon: Sparkle, text: '3 transformation modes' },
+            { icon: Sliders, text: '8 interior design styles' },
+            { icon: Images, text: 'Before/after comparison' },
+        ],
+        hint: 'Pick a mode and style, then hit Reimagine Room.',
+    },
+    3: {
+        badge: 'Step 3 of 3',
+        title: 'Your room, reimagined.',
+        subtitle: 'Compare before and after with the interactive slider.',
+        tips: [
+            { icon: Images, text: 'Drag the slider to compare' },
+            { icon: CheckCircle, text: 'Download your redesign' },
+            { icon: Sliders, text: 'Try different styles' },
+        ],
+        hint: 'Love it? Download the result or try another style.',
+    },
+};
+
 export function ConfiguratorSidebar(): React.JSX.Element {
     const searchParams = useSearchParams();
     const step = parseStep(searchParams.get('step'));
-    const content = STEP_CONTENT[step];
+    const urlMode = searchParams.get('mode');
+    const isReimagine = urlMode === 'reimagine';
+    const isModeSelect = urlMode !== 'scratch' && urlMode !== 'reimagine';
+
+    const content = isModeSelect
+        ? MODE_SELECT_CONTENT
+        : isReimagine
+          ? REIMAGINE_CONTENT[step as 1 | 2 | 3] ?? REIMAGINE_CONTENT[1]
+          : SCRATCH_CONTENT[step];
+
+    const stepNumbers = isReimagine ? [1, 2, 3] : [1, 2, 3, 4];
 
     return (
         <aside className="hidden w-72 shrink-0 flex-col justify-between border-r border-[--border-crisp] bg-[--surface-enamel] px-8 py-10 backdrop-blur-md lg:flex xl:w-80">
             <div className="space-y-7">
                 {/* Badge */}
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-[--border-crisp] bg-background/60 px-3 py-1 text-xs font-semibold text-foreground shadow-[--shadow-enamel]">
-                    ✦ {content.badge}
+                    {isModeSelect ? '✦' : isReimagine ? '📷' : '✦'} {content.badge}
                 </span>
 
-                {/* Headline — animates on step change */}
-                <div key={step} className="animate-step-in space-y-2">
+                {/* Headline — animates on step/mode change */}
+                <div key={`${urlMode ?? 'select'}-${step}`} className="animate-step-in space-y-2">
                     <h2 className="text-2xl font-bold leading-tight tracking-tight text-foreground xl:text-3xl">
                         {content.title}
                     </h2>
@@ -91,7 +148,7 @@ export function ConfiguratorSidebar(): React.JSX.Element {
                 </div>
 
                 {/* Tips */}
-                <ul key={`tips-${step}`} className="animate-step-in space-y-3">
+                <ul key={`tips-${urlMode ?? 'select'}-${step}`} className="animate-step-in space-y-3">
                     {content.tips.map(({ icon: TipIcon, text }, i) => (
                         <li
                             key={i}
@@ -111,34 +168,36 @@ export function ConfiguratorSidebar(): React.JSX.Element {
 
                 {/* Hint box */}
                 <div
-                    key={`hint-${step}`}
+                    key={`hint-${urlMode ?? 'select'}-${step}`}
                     className="animate-step-in rounded-xl border border-[--border-crisp] bg-background/50 px-4 py-3"
                 >
                     <p className="text-xs leading-relaxed text-muted-foreground">
-                        💡 {content.hint}
+                        {content.hint}
                     </p>
                 </div>
             </div>
 
-            {/* Step progress dots */}
-            <div className="flex items-center gap-2">
-                {([1, 2, 3, 4] as ConfiguratorStep[]).map((s) => (
-                    <div
-                        key={s}
-                        className={cn(
-                            'h-1.5 rounded-full transition-all duration-500',
-                            s === step
-                                ? 'w-6 bg-primary'
-                                : s < step
-                                  ? 'w-3 bg-primary/40'
-                                  : 'w-3 bg-border',
-                        )}
-                    />
-                ))}
-                <span className="ml-2 text-xs text-muted-foreground/60">
-                    No design skills needed
-                </span>
-            </div>
+            {/* Step progress dots — hidden on mode select screen */}
+            {!isModeSelect && (
+                <div className="flex items-center gap-2">
+                    {stepNumbers.map((s) => (
+                        <div
+                            key={s}
+                            className={cn(
+                                'h-1.5 rounded-full transition-all duration-500',
+                                s === step
+                                    ? 'w-6 bg-primary'
+                                    : s < step
+                                      ? 'w-3 bg-primary/40'
+                                      : 'w-3 bg-border',
+                            )}
+                        />
+                    ))}
+                    <span className="ml-2 text-xs text-muted-foreground/60">
+                        {isReimagine ? 'AI room transformation' : 'No design skills needed'}
+                    </span>
+                </div>
+            )}
         </aside>
     );
 }

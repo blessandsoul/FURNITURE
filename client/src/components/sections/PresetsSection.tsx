@@ -19,7 +19,7 @@ function calculatePresetPrice(preset: FurniturePreset): number {
 }
 
 function buildPresetUrl(preset: FurniturePreset): string {
-    const params = new URLSearchParams({ step: '2', style: preset.styleId });
+    const params = new URLSearchParams({ step: '2', mode: 'scratch', style: preset.styleId });
     for (const [category, optionId] of Object.entries(preset.options)) {
         if (optionId) params.set(category, optionId);
     }
@@ -79,7 +79,7 @@ export function PresetsSection(): React.JSX.Element {
 
                 <div className="mt-8 text-center">
                     <Link
-                        href={`${ROUTES.CONFIGURATOR.ROOT}?step=1`}
+                        href={`${ROUTES.CONFIGURATOR.ROOT}?step=1&mode=scratch`}
                         className="inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
                     >
                         Or start from scratch

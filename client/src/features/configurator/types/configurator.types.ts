@@ -66,17 +66,26 @@ export interface PriceBreakdown {
 }
 
 export interface ConfiguratorState {
+    mode: ConfiguratorMode;
     selections: ConfiguratorSelections;
     generatedImageUrls: string[];
+    roomRedesign: RoomRedesignState;
 }
 
 export type ConfiguratorAction =
+    | { type: 'SET_MODE'; payload: ConfiguratorMode }
     | { type: 'SET_STYLE'; payload: FurnitureStyleId }
     | { type: 'SET_OPTION'; payload: { category: OptionCategory; optionId: string } }
     | { type: 'CLEAR_OPTION'; payload: { category: OptionCategory } }
     | { type: 'SET_IMAGE_URLS'; payload: string[] }
     | { type: 'LOAD_DESIGN'; payload: { selections: ConfiguratorSelections; imageUrls?: string[] } }
     | { type: 'HYDRATE_SESSION'; payload: ConfiguratorState }
+    | { type: 'SET_ROOM_IMAGE'; payload: string }
+    | { type: 'SET_ROOM_TYPE'; payload: RoomType }
+    | { type: 'SET_TRANSFORMATION_MODE'; payload: TransformationMode }
+    | { type: 'SET_ROOM_STYLE'; payload: RoomDesignStyle }
+    | { type: 'SET_ROOM_RESULT'; payload: string }
+    | { type: 'RESET_ROOM_REDESIGN' }
     | { type: 'RESET' };
 
 export interface FurniturePreset {
@@ -95,4 +104,64 @@ export interface ImageGenerationRequest {
 export interface ImageGenerationResponse {
     imageUrls: string[];     // 6 variations
     revisedPrompt?: string;
+}
+
+// ─── Room Reimagine Types ────────────────────────────────────────────────────
+
+export type ConfiguratorMode = 'scratch' | 'reimagine';
+
+export type RoomType = 'kitchen' | 'living-room' | 'bedroom' | 'bathroom' | 'office';
+
+export type TransformationMode = 'complete' | 'furniture-only' | 'style-colors';
+
+export type RoomDesignStyle =
+    | 'modern-minimalist'
+    | 'scandinavian'
+    | 'industrial'
+    | 'classic-elegant'
+    | 'japandi'
+    | 'mid-century'
+    | 'bohemian'
+    | 'coastal';
+
+export interface RoomRedesignState {
+    roomImageUrl: string | null;
+    roomType: RoomType | null;
+    transformationMode: TransformationMode | null;
+    roomStyle: RoomDesignStyle | null;
+    resultImageUrl: string | null;
+}
+
+export interface RoomRedesignRequest {
+    roomImage: string;
+    roomType: RoomType;
+    transformationMode: TransformationMode;
+    roomStyle: RoomDesignStyle;
+}
+
+export interface RoomRedesignResponse {
+    resultImageUrl: string;
+    appliedStyle: string;
+}
+
+export interface RoomTypeOption {
+    id: RoomType;
+    label: string;
+    description: string;
+    iconName: string;
+}
+
+export interface TransformationOption {
+    id: TransformationMode;
+    label: string;
+    description: string;
+    iconName: string;
+}
+
+export interface RoomStyleOption {
+    id: RoomDesignStyle;
+    label: string;
+    description: string;
+    colorAccent: string;
+    promptFragment: string;
 }

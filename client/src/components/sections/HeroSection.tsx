@@ -40,7 +40,7 @@ export function HeroSection(): React.JSX.Element {
             {/* CTA */}
             <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row">
                 <Button asChild size="lg" className="gap-2 px-8 motion-safe:transition-transform motion-safe:active:scale-[0.98]">
-                    <Link href={`${ROUTES.CONFIGURATOR.ROOT}?step=1`}>
+                    <Link href={ROUTES.CONFIGURATOR.ROOT}>
                         Start Designing
                         <ArrowRight className="h-4 w-4" />
                     </Link>

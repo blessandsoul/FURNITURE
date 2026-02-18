@@ -10,8 +10,8 @@ export interface QuoteDesignSummary {
 
 export interface QuoteRequest {
     name: string;
-    email: string;
-    phone?: string;
+    phone: string;
+    email?: string;
     city?: string;
     message?: string;
     design: QuoteDesignSummary;
@@ -19,8 +19,8 @@ export interface QuoteRequest {
 
 export interface QuoteFormData {
     name: string;
-    email: string;
     phone: string;
+    email: string;
     city: string;
     message: string;
 }

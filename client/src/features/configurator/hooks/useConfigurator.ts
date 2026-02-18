@@ -4,10 +4,14 @@ import { useCallback } from 'react';
 import { getOptionsByStyle, getStyleById } from '../data/furniture-catalog';
 import { useConfiguratorContext } from '../store/configuratorContext';
 import type {
+    ConfiguratorMode,
     FurnitureOption,
     FurnitureStyle,
     FurnitureStyleId,
     OptionCategory,
+    RoomDesignStyle,
+    RoomType,
+    TransformationMode,
 } from '../types/configurator.types';
 
 export interface UseConfiguratorReturn {
@@ -21,6 +25,15 @@ export interface UseConfiguratorReturn {
     setOption: (category: OptionCategory, optionId: string) => void;
     clearOption: (category: OptionCategory) => void;
     reset: () => void;
+    // Room redesign helpers
+    setMode: (mode: ConfiguratorMode) => void;
+    setRoomImage: (dataUrl: string) => void;
+    removeRoomImage: () => void;
+    setRoomType: (type: RoomType) => void;
+    setTransformationMode: (mode: TransformationMode) => void;
+    setRoomStyle: (style: RoomDesignStyle) => void;
+    canProceedFromRoomUpload: boolean;
+    canGenerateRedesign: boolean;
 }
 
 export function useConfigurator(): UseConfiguratorReturn {
@@ -64,6 +77,47 @@ export function useConfigurator(): UseConfiguratorReturn {
         dispatch({ type: 'RESET' });
     }, [dispatch]);
 
+    // Room redesign actions
+    const setMode = useCallback(
+        (mode: ConfiguratorMode) => dispatch({ type: 'SET_MODE', payload: mode }),
+        [dispatch],
+    );
+
+    const setRoomImage = useCallback(
+        (dataUrl: string) => dispatch({ type: 'SET_ROOM_IMAGE', payload: dataUrl }),
+        [dispatch],
+    );
+
+    const removeRoomImage = useCallback(
+        () => dispatch({ type: 'SET_ROOM_IMAGE', payload: '' }),
+        [dispatch],
+    );
+
+    const setRoomType = useCallback(
+        (type: RoomType) => dispatch({ type: 'SET_ROOM_TYPE', payload: type }),
+        [dispatch],
+    );
+
+    const setTransformationMode = useCallback(
+        (mode: TransformationMode) => dispatch({ type: 'SET_TRANSFORMATION_MODE', payload: mode }),
+        [dispatch],
+    );
+
+    const setRoomStyle = useCallback(
+        (style: RoomDesignStyle) => dispatch({ type: 'SET_ROOM_STYLE', payload: style }),
+        [dispatch],
+    );
+
+    const canProceedFromRoomUpload =
+        state.roomRedesign.roomImageUrl !== null &&
+        state.roomRedesign.roomImageUrl !== '' &&
+        state.roomRedesign.roomType !== null;
+
+    const canGenerateRedesign =
+        canProceedFromRoomUpload &&
+        state.roomRedesign.transformationMode !== null &&
+        state.roomRedesign.roomStyle !== null;
+
     return {
         state,
         selectedStyle,
@@ -75,5 +129,13 @@ export function useConfigurator(): UseConfiguratorReturn {
         setOption,
         clearOption,
         reset,
+        setMode,
+        setRoomImage,
+        removeRoomImage,
+        setRoomType,
+        setTransformationMode,
+        setRoomStyle,
+        canProceedFromRoomUpload,
+        canGenerateRedesign,
     };
 }

@@ -49,7 +49,7 @@ export function SavedDesignsList(): React.JSX.Element {
                     Design your perfect furniture and save it here to compare options later.
                 </p>
                 <Button asChild className="mt-4">
-                    <Link href={`${ROUTES.CONFIGURATOR.ROOT}?step=1`}>
+                    <Link href={ROUTES.CONFIGURATOR.ROOT}>
                         Start Designing
                     </Link>
                 </Button>

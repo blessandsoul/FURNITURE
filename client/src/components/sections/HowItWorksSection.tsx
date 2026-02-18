@@ -84,7 +84,7 @@ export function HowItWorksSection(): React.JSX.Element {
 
                 <div className="mt-12 text-center">
                     <Button asChild size="lg" className="gap-2">
-                        <Link href={`${ROUTES.CONFIGURATOR.ROOT}?step=1`}>
+                        <Link href={ROUTES.CONFIGURATOR.ROOT}>
                             Try it now — it&apos;s free
                             <ArrowRight className="h-4 w-4" />
                         </Link>

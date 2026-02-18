@@ -20,7 +20,7 @@ export function SavedDesignCard({ design, onDelete }: SavedDesignCardProps): Rea
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleLoad = useCallback(() => {
-        const params = new URLSearchParams({ step: '2', style: design.styleId });
+        const params = new URLSearchParams({ step: '2', mode: 'scratch', style: design.styleId });
         for (const [category, optionId] of Object.entries(design.options)) {
             if (optionId) params.set(category, optionId);
         }

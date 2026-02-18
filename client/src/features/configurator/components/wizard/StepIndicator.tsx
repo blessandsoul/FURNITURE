@@ -2,7 +2,7 @@ import { CheckFat } from '@phosphor-icons/react/dist/ssr';
 import { cn } from '@/lib/utils';
 import type { ConfiguratorStep } from '../../types/configurator.types';
 
-const STEPS = [
+const DEFAULT_STEPS = [
     { number: 1 as ConfiguratorStep, label: 'Choose Style' },
     { number: 2 as ConfiguratorStep, label: 'Customize' },
     { number: 3 as ConfiguratorStep, label: 'Your Design' },
@@ -11,12 +11,13 @@ const STEPS = [
 
 interface StepIndicatorProps {
     currentStep: ConfiguratorStep;
+    steps?: { number: ConfiguratorStep; label: string }[];
 }
 
-export function StepIndicator({ currentStep }: StepIndicatorProps): React.JSX.Element {
+export function StepIndicator({ currentStep, steps = DEFAULT_STEPS }: StepIndicatorProps): React.JSX.Element {
     return (
         <nav aria-label="Configuration steps" className="flex items-center justify-center gap-0">
-            {STEPS.map((step, index) => {
+            {steps.map((step, index) => {
                 const isCompleted = currentStep > step.number;
                 const isCurrent = currentStep === step.number;
                 const isUpcoming = currentStep < step.number;
@@ -50,7 +51,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps): React.JSX.El
                             </span>
                         </div>
 
-                        {index < STEPS.length - 1 && (
+                        {index < steps.length - 1 && (
                             <div
                                 className={cn(
                                     'mx-2 mb-5 h-0.5 w-12 transition-all duration-500 sm:w-20',
