@@ -1,22 +1,25 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from '@/components/ui/form';
 import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '@/lib/utils/error';
-import { CircleNotch } from '@phosphor-icons/react';
+import { CircleNotch, Eye, EyeSlash, WarningCircle } from '@phosphor-icons/react';
+import { ROUTES } from '@/lib/constants/routes';
 
 const loginSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
@@ -25,15 +28,31 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+const card = {
+    hidden: { opacity: 0, y: 24 },
+    show: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.5, ease: 'easeOut' as const, staggerChildren: 0.07 },
+    },
+};
+
+const item = {
+    hidden: { opacity: 0, y: 12 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' as const } },
+};
+
 export function LoginForm(): React.ReactElement {
     const { login, isLoggingIn, loginError } = useAuth();
+    const [showPassword, setShowPassword] = useState(false);
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-    } = useForm<LoginFormData>({
+    const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
+        mode: 'onTouched',
+        defaultValues: {
+            email: '',
+            password: '',
+        },
     });
 
     const onSubmit = (data: LoginFormData): void => {
@@ -41,79 +60,146 @@ export function LoginForm(): React.ReactElement {
     };
 
     return (
-        <Card className="border-border/50 shadow-sm">
-            <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-                <CardDescription>Sign in to your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    {loginError && (
-                        <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
-                            {getErrorMessage(loginError)}
-                        </div>
-                    )}
+        <motion.div
+            variants={card}
+            initial="hidden"
+            animate="show"
+            className="rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] p-8 shadow-[--shadow-enamel] backdrop-blur-md"
+        >
+            {/* Header */}
+            <motion.div variants={item} className="mb-8 text-center">
+                <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                    Welcome back
+                </h1>
+                <p className="mt-1.5 text-sm text-muted-foreground">
+                    Sign in to your account to continue
+                </p>
+            </motion.div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="name@example.com"
-                            autoComplete="email"
-                            className={errors.email ? 'border-destructive' : ''}
-                            {...register('email')}
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-2">
+                    {/* Error banner */}
+                    <AnimatePresence>
+                        {loginError && (
+                            <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                className="overflow-hidden"
+                            >
+                                <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                                    <WarningCircle className="mt-0.5 h-4 w-4 shrink-0" weight="fill" />
+                                    <span>{getErrorMessage(loginError)}</span>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+
+                    {/* Email */}
+                    <motion.div variants={item}>
+                        <FormField
+                            control={form.control}
+                            name="email"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="text-sm font-medium">
+                                        Email address
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="email"
+                                            placeholder="you@example.com"
+                                            autoComplete="email"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.email && (
-                            <p className="text-sm text-destructive">
-                                {errors.email.message}
-                            </p>
-                        )}
-                    </div>
+                    </motion.div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            placeholder="••••••••"
-                            autoComplete="current-password"
-                            className={errors.password ? 'border-destructive' : ''}
-                            {...register('password')}
+                    {/* Password */}
+                    <motion.div variants={item}>
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <div className="flex items-center justify-between">
+                                        <FormLabel className="text-sm font-medium">
+                                            Password
+                                        </FormLabel>
+                                        <Link
+                                            href={ROUTES.RESET_PASSWORD}
+                                            className="text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-primary"
+                                        >
+                                            Forgot password?
+                                        </Link>
+                                    </div>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? 'text' : 'password'}
+                                                placeholder="Enter your password"
+                                                autoComplete="current-password"
+                                                className="pr-10"
+                                                {...field}
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors duration-150 hover:text-foreground"
+                                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                                tabIndex={-1}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeSlash className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
                         />
-                        {errors.password && (
-                            <p className="text-sm text-destructive">
-                                {errors.password.message}
-                            </p>
-                        )}
-                    </div>
+                    </motion.div>
 
-                    <Button
-                        type="submit"
-                        className="w-full transition-all duration-200 hover:brightness-110 active:scale-[0.98]"
-                        disabled={isLoggingIn}
-                    >
-                        {isLoggingIn ? (
-                            <>
-                                <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
-                                Signing in...
-                            </>
-                        ) : (
-                            'Sign in'
-                        )}
-                    </Button>
-
-                    <p className="text-center text-sm text-muted-foreground">
-                        Don&apos;t have an account?{' '}
-                        <Link
-                            href="/register"
-                            className="font-medium text-primary transition-colors duration-150 hover:text-primary/80"
+                    {/* Submit */}
+                    <motion.div variants={item}>
+                        <Button
+                            type="submit"
+                            className="w-full motion-safe:transition-all motion-safe:duration-200 motion-safe:active:scale-[0.98]"
+                            disabled={isLoggingIn}
                         >
-                            Create one
-                        </Link>
-                    </p>
+                            {isLoggingIn ? (
+                                <>
+                                    <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
+                                    Signing in...
+                                </>
+                            ) : (
+                                'Sign in'
+                            )}
+                        </Button>
+                    </motion.div>
                 </form>
-            </CardContent>
-        </Card>
+            </Form>
+
+            {/* Footer */}
+            <motion.p
+                variants={item}
+                className="mt-6 text-center text-sm text-muted-foreground"
+            >
+                Don&apos;t have an account?{' '}
+                <Link
+                    href={ROUTES.REGISTER}
+                    className="font-semibold text-primary transition-colors duration-150 hover:text-primary/80"
+                >
+                    Create account
+                </Link>
+            </motion.p>
+        </motion.div>
     );
 }

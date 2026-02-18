@@ -30,7 +30,7 @@ trigger: glob: client/**
 - **Strict mode ON.** No `any` — use `unknown` if the type is truly unknown.
 - **Explicit return types** on all functions.
 - **`interface`** for component props and object shapes. **`type`** for unions, intersections, utilities.
-- **Prefer string unions** over enums: `type UserRole = 'USER' | 'COMPANY' | 'ADMIN' | 'DESIGNER'`
+- **Prefer string unions** over enums: `type UserRole = 'USER' | 'ADMIN'`
 - **Infer form types from Zod**: `type ProductFormData = z.infer<typeof productSchema>`
 - **Always use `import type`** for type-only imports.
 
@@ -86,17 +86,17 @@ export interface PaginationParams {
 
 export interface IUser {
   id: string;
-  email: string;
   firstName: string;
   lastName: string;
+  email: string;
+  phone: string | null;
   role: UserRole;
-  isActive: boolean;
-  emailVerified: boolean;
+  avatar?: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export type UserRole = 'USER' | 'COMPANY' | 'ADMIN' | 'DESIGNER';
+export type UserRole = 'USER' | 'ADMIN';
 
 export interface IAuthTokens {
   accessToken: string;
@@ -109,10 +109,11 @@ export interface ILoginRequest {
 }
 
 export interface IRegisterRequest {
-  email: string;
-  password: string;
   firstName: string;
   lastName: string;
+  email: string;
+  phone?: string;
+  password: string;
 }
 
 export interface IAuthState {

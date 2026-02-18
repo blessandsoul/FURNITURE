@@ -1,0 +1,407 @@
+{
+	"info": {
+		"name": "Furniture API",
+		"description": "API collection for the Furniture configurator backend. Auth uses httpOnly cookies — tokens are set/cleared automatically via Set-Cookie headers.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "apiPrefix",
+			"value": "/api/v1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/health",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["health"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"description": "Authentication endpoints. Tokens are managed via httpOnly signed cookies. After login/register, Postman automatically stores cookies for subsequent requests.",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"john@example.com\",\n    \"phone\": \"+995555123456\",\n    \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/register",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "register"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has user data (no tokens in body)', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data.user).to.have.property('id');",
+									"    pm.expect(json.data.user).to.have.property('email');",
+									"    pm.expect(json.data).to.not.have.property('tokens');",
+									"});",
+									"",
+									"pm.test('Set-Cookie headers are present', function () {",
+									"    const cookies = pm.response.headers.filter(h => h.key.toLowerCase() === 'set-cookie');",
+									"    pm.expect(cookies.length).to.be.greaterThan(0);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"Password123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "login"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has user data (no tokens in body)', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data.user).to.have.property('id');",
+									"    pm.expect(json.data).to.not.have.property('tokens');",
+									"});",
+									"",
+									"pm.test('Set-Cookie headers are present', function () {",
+									"    const cookies = pm.response.headers.filter(h => h.key.toLowerCase() === 'set-cookie');",
+									"    pm.expect(cookies.length).to.be.greaterThan(0);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/me",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "me"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has user data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('email');",
+									"    pm.expect(json.data).to.have.property('role');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Sessions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/sessions",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "sessions"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has sessions array', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Refresh Tokens",
+					"description": "Refresh token is read from the httpOnly cookie automatically. No request body needed.",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/refresh",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "refresh"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Set-Cookie headers with new tokens', function () {",
+									"    const cookies = pm.response.headers.filter(h => h.key.toLowerCase() === 'set-cookie');",
+									"    pm.expect(cookies.length).to.be.greaterThan(0);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"description": "Tokens are read from httpOnly cookies. Server clears cookies on logout.",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/logout",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "logout"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Logout All",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/logout-all",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "logout-all"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Request Password Reset",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@admin.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/request-password-reset",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "request-password-reset"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"token\": \"reset-token-here\",\n    \"password\": \"NewPassword123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/auth/reset-password",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["auth", "reset-password"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
