@@ -15,6 +15,9 @@ dist/
 # Prisma
 .prisma/
 
+# Uploaded files
+uploads/
+
 # IDE
 .vscode/
 .idea/

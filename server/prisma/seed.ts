@@ -6,13 +6,14 @@ const prisma = new PrismaClient();
 async function main(): Promise<void> {
   const passwordHash = await bcrypt.hash('Password123!', 12);
 
+  // ─── 1. Users ──────────────────────────────────────────────
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@admin.com' },
+    where: { email: 'admin@atlas.ge' },
     update: {},
     create: {
       firstName: 'Admin',
-      lastName: 'User',
-      email: 'admin@admin.com',
+      lastName: 'Atlas',
+      email: 'admin@atlas.ge',
       phone: '+995555000001',
       passwordHash,
       role: 'ADMIN',
@@ -33,6 +34,255 @@ async function main(): Promise<void> {
   });
 
   console.log('Seeded users:', { admin: admin.email, user: user.email });
+
+  // ─── 2. Sofa Category ─────────────────────────────────────
+  const sofa = await prisma.furnitureCategory.upsert({
+    where: { slug: 'sofa' },
+    update: {},
+    create: {
+      name: 'Sofa',
+      slug: 'sofa',
+      description: 'Custom-designed sofas crafted to your exact specifications. Choose your preferred style, material, color, and comfort options.',
+      basePrice: 500,
+      currency: 'GEL',
+      isActive: true,
+      sortOrder: 0,
+    },
+  });
+
+  console.log('Seeded category:', sofa.name);
+
+  // ─── 3. Option Groups & Values ─────────────────────────────
+
+  // Helper to upsert a group + its values
+  async function seedGroup(
+    group: { name: string; slug: string; description: string; isRequired: boolean; sortOrder: number },
+    values: { label: string; slug: string; description?: string; priceModifier: number; colorHex?: string; promptHint: string; sortOrder: number }[],
+  ): Promise<void> {
+    const created = await prisma.optionGroup.upsert({
+      where: { categoryId_slug: { categoryId: sofa.id, slug: group.slug } },
+      update: {},
+      create: {
+        categoryId: sofa.id,
+        name: group.name,
+        slug: group.slug,
+        description: group.description,
+        isRequired: group.isRequired,
+        sortOrder: group.sortOrder,
+      },
+    });
+
+    for (const v of values) {
+      await prisma.optionValue.upsert({
+        where: { groupId_slug: { groupId: created.id, slug: v.slug } },
+        update: {},
+        create: {
+          groupId: created.id,
+          label: v.label,
+          slug: v.slug,
+          description: v.description,
+          priceModifier: v.priceModifier,
+          colorHex: v.colorHex,
+          promptHint: v.promptHint,
+          sortOrder: v.sortOrder,
+        },
+      });
+    }
+
+    console.log(`  Seeded group: ${group.name} (${values.length} values)`);
+  }
+
+  // --- Color ---
+  await seedGroup(
+    {
+      name: 'Color',
+      slug: 'color',
+      description: 'Choose the primary color of your sofa upholstery',
+      isRequired: true,
+      sortOrder: 0,
+    },
+    [
+      { label: 'Navy Blue', slug: 'navy-blue', priceModifier: 0, colorHex: '#1B3A5C', promptHint: 'deep navy blue colored upholstery', sortOrder: 0 },
+      { label: 'Charcoal Gray', slug: 'charcoal-gray', priceModifier: 0, colorHex: '#36454F', promptHint: 'dark charcoal gray colored upholstery', sortOrder: 1 },
+      { label: 'Forest Green', slug: 'forest-green', priceModifier: 20, colorHex: '#228B22', promptHint: 'rich forest green colored upholstery', sortOrder: 2 },
+      { label: 'Burgundy', slug: 'burgundy', priceModifier: 20, colorHex: '#800020', promptHint: 'deep burgundy wine-red colored upholstery', sortOrder: 3 },
+      { label: 'Cream', slug: 'cream', priceModifier: 0, colorHex: '#FFFDD0', promptHint: 'warm cream off-white colored upholstery', sortOrder: 4 },
+      { label: 'Cognac', slug: 'cognac', priceModifier: 30, colorHex: '#9A463D', promptHint: 'warm cognac brown colored upholstery', sortOrder: 5 },
+      { label: 'Slate Blue', slug: 'slate-blue', priceModifier: 10, colorHex: '#6A7B8B', promptHint: 'muted slate blue colored upholstery', sortOrder: 6 },
+      { label: 'Terracotta', slug: 'terracotta', priceModifier: 15, colorHex: '#CC5533', promptHint: 'earthy terracotta orange-brown colored upholstery', sortOrder: 7 },
+      { label: 'Olive', slug: 'olive', priceModifier: 10, colorHex: '#556B2F', promptHint: 'muted olive green colored upholstery', sortOrder: 8 },
+      { label: 'Mustard', slug: 'mustard', priceModifier: 15, colorHex: '#E1AD01', promptHint: 'warm mustard yellow colored upholstery', sortOrder: 9 },
+    ],
+  );
+
+  // --- Material ---
+  await seedGroup(
+    {
+      name: 'Material',
+      slug: 'material',
+      description: 'Select the upholstery material',
+      isRequired: true,
+      sortOrder: 1,
+    },
+    [
+      { label: 'Italian Leather', slug: 'italian-leather', priceModifier: 350, promptHint: 'premium Italian full-grain leather upholstery with natural grain texture', sortOrder: 0 },
+      { label: 'Velvet', slug: 'velvet', priceModifier: 150, promptHint: 'luxurious soft velvet upholstery with rich sheen and plush texture', sortOrder: 1 },
+      { label: 'Linen', slug: 'linen', priceModifier: 80, promptHint: 'natural linen fabric upholstery with subtle woven texture', sortOrder: 2 },
+      { label: 'Cotton', slug: 'cotton', priceModifier: 0, promptHint: 'durable cotton fabric upholstery with smooth finish', sortOrder: 3 },
+      { label: 'Microfiber', slug: 'microfiber', priceModifier: 60, promptHint: 'stain-resistant microfiber suede-like upholstery', sortOrder: 4 },
+      { label: 'Bouclé', slug: 'boucle', priceModifier: 200, promptHint: 'textured bouclé wool-blend upholstery with characteristic looped yarn', sortOrder: 5 },
+    ],
+  );
+
+  // --- Size ---
+  await seedGroup(
+    {
+      name: 'Size',
+      slug: 'size',
+      description: 'Choose the sofa size and seating configuration',
+      isRequired: true,
+      sortOrder: 2,
+    },
+    [
+      { label: '2-Seat', slug: '2-seat', priceModifier: 0, description: 'Compact loveseat, approx. 150cm wide', promptHint: 'compact two-seater loveseat sofa', sortOrder: 0 },
+      { label: '3-Seat', slug: '3-seat', priceModifier: 200, description: 'Standard sofa, approx. 220cm wide', promptHint: 'standard three-seater sofa', sortOrder: 1 },
+      { label: 'L-Shaped', slug: 'l-shaped', priceModifier: 500, description: 'Corner sectional, approx. 280x200cm', promptHint: 'L-shaped corner sectional sofa with chaise lounge', sortOrder: 2 },
+      { label: 'U-Shaped', slug: 'u-shaped', priceModifier: 800, description: 'Large sectional, approx. 320x220cm', promptHint: 'large U-shaped sectional sofa', sortOrder: 3 },
+    ],
+  );
+
+  // --- Leg Style ---
+  await seedGroup(
+    {
+      name: 'Leg Style',
+      slug: 'leg-style',
+      description: 'Choose the leg style for your sofa',
+      isRequired: true,
+      sortOrder: 3,
+    },
+    [
+      { label: 'Wooden Tapered', slug: 'wooden-tapered', priceModifier: 0, promptHint: 'mid-century modern tapered wooden legs in walnut finish', sortOrder: 0 },
+      { label: 'Metal Hairpin', slug: 'metal-hairpin', priceModifier: 30, promptHint: 'slim black metal hairpin legs', sortOrder: 1 },
+      { label: 'Chrome', slug: 'chrome', priceModifier: 50, promptHint: 'polished chrome metal legs with modern finish', sortOrder: 2 },
+      { label: 'No Legs / Floor', slug: 'no-legs-floor', priceModifier: -20, promptHint: 'floor-level sofa with no visible legs, sitting directly on the ground', sortOrder: 3 },
+      { label: 'Wooden Block', slug: 'wooden-block', priceModifier: 20, promptHint: 'solid wooden block legs in natural oak finish', sortOrder: 4 },
+    ],
+  );
+
+  // --- Upholstery Type ---
+  await seedGroup(
+    {
+      name: 'Upholstery Type',
+      slug: 'upholstery-type',
+      description: 'How the fabric covers the sofa frame',
+      isRequired: true,
+      sortOrder: 4,
+    },
+    [
+      { label: 'Full Upholstery', slug: 'full-upholstery', priceModifier: 0, promptHint: 'fully upholstered sofa with fabric covering the entire frame', sortOrder: 0 },
+      { label: 'Semi-Upholstery', slug: 'semi-upholstery', priceModifier: -30, promptHint: 'semi-upholstered sofa with exposed wooden or metal frame accents', sortOrder: 1 },
+      { label: 'Loose Covers', slug: 'loose-covers', priceModifier: 40, promptHint: 'sofa with removable loose slipcovers for easy washing', sortOrder: 2 },
+      { label: 'Fixed', slug: 'fixed', priceModifier: 0, promptHint: 'sofa with tightly fitted fixed upholstery', sortOrder: 3 },
+    ],
+  );
+
+  // --- Arm Type ---
+  await seedGroup(
+    {
+      name: 'Arm Type',
+      slug: 'arm-type',
+      description: 'Choose the arm style of your sofa',
+      isRequired: true,
+      sortOrder: 5,
+    },
+    [
+      { label: 'Rolled', slug: 'rolled', priceModifier: 30, promptHint: 'classic rolled arms with curved outward scroll', sortOrder: 0 },
+      { label: 'Square', slug: 'square', priceModifier: 0, promptHint: 'clean modern square flat arms', sortOrder: 1 },
+      { label: 'Pillow', slug: 'pillow', priceModifier: 20, promptHint: 'soft padded pillow-top arms', sortOrder: 2 },
+      { label: 'Track', slug: 'track', priceModifier: 10, promptHint: 'slim track arms aligned with the sofa back height', sortOrder: 3 },
+    ],
+  );
+
+  // --- Back Style ---
+  await seedGroup(
+    {
+      name: 'Back Style',
+      slug: 'back-style',
+      description: 'Choose the back cushion style',
+      isRequired: true,
+      sortOrder: 6,
+    },
+    [
+      { label: 'Tight Back', slug: 'tight-back', priceModifier: 0, promptHint: 'tight fitted back with no separate cushions, smooth clean look', sortOrder: 0 },
+      { label: 'Loose Cushion', slug: 'loose-cushion', priceModifier: 40, promptHint: 'loose back cushions that can be rearranged and fluffed', sortOrder: 1 },
+      { label: 'Tufted', slug: 'tufted', priceModifier: 80, promptHint: 'classic button-tufted back with deep diamond pattern', sortOrder: 2 },
+      { label: 'Pillow Back', slug: 'pillow-back', priceModifier: 50, promptHint: 'plush oversized pillow-style back cushions for maximum comfort', sortOrder: 3 },
+    ],
+  );
+
+  // --- Cushion Type ---
+  await seedGroup(
+    {
+      name: 'Cushion Type',
+      slug: 'cushion-type',
+      description: 'Select the seat cushion fill material',
+      isRequired: true,
+      sortOrder: 7,
+    },
+    [
+      { label: 'High-Density Foam', slug: 'high-density-foam', priceModifier: 0, description: 'Durable supportive foam, holds shape well', promptHint: 'high-density foam seat cushions with firm support', sortOrder: 0 },
+      { label: 'Feather-Down', slug: 'feather-down', priceModifier: 120, description: 'Soft luxury feel, requires occasional fluffing', promptHint: 'luxurious feather and down filled seat cushions with soft sink-in feel', sortOrder: 1 },
+      { label: 'Pocket Spring', slug: 'pocket-spring', priceModifier: 80, description: 'Individual springs for responsive comfort', promptHint: 'pocket spring seat cushions with responsive comfort and bounce', sortOrder: 2 },
+    ],
+  );
+
+  // --- Seat Depth ---
+  await seedGroup(
+    {
+      name: 'Seat Depth',
+      slug: 'seat-depth',
+      description: 'Standard or deep seat for lounging',
+      isRequired: true,
+      sortOrder: 8,
+    },
+    [
+      { label: 'Standard', slug: 'standard', priceModifier: 0, description: 'Standard depth (~55cm), upright sitting', promptHint: 'standard seat depth sofa for upright comfortable sitting', sortOrder: 0 },
+      { label: 'Deep', slug: 'deep', priceModifier: 60, description: 'Deep seat (~70cm), for lounging', promptHint: 'deep seat sofa designed for relaxed lounging with extra depth', sortOrder: 1 },
+    ],
+  );
+
+  // --- Firmness ---
+  await seedGroup(
+    {
+      name: 'Firmness',
+      slug: 'firmness',
+      description: 'Choose the overall firmness level',
+      isRequired: true,
+      sortOrder: 9,
+    },
+    [
+      { label: 'Firm', slug: 'firm', priceModifier: 0, promptHint: 'firm structured sofa with solid supportive feel', sortOrder: 0 },
+      { label: 'Medium', slug: 'medium', priceModifier: 0, promptHint: 'medium firmness sofa balancing support and comfort', sortOrder: 1 },
+      { label: 'Soft', slug: 'soft', priceModifier: 30, promptHint: 'soft plush sofa with sink-in comfort', sortOrder: 2 },
+    ],
+  );
+
+  console.log('Seeded 10 option groups with values');
+
+  // ─── 4. Credit Packages ────────────────────────────────────
+  const existingPackages = await prisma.creditPackage.count();
+  if (existingPackages === 0) {
+    await prisma.creditPackage.createMany({
+      data: [
+        { name: 'Starter', credits: 5, price: 10, currency: 'GEL', description: '5 AI generation credits — perfect for trying out the designer', sortOrder: 0 },
+        { name: 'Pro', credits: 20, price: 35, currency: 'GEL', description: '20 AI generation credits — best value for serious designers', sortOrder: 1 },
+        { name: 'Business', credits: 50, price: 75, currency: 'GEL', description: '50 AI generation credits — for professional use and bulk design projects', sortOrder: 2 },
+      ],
+    });
+  }
+
+  console.log('Seeded 3 credit packages');
+  console.log('Seed completed successfully!');
 }
 
 main()

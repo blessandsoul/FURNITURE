@@ -19,6 +19,14 @@ const envSchema = z.object({
 
   // Cookie
   COOKIE_SECRET: z.string().min(32, 'COOKIE_SECRET must be at least 32 characters'),
+
+  // Gemini AI
+  GEMINI_API_KEY: z.string().min(1, 'GEMINI_API_KEY is required'),
+  GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
+
+  // Image Storage
+  IMAGE_STORAGE_PATH: z.string().default('./uploads/generations'),
+  IMAGE_BASE_URL: z.string().default('http://localhost:3000/uploads/generations'),
 });
 
 const parsed = envSchema.safeParse(process.env);

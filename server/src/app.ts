@@ -1,13 +1,20 @@
+import path from 'node:path';
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import cookie from '@fastify/cookie';
+import fastifyStatic from '@fastify/static';
 import { env } from './config/env.js';
 import { logger } from './libs/logger.js';
 import { AppError } from './shared/errors/AppError.js';
 import { successResponse } from './shared/responses/successResponse.js';
 import { authRoutes } from './modules/auth/auth.routes.js';
+import { catalogRoutes } from './modules/catalog/catalog.routes.js';
+import { creditRoutes } from './modules/credits/credits.routes.js';
+import { designRoutes } from './modules/designs/designs.routes.js';
+import { aiGenerationRoutes } from './modules/ai-generation/ai-generation.routes.js';
+import { quoteRoutes } from './modules/quotes/quotes.routes.js';
 
 export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   const app = Fastify({
@@ -30,6 +37,12 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
 
   await app.register(cookie, {
     secret: env.COOKIE_SECRET,
+  });
+
+  await app.register(fastifyStatic, {
+    root: path.resolve(env.IMAGE_STORAGE_PATH),
+    prefix: '/uploads/generations/',
+    decorateReply: false,
   });
 
   // --- Request Logging ---
@@ -95,6 +108,11 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
 
   // --- Routes ---
   await app.register(authRoutes, { prefix: '/api/v1/auth' });
+  await app.register(catalogRoutes, { prefix: '/api/v1/catalog' });
+  await app.register(creditRoutes, { prefix: '/api/v1/credits' });
+  await app.register(designRoutes, { prefix: '/api/v1/designs' });
+  await app.register(aiGenerationRoutes, { prefix: '/api/v1/ai' });
+  await app.register(quoteRoutes, { prefix: '/api/v1/quotes' });
 
   // --- Health Check ---
   app.get('/api/v1/health', async () => {

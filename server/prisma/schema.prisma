@@ -8,18 +8,23 @@ datasource db {
 }
 
 model User {
-  id              String    @id @default(uuid())
-  firstName       String    @map("first_name") @db.VarChar(50)
-  lastName        String    @map("last_name") @db.VarChar(50)
-  email           String    @unique @db.VarChar(255)
-  phone           String    @db.VarChar(20)
-  passwordHash    String    @map("password_hash") @db.VarChar(255)
-  role            UserRole  @default(USER)
-  avatar          String?   @db.VarChar(500)
-  isActive        Boolean   @default(true) @map("is_active")
-  createdAt       DateTime  @default(now()) @map("created_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
-  sessions        Session[]
+  id                 String              @id @default(uuid())
+  firstName          String              @map("first_name") @db.VarChar(50)
+  lastName           String              @map("last_name") @db.VarChar(50)
+  email              String              @unique @db.VarChar(255)
+  phone              String              @db.VarChar(20)
+  passwordHash       String              @map("password_hash") @db.VarChar(255)
+  role               UserRole            @default(USER)
+  avatar             String?             @db.VarChar(500)
+  isActive           Boolean             @default(true) @map("is_active")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  sessions           Session[]
+  designs            Design[]
+  aiGenerations      AiGeneration[]
+  creditBalance      CreditBalance?
+  creditTransactions CreditTransaction[]
+  quotes             Quote[]
 
   @@map("users")
 }
@@ -42,4 +47,230 @@ model Session {
 enum UserRole {
   USER
   ADMIN
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum DesignStatus {
+  DRAFT
+  GENERATED
+  QUOTED
+}
+
+enum AiGenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum CreditTransactionType {
+  PURCHASE
+  GENERATION
+  REFUND
+  BONUS
+  ADJUSTMENT
+}
+
+enum QuoteStatus {
+  PENDING
+  VIEWED
+  CONTACTED
+  COMPLETED
+  CANCELLED
+}
+
+// ─── Catalog Models ──────────────────────────────────────
+
+model FurnitureCategory {
+  id           String        @id @default(uuid())
+  name         String        @db.VarChar(100)
+  slug         String        @unique @db.VarChar(120)
+  description  String?       @db.Text
+  basePrice    Decimal       @map("base_price") @db.Decimal(10, 2)
+  currency     String        @default("GEL") @db.VarChar(3)
+  imageUrl     String?       @map("image_url") @db.VarChar(500)
+  isActive     Boolean       @default(true) @map("is_active")
+  sortOrder    Int           @default(0) @map("sort_order")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  optionGroups OptionGroup[]
+  designs      Design[]
+
+  @@map("furniture_categories")
+}
+
+model OptionGroup {
+  id           String            @id @default(uuid())
+  categoryId   String            @map("category_id")
+  name         String            @db.VarChar(100)
+  slug         String            @db.VarChar(120)
+  description  String?           @db.Text
+  isRequired   Boolean           @default(false) @map("is_required")
+  isActive     Boolean           @default(true) @map("is_active")
+  sortOrder    Int               @default(0) @map("sort_order")
+  createdAt    DateTime          @default(now()) @map("created_at")
+  updatedAt    DateTime          @updatedAt @map("updated_at")
+  category     FurnitureCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  optionValues OptionValue[]
+
+  @@unique([categoryId, slug])
+  @@index([categoryId])
+  @@map("option_groups")
+}
+
+model OptionValue {
+  id                String             @id @default(uuid())
+  groupId           String             @map("group_id")
+  label             String             @db.VarChar(100)
+  slug              String             @db.VarChar(120)
+  description       String?            @db.Text
+  priceModifier     Decimal            @default(0) @map("price_modifier") @db.Decimal(10, 2)
+  colorHex          String?            @map("color_hex") @db.VarChar(7)
+  imageUrl          String?            @map("image_url") @db.VarChar(500)
+  promptHint        String?            @map("prompt_hint") @db.Text
+  isActive          Boolean            @default(true) @map("is_active")
+  sortOrder         Int                @default(0) @map("sort_order")
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+  group             OptionGroup        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  designOptionItems DesignOptionItem[]
+
+  @@unique([groupId, slug])
+  @@index([groupId])
+  @@map("option_values")
+}
+
+// ─── Design Models ───────────────────────────────────────
+
+model Design {
+  id             String             @id @default(uuid())
+  userId         String             @map("user_id")
+  categoryId     String             @map("category_id")
+  name           String             @db.VarChar(200)
+  totalPrice     Decimal            @map("total_price") @db.Decimal(10, 2)
+  currency       String             @default("GEL") @db.VarChar(3)
+  configSnapshot Json               @map("config_snapshot")
+  imageUrl       String?            @map("image_url") @db.VarChar(500)
+  thumbnailUrl   String?            @map("thumbnail_url") @db.VarChar(500)
+  status         DesignStatus       @default(DRAFT)
+  createdAt      DateTime           @default(now()) @map("created_at")
+  updatedAt      DateTime           @updatedAt @map("updated_at")
+  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category       FurnitureCategory  @relation(fields: [categoryId], references: [id])
+  optionItems    DesignOptionItem[]
+  aiGenerations  AiGeneration[]
+  quotes         Quote[]
+
+  @@index([userId])
+  @@index([categoryId])
+  @@map("designs")
+}
+
+model DesignOptionItem {
+  id            String      @id @default(uuid())
+  designId      String      @map("design_id")
+  optionValueId String      @map("option_value_id")
+  design        Design      @relation(fields: [designId], references: [id], onDelete: Cascade)
+  optionValue   OptionValue @relation(fields: [optionValueId], references: [id])
+
+  @@unique([designId, optionValueId])
+  @@index([designId])
+  @@index([optionValueId])
+  @@map("design_option_items")
+}
+
+// ─── AI Generation Models ────────────────────────────────
+
+model AiGeneration {
+  id           String             @id @default(uuid())
+  userId       String             @map("user_id")
+  designId     String?            @map("design_id")
+  prompt       String             @db.Text
+  userFreeText String?            @map("user_free_text") @db.Text
+  model        String             @db.VarChar(50)
+  status       AiGenerationStatus @default(PENDING)
+  imageUrl     String?            @map("image_url") @db.VarChar(500)
+  thumbnailUrl String?            @map("thumbnail_url") @db.VarChar(500)
+  errorMessage String?            @map("error_message") @db.Text
+  promptTokens Int?               @map("prompt_tokens")
+  totalTokens  Int?               @map("total_tokens")
+  wasFree      Boolean            @default(false) @map("was_free")
+  creditsUsed  Int                @default(0) @map("credits_used")
+  durationMs   Int?               @map("duration_ms")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  updatedAt    DateTime           @updatedAt @map("updated_at")
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  design       Design?            @relation(fields: [designId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([designId])
+  @@map("ai_generations")
+}
+
+// ─── Credit Models ───────────────────────────────────────
+
+model CreditBalance {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  balance   Int      @default(0)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("credit_balances")
+}
+
+model CreditTransaction {
+  id          String                @id @default(uuid())
+  userId      String                @map("user_id")
+  amount      Int
+  type        CreditTransactionType
+  description String?               @db.VarChar(500)
+  referenceId String?               @map("reference_id") @db.VarChar(255)
+  createdAt   DateTime              @default(now()) @map("created_at")
+  user        User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("credit_transactions")
+}
+
+model CreditPackage {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(100)
+  credits     Int
+  price       Decimal  @db.Decimal(10, 2)
+  currency    String   @default("GEL") @db.VarChar(3)
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  sortOrder   Int      @default(0) @map("sort_order")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("credit_packages")
+}
+
+// ─── Quote Model ─────────────────────────────────────────
+
+model Quote {
+  id           String      @id @default(uuid())
+  userId       String      @map("user_id")
+  designId     String      @map("design_id")
+  contactName  String      @map("contact_name") @db.VarChar(100)
+  contactEmail String      @map("contact_email") @db.VarChar(255)
+  contactPhone String      @map("contact_phone") @db.VarChar(20)
+  message      String?     @db.Text
+  quotedPrice  Decimal?    @map("quoted_price") @db.Decimal(10, 2)
+  currency     String      @default("GEL") @db.VarChar(3)
+  status       QuoteStatus @default(PENDING)
+  adminNotes   String?     @map("admin_notes") @db.Text
+  respondedAt  DateTime?   @map("responded_at")
+  createdAt    DateTime    @default(now()) @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  design       Design      @relation(fields: [designId], references: [id])
+
+  @@index([userId])
+  @@index([designId])
+  @@map("quotes")
 }

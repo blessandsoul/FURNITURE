@@ -14,6 +14,61 @@
 			"key": "apiPrefix",
 			"value": "/api/v1",
 			"type": "string"
+		},
+		{
+			"key": "packageId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "categoryId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "designId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "optionValueId1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "optionValueId2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "quoteId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "categorySlug",
+			"value": "sofa",
+			"type": "string"
+		},
+		{
+			"key": "optionGroupId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "optionValueId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "generationId",
+			"value": "",
+			"type": "string"
 		}
 	],
 	"item": [
@@ -121,7 +176,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"Password123!\"\n}"
+							"raw": "{\n    \"email\": \"admin@atlas.ge\",\n    \"password\": \"Password123!\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
@@ -329,7 +384,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@admin.com\"\n}"
+							"raw": "{\n    \"email\": \"admin@atlas.ge\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/request-password-reset",
@@ -395,6 +450,1617 @@
 									"pm.test('Response has success true', function () {",
 									"    const json = pm.response.json();",
 									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Catalog",
+			"description": "Furniture catalog endpoints — browse categories and options (public), manage catalog items (admin).",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has categories array', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data.length > 0) {",
+									"        pm.collectionVariables.set('categoryId', json.data[0].id);",
+									"        pm.collectionVariables.set('categorySlug', json.data[0].slug);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Category by Slug",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categorySlug}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories", "{{categorySlug}}"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has category with option groups', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('name');",
+									"    pm.expect(json.data).to.have.property('slug');",
+									"    pm.expect(json.data).to.have.property('optionGroups');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Options by Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}/options",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories", "{{categoryId}}", "options"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has option groups with values', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const json = pm.response.json();",
+									"    if (json.data.length > 0 && json.data[0].optionValues && json.data[0].optionValues.length > 0) {",
+									"        pm.collectionVariables.set('optionValueId1', json.data[0].optionValues[0].id);",
+									"        pm.collectionVariables.set('optionGroupId', json.data[0].id);",
+									"    }",
+									"    if (json.data.length > 1 && json.data[1].optionValues && json.data[1].optionValues.length > 0) {",
+									"        pm.collectionVariables.set('optionValueId2', json.data[1].optionValues[0].id);",
+									"    }",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Armchair\",\n    \"description\": \"Custom-designed armchairs with a wide range of styles and materials.\",\n    \"basePrice\": 300,\n    \"currency\": \"GEL\",\n    \"sortOrder\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has category data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('name');",
+									"    pm.expect(json.data).to.have.property('slug');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Sofa Updated\",\n    \"basePrice\": 550,\n    \"description\": \"Updated sofa description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories", "{{categoryId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated category', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "categories", "{{categoryId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Create Option Group",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": \"{{categoryId}}\",\n    \"name\": \"Pattern\",\n    \"description\": \"Choose a pattern for the fabric\",\n    \"isRequired\": false,\n    \"sortOrder\": 10\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-groups"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has option group data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('name');",
+									"    pm.expect(json.data).to.have.property('slug');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('optionGroupId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Option Group",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pattern Updated\",\n    \"isRequired\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups/{{optionGroupId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-groups", "{{optionGroupId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated option group', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Delete Option Group",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups/{{optionGroupId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-groups", "{{optionGroupId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Create Option Value",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"groupId\": \"{{optionGroupId}}\",\n    \"label\": \"Striped\",\n    \"description\": \"Classic stripe pattern\",\n    \"priceModifier\": 25,\n    \"promptHint\": \"striped pattern fabric with evenly spaced horizontal stripes\",\n    \"sortOrder\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-values"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has option value data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('label');",
+									"    pm.expect(json.data).to.have.property('slug');",
+									"    pm.expect(json.data).to.have.property('promptHint');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('optionValueId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Option Value",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"label\": \"Bold Striped\",\n    \"priceModifier\": 30,\n    \"promptHint\": \"bold striped pattern with wide contrasting stripes\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values/{{optionValueId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-values", "{{optionValueId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated option value', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Delete Option Value",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values/{{optionValueId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["catalog", "option-values", "{{optionValueId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Credits",
+			"description": "Credit system endpoints — balance, transactions, packages, purchasing, and admin management.",
+			"item": [
+				{
+					"name": "Get Credit Packages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/packages",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "packages"]
+						},
+						"auth": {
+							"type": "noauth"
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has packages array', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Credit Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/balance",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "balance"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has balance data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('userId');",
+									"    pm.expect(json.data).to.have.property('balance');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/transactions?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "transactions"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated transactions', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"    pm.expect(json.data.items).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Purchase Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"packageId\": \"{{packageId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/purchase",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "purchase"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated balance', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('balance');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Adjust Credits",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": \"{{userId}}\",\n    \"amount\": 10,\n    \"type\": \"BONUS\",\n    \"description\": \"Welcome bonus credits\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/adjust",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "admin", "adjust"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has adjusted balance', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('balance');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Create Credit Package",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Starter\",\n    \"credits\": 5,\n    \"price\": 10.00,\n    \"currency\": \"GEL\",\n    \"description\": \"5 AI generation credits\",\n    \"sortOrder\": 0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "admin", "packages"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has package data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('name');",
+									"    pm.expect(json.data).to.have.property('credits');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('packageId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Credit Package",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Starter Plus\",\n    \"credits\": 7,\n    \"price\": 12.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages/{{packageId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "admin", "packages", "{{packageId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated package', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Delete Credit Package",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages/{{packageId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["credits", "admin", "packages", "{{packageId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Designs",
+			"description": "Design CRUD endpoints — create, update, delete designs with option selections and price calculation.",
+			"item": [
+				{
+					"name": "Calculate Price",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": \"{{categoryId}}\",\n    \"optionValueIds\": [\"{{optionValueId1}}\", \"{{optionValueId2}}\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs/calculate-price",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs", "calculate-price"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has price calculation', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('basePrice');",
+									"    pm.expect(json.data).to.have.property('totalPrice');",
+									"    pm.expect(json.data).to.have.property('options');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Create Design",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryId\": \"{{categoryId}}\",\n    \"name\": \"My Custom Sofa\",\n    \"optionValueIds\": [\"{{optionValueId1}}\", \"{{optionValueId2}}\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has design data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('name');",
+									"    pm.expect(json.data).to.have.property('totalPrice');",
+									"    pm.expect(json.data).to.have.property('configSnapshot');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('designId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "List My Designs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated designs', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Design",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs", "{{designId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has design data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('configSnapshot');",
+									"    pm.expect(json.data).to.have.property('categoryName');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Update Design",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Sofa Design\",\n    \"optionValueIds\": [\"{{optionValueId1}}\", \"{{optionValueId2}}\"]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs", "{{designId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has updated design', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('totalPrice');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Delete Design",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs", "{{designId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has success true', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: List All Designs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/designs/admin/all?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["designs", "admin", "all"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated designs', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "AI Generation",
+			"description": "AI image generation endpoints — generate sofa images, view generation history, check free generation status, and admin management.",
+			"item": [
+				{
+					"name": "Get Generation Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/status",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["ai", "status"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has generation status', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('freeRemaining');",
+									"    pm.expect(json.data).to.have.property('creditBalance');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Generate AI Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"designId\": \"{{designId}}\",\n    \"freeText\": \"modern minimalist living room setting\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generate",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["ai", "generate"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Response has generation data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('status');",
+									"    pm.expect(json.data).to.have.property('imageUrl');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.success && json.data.id) {",
+									"    pm.collectionVariables.set('generationId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "List My Generations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generations?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["ai", "generations"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated generations', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"    pm.expect(json.data.items).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Generation Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generations/{{generationId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["ai", "generations", "{{generationId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has generation detail', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('prompt');",
+									"    pm.expect(json.data).to.have.property('status');",
+									"    pm.expect(json.data).to.have.property('model');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: List All Generations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/admin/generations?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["ai", "admin", "generations"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"disabled": true
+								},
+								{
+									"key": "userId",
+									"value": "{{userId}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated generations', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"});"
+								]
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Quotes",
+			"description": "Quote request endpoints — users submit quote requests for generated designs, admins manage and respond to quotes.",
+			"item": [
+				{
+					"name": "Submit Quote Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"designId\": \"{{designId}}\",\n    \"contactName\": \"John Doe\",\n    \"contactEmail\": \"john@example.com\",\n    \"contactPhone\": \"+995555123456\",\n    \"message\": \"I would like to get a price quote for this sofa design. Please contact me at your earliest convenience.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has quote data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('designId');",
+									"    pm.expect(json.data).to.have.property('contactName');",
+									"    pm.expect(json.data).to.have.property('status');",
+									"    pm.expect(json.data.status).to.eql('PENDING');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('quoteId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "List My Quotes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated quotes', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"    pm.expect(json.data.items).to.be.an('array');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Get Quote",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/{{quoteId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "{{quoteId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has quote with design data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('design');",
+									"    pm.expect(json.data.design).to.have.property('name');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Cancel Quote",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/{{quoteId}}/cancel",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "{{quoteId}}", "cancel"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Quote is cancelled', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data.status).to.eql('CANCELLED');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: List All Quotes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/all?page=1&limit=10",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "admin", "all"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "PENDING",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has paginated quotes with user info', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('items');",
+									"    pm.expect(json.data).to.have.property('pagination');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Get Quote Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "admin", "{{quoteId}}"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response has quote with user and design info', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('user');",
+									"    pm.expect(json.data).to.have.property('design');",
+									"    pm.expect(json.data.user).to.have.property('email');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Quote Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"CONTACTED\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}/status",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "admin", "{{quoteId}}", "status"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Quote status is updated', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('status');",
+									"    pm.expect(json.data).to.have.property('respondedAt');",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Admin: Update Quote Notes",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"adminNotes\": \"Customer called, interested in custom fabric. Follow up next week with fabric samples.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}/notes",
+							"host": ["{{baseUrl}}{{apiPrefix}}"],
+							"path": ["quotes", "admin", "{{quoteId}}", "notes"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Quote notes are updated', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('adminNotes');",
+									"    pm.expect(json.data.adminNotes).to.not.be.null;",
 									"});"
 								]
 							}
