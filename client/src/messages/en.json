@@ -1,0 +1,37 @@
+{
+    "Auth": {
+        "loginTitle": "Login",
+        "registerTitle": "Register",
+        "emailLabel": "Email",
+        "passwordLabel": "Password",
+        "confirmPasswordLabel": "Confirm Password",
+        "submitLogin": "Sign In",
+        "submitRegister": "Sign Up",
+        "haveAccount": "Already have an account?",
+        "noAccount": "Don't have an account?",
+        "loginLink": "Login",
+        "registerLink": "Register",
+        "validation": {
+            "required": "This field is required",
+            "emailInvalid": "Invalid email address",
+            "passwordMin": "Password must be at least 6 characters",
+            "passwordsDoNotMatch": "Passwords do not match"
+        },
+        "signOut": "Sign Out"
+    },
+    "Common": {
+        "loading": "Loading...",
+        "error": "Something went wrong",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit"
+    },
+    "Navigation": {
+        "home": "Home",
+        "products": "Products",
+        "about": "About Us",
+        "contact": "Contact",
+        "myDesigns": "My Designs"
+    }
+}

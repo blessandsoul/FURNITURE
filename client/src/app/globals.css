@@ -9,6 +9,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-space-grotesk), sans-serif;
+  --font-serif: var(--font-serif), 'Georgia', serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -126,14 +128,19 @@
   --sidebar-ring: oklch(0.73 0.05 72);
 
   /* Brand tokens */
-  --brand-primary: oklch(0.28 0.055 48);       /* Espresso */
-  --brand-secondary: oklch(0.53 0.06 140);     /* Sage Green */
-  --brand-accent: oklch(0.55 0.12 40);         /* Terracotta */
+  --brand-primary: oklch(0.28 0.055 48);
+  /* Espresso */
+  --brand-secondary: oklch(0.53 0.06 140);
+  /* Sage Green */
+  --brand-accent: oklch(0.55 0.12 40);
+  /* Terracotta */
 
   /* Semantic tokens */
-  --success: oklch(0.53 0.06 140);             /* Sage Green */
+  --success: oklch(0.53 0.06 140);
+  /* Sage Green */
   --success-foreground: oklch(0.97 0.005 75);
-  --warning: oklch(0.55 0.12 40);              /* Terracotta */
+  --warning: oklch(0.55 0.12 40);
+  /* Terracotta */
   --warning-foreground: oklch(0.97 0.005 75);
   --info: oklch(0.55 0.07 230);
   --info-foreground: oklch(0.97 0.005 75);
@@ -224,18 +231,31 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  .font-georgian {
+    font-family: var(--font-noto-georgian), sans-serif;
+  }
+
+  :lang(ka) {
+    font-family: var(--font-noto-georgian), sans-serif;
   }
 }
 
 /* ── Scrollbar hiding ───────────────────────────────────────────── */
 * {
-  scrollbar-width: none;          /* Firefox */
-  -ms-overflow-style: none;       /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
 }
+
 *::-webkit-scrollbar {
-  display: none;                  /* Chrome/Safari/Opera */
+  display: none;
+  /* Chrome/Safari/Opera */
 }
 
 /* ── Theme transition (View Transitions API) ───────────────────── */
@@ -246,6 +266,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   ::view-transition-old(root),
   ::view-transition-new(root) {
     animation-duration: 0ms;
@@ -254,45 +275,111 @@
 
 /* ── Step transition ────────────────────────────────────────────── */
 @keyframes stepIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ── Staggered reveal ───────────────────────────────────────────── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .animate-step-in {
     animation: stepIn 0.22s ease-out both;
   }
+
   .animate-fade-up {
     animation: fadeUp 0.35s ease-out both;
   }
+
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out both;
   }
+
   .animate-scale-in {
     animation: scaleIn 0.3s ease-out both;
   }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
   /* Stagger delays */
-  .delay-75  { animation-delay: 75ms; }
-  .delay-100 { animation-delay: 100ms; }
-  .delay-150 { animation-delay: 150ms; }
-  .delay-200 { animation-delay: 200ms; }
-  .delay-300 { animation-delay: 300ms; }
-  .delay-400 { animation-delay: 400ms; }
-  .delay-500 { animation-delay: 500ms; }
+  .delay-75 {
+    animation-delay: 75ms;
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-150 {
+    animation-delay: 150ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
 }

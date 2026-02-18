@@ -1,17 +1,27 @@
 'use client';
 
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Moon, Sun, List, X } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
 import { useCallback, useState } from 'react';
 import { APP_NAME } from '@/lib/constants/app.constants';
+import LanguageSwitcher from '../LanguageSwitcher';
+import { useTranslations } from 'next-intl';
 
 export function Header(): React.ReactElement {
     const { isAuthenticated, user, logout } = useAuth();
     const { theme, setTheme } = useTheme();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const tAuth = useTranslations('Auth');
+    const tNav = useTranslations('Navigation');
+    const tCommon = useTranslations('Common');
+
+    // Additional translations needed for Header that might not be in the initial JSON
+    // I will use placeholders or key fallbacks if they don't exist, but I will update JSONs next.
+    // Assuming keys: 'myDesigns', 'signOut' in Navigation or Auth?
+    // Let's stick to what I have or add keys. I'll add 'myDesigns' and 'signOut' to Navigation in next step.
 
     const toggleTheme = useCallback((): void => {
         const next = theme === 'dark' ? 'light' : 'dark';
@@ -37,27 +47,30 @@ export function Header(): React.ReactElement {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden items-center gap-4 md:flex">
+                    <LanguageSwitcher />
                     {isAuthenticated && (
                         <Link
                             href="/dashboard"
                             className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
                         >
-                            My Designs
+                            {tNav('myDesigns')}
                         </Link>
                     )}
                     {isAuthenticated ? (
                         <>
-                            <Button variant="outline" size="sm" onClick={logout}>
-                                Sign Out
-                            </Button>
+                            <div onClick={logout}>
+                                <Button variant="outline" size="sm">
+                                    {tAuth('signOut')}
+                                </Button>
+                            </div>
                         </>
                     ) : (
                         <>
                             <Button variant="ghost" size="sm" asChild>
-                                <Link href="/login">Sign In</Link>
+                                <Link href="/login">{tAuth('loginLink')}</Link>
                             </Button>
                             <Button size="sm" asChild>
-                                <Link href="/register">Create Account</Link>
+                                <Link href="/register">{tAuth('registerLink')}</Link>
                             </Button>
                         </>
                     )}
@@ -75,6 +88,7 @@ export function Header(): React.ReactElement {
 
                 {/* Mobile Menu Toggle */}
                 <div className="flex items-center gap-2 md:hidden">
+                    <LanguageSwitcher />
                     <Button
                         variant="ghost"
                         size="icon"
@@ -109,21 +123,23 @@ export function Header(): React.ReactElement {
                                 className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
-                                My Designs
+                                {tNav('myDesigns')}
                             </Link>
                         )}
                         {isAuthenticated ? (
                             <>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => {
-                                        setIsMobileMenuOpen(false);
-                                        logout();
-                                    }}
-                                >
-                                    Sign Out
-                                </Button>
+                                <div onClick={() => {
+                                    setIsMobileMenuOpen(false);
+                                    logout();
+                                }}>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full"
+                                    >
+                                        {tAuth('signOut')}
+                                    </Button>
+                                </div>
                             </>
                         ) : (
                             <>
@@ -132,7 +148,7 @@ export function Header(): React.ReactElement {
                                         href="/login"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
-                                        Sign In
+                                        {tAuth('loginLink')}
                                     </Link>
                                 </Button>
                                 <Button size="sm" asChild>
@@ -140,7 +156,7 @@ export function Header(): React.ReactElement {
                                         href="/register"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
-                                        Create Account
+                                        {tAuth('registerLink')}
                                     </Link>
                                 </Button>
                             </>

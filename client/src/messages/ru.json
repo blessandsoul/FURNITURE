@@ -1,0 +1,37 @@
+{
+    "Auth": {
+        "loginTitle": "Вход",
+        "registerTitle": "Регистрация",
+        "emailLabel": "Эл. почта",
+        "passwordLabel": "Пароль",
+        "confirmPasswordLabel": "Подтвердите пароль",
+        "submitLogin": "Войти",
+        "submitRegister": "Зарегистрироваться",
+        "haveAccount": "Уже есть аккаунт?",
+        "noAccount": "Нет аккаунта?",
+        "loginLink": "Войти",
+        "registerLink": "Регистрация",
+        "validation": {
+            "required": "Обязательное поле",
+            "emailInvalid": "Неверный формат эл. почты",
+            "passwordMin": "Пароль должен содержать минимум 6 символов",
+            "passwordsDoNotMatch": "Пароли не совпадают"
+        },
+        "signOut": "Выйти"
+    },
+    "Common": {
+        "loading": "Загрузка...",
+        "error": "Произошла ошибка",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete": "Удалить",
+        "edit": "Редактировать"
+    },
+    "Navigation": {
+        "home": "Главная",
+        "products": "Продукция",
+        "about": "О нас",
+        "contact": "Контакты",
+        "myDesigns": "Мои проекты"
+    }
+}

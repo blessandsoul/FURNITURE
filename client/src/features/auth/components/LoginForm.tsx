@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Link from 'next/link';
+import { Link } from '@/i18n/routing';
 import { motion, AnimatePresence } from 'motion/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,13 +20,7 @@ import { useAuth } from '../hooks/useAuth';
 import { getErrorMessage } from '@/lib/utils/error';
 import { CircleNotch, Eye, EyeSlash, WarningCircle } from '@phosphor-icons/react';
 import { ROUTES } from '@/lib/constants/routes';
-
-const loginSchema = z.object({
-    email: z.string().email('Please enter a valid email address'),
-    password: z.string().min(1, 'Password is required'),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { useTranslations } from 'next-intl';
 
 const card = {
     hidden: { opacity: 0, y: 24 },
@@ -45,6 +39,15 @@ const item = {
 export function LoginForm(): React.ReactElement {
     const { login, isLoggingIn, loginError } = useAuth();
     const [showPassword, setShowPassword] = useState(false);
+    const t = useTranslations('Auth');
+    const tCommon = useTranslations('Common');
+
+    const loginSchema = z.object({
+        email: z.string().email(t('validation.emailInvalid')),
+        password: z.string().min(1, t('validation.required')),
+    });
+
+    type LoginFormData = z.infer<typeof loginSchema>;
 
     const form = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
@@ -69,7 +72,7 @@ export function LoginForm(): React.ReactElement {
             {/* Header */}
             <motion.div variants={item} className="mb-8 text-center">
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">
-                    Welcome back
+                    {t('loginTitle')}
                 </h1>
                 <p className="mt-1.5 text-sm text-muted-foreground">
                     Sign in to your account to continue
@@ -103,7 +106,7 @@ export function LoginForm(): React.ReactElement {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium">
-                                        Email address
+                                        {t('emailLabel')}
                                     </FormLabel>
                                     <FormControl>
                                         <Input
@@ -128,7 +131,7 @@ export function LoginForm(): React.ReactElement {
                                 <FormItem>
                                     <div className="flex items-center justify-between">
                                         <FormLabel className="text-sm font-medium">
-                                            Password
+                                            {t('passwordLabel')}
                                         </FormLabel>
                                         <Link
                                             href={ROUTES.RESET_PASSWORD}
@@ -177,10 +180,10 @@ export function LoginForm(): React.ReactElement {
                             {isLoggingIn ? (
                                 <>
                                     <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
-                                    Signing in...
+                                    {tCommon('loading')}
                                 </>
                             ) : (
-                                'Sign in'
+                                t('submitLogin')
                             )}
                         </Button>
                     </motion.div>
@@ -192,12 +195,12 @@ export function LoginForm(): React.ReactElement {
                 variants={item}
                 className="mt-6 text-center text-sm text-muted-foreground"
             >
-                Don&apos;t have an account?{' '}
+                {t('noAccount')}{' '}
                 <Link
                     href={ROUTES.REGISTER}
                     className="font-semibold text-primary transition-colors duration-150 hover:text-primary/80"
                 >
-                    Create account
+                    {t('registerLink')}
                 </Link>
             </motion.p>
         </motion.div>

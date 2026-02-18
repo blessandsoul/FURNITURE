@@ -1,0 +1,37 @@
+{
+    "Auth": {
+        "loginTitle": "შესვლა",
+        "registerTitle": "რეგისტრაცია",
+        "emailLabel": "ელ.ფოსტა",
+        "passwordLabel": "პაროლი",
+        "confirmPasswordLabel": "დაადასტურეთ პაროლი",
+        "submitLogin": "შესვლა",
+        "submitRegister": "დარეგისტრირება",
+        "haveAccount": "უკვე გაქვთ ანგარიში?",
+        "noAccount": "არ გაქვთ ანგარიში?",
+        "loginLink": "შესვლა",
+        "registerLink": "რეგისტრაცია",
+        "validation": {
+            "required": "სავალდებულო ველი",
+            "emailInvalid": "არასწორი ელ.ფოსტის ფორმატი",
+            "passwordMin": "პაროლი უნდა შეიცავდეს მინიმუმ 6 სიმბოლოს",
+            "passwordsDoNotMatch": "პაროლები არ ემთხვევა"
+        },
+        "signOut": "გასვლა"
+    },
+    "Common": {
+        "loading": "იტვირთება...",
+        "error": "დაფიქსირდა შეცდომა",
+        "save": "შენახვა",
+        "cancel": "გაუქმება",
+        "delete": "წაშლა",
+        "edit": "რედაქტირება"
+    },
+    "Navigation": {
+        "home": "მთავარი",
+        "products": "პროდუქცია",
+        "about": "ჩვენ შესახებ",
+        "contact": "კონტაქტი",
+        "myDesigns": "ჩემი დიზაინები"
+    }
+}
