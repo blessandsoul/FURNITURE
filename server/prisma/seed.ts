@@ -36,9 +36,14 @@ async function main(): Promise<void> {
   console.log('Seeded users:', { admin: admin.email, user: user.email });
 
   // ─── 2. Sofa Category ─────────────────────────────────────
+  const sofaTranslations = {
+    ka: { name: 'დივანი', description: 'ინდივიდუალურად დიზაინირებული დივნები თქვენი ზუსტი სპეციფიკაციების მიხედვით. აირჩიეთ სტილი, მასალა, ფერი და კომფორტის ვარიანტები.' },
+    ru: { name: 'Диван', description: 'Диваны, разработанные по вашим точным спецификациям. Выберите стиль, материал, цвет и варианты комфорта.' },
+  };
+
   const sofa = await prisma.furnitureCategory.upsert({
     where: { slug: 'sofa' },
-    update: {},
+    update: { translations: sofaTranslations },
     create: {
       name: 'Sofa',
       slug: 'sofa',
@@ -47,10 +52,7 @@ async function main(): Promise<void> {
       currency: 'GEL',
       isActive: true,
       sortOrder: 0,
-      translations: {
-        ka: { name: 'დივანი', description: 'ინდივიდუალურად დიზაინირებული დივნები თქვენი ზუსტი სპეციფიკაციების მიხედვით. აირჩიეთ სტილი, მასალა, ფერი და კომფორტის ვარიანტები.' },
-        ru: { name: 'Диван', description: 'Диваны, разработанные по вашим точным спецификациям. Выберите стиль, материал, цвет и варианты комфорта.' },
-      },
+      translations: sofaTranslations,
     },
   });
 
@@ -65,7 +67,7 @@ async function main(): Promise<void> {
   ): Promise<void> {
     const created = await prisma.optionGroup.upsert({
       where: { categoryId_slug: { categoryId: sofa.id, slug: group.slug } },
-      update: {},
+      update: { translations: group.translations ?? undefined },
       create: {
         categoryId: sofa.id,
         name: group.name,
@@ -80,7 +82,7 @@ async function main(): Promise<void> {
     for (const v of values) {
       await prisma.optionValue.upsert({
         where: { groupId_slug: { groupId: created.id, slug: v.slug } },
-        update: {},
+        update: { translations: v.translations ?? undefined },
         create: {
           groupId: created.id,
           label: v.label,
