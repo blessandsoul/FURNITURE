@@ -58,6 +58,7 @@ class CatalogRepository {
         currency: data.currency,
         imageUrl: data.imageUrl ?? null,
         sortOrder: data.sortOrder,
+        translations: data.translations ?? undefined,
       },
     });
   }
@@ -118,6 +119,7 @@ class CatalogRepository {
         description: data.description ?? null,
         isRequired: data.isRequired,
         sortOrder: data.sortOrder,
+        translations: data.translations ?? undefined,
       },
     });
   }
@@ -168,6 +170,7 @@ class CatalogRepository {
         imageUrl: data.imageUrl ?? null,
         promptHint: data.promptHint ?? null,
         sortOrder: data.sortOrder,
+        translations: data.translations ?? undefined,
       },
     });
   }

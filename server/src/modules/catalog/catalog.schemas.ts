@@ -1,5 +1,10 @@
 import { z } from 'zod';
 
+const TranslationsSchema = z.record(
+  z.string(),
+  z.record(z.string(), z.string()),
+).optional();
+
 // ─── Category Schemas ────────────────────────────────────
 
 export const CreateCategorySchema = z.object({
@@ -9,6 +14,7 @@ export const CreateCategorySchema = z.object({
   currency: z.string().length(3).default('GEL'),
   imageUrl: z.string().url().max(500).optional(),
   sortOrder: z.number().int().min(0).default(0),
+  translations: TranslationsSchema,
 });
 
 export const UpdateCategorySchema = z.object({
@@ -19,6 +25,7 @@ export const UpdateCategorySchema = z.object({
   imageUrl: z.string().url().max(500).nullable().optional(),
   isActive: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
+  translations: TranslationsSchema,
 });
 
 // ─── Option Group Schemas ────────────────────────────────
@@ -29,6 +36,7 @@ export const CreateOptionGroupSchema = z.object({
   description: z.string().max(2000).optional(),
   isRequired: z.boolean().default(false),
   sortOrder: z.number().int().min(0).default(0),
+  translations: TranslationsSchema,
 });
 
 export const UpdateOptionGroupSchema = z.object({
@@ -37,6 +45,7 @@ export const UpdateOptionGroupSchema = z.object({
   isRequired: z.boolean().optional(),
   isActive: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
+  translations: TranslationsSchema,
 });
 
 // ─── Option Value Schemas ────────────────────────────────
@@ -50,6 +59,7 @@ export const CreateOptionValueSchema = z.object({
   imageUrl: z.string().url().max(500).optional(),
   promptHint: z.string().max(2000).optional(),
   sortOrder: z.number().int().min(0).default(0),
+  translations: TranslationsSchema,
 });
 
 export const UpdateOptionValueSchema = z.object({
@@ -61,6 +71,7 @@ export const UpdateOptionValueSchema = z.object({
   promptHint: z.string().max(2000).nullable().optional(),
   isActive: z.boolean().optional(),
   sortOrder: z.number().int().min(0).optional(),
+  translations: TranslationsSchema,
 });
 
 // ─── Inferred Types ──────────────────────────────────────

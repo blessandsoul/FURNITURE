@@ -264,6 +264,7 @@ class CatalogService {
       currency: category.currency,
       imageUrl: category.imageUrl,
       sortOrder: category.sortOrder,
+      translations: (category.translations as Record<string, Record<string, string>>) ?? null,
     };
   }
 
@@ -276,6 +277,7 @@ class CatalogService {
       description: group.description,
       isRequired: group.isRequired,
       sortOrder: group.sortOrder,
+      translations: (group.translations as Record<string, Record<string, string>>) ?? null,
     };
   }
 
@@ -298,6 +300,7 @@ class CatalogService {
       imageUrl: value.imageUrl,
       promptHint: value.promptHint,
       sortOrder: value.sortOrder,
+      translations: (value.translations as Record<string, Record<string, string>>) ?? null,
     };
   }
 }
