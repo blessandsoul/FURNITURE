@@ -1,6 +1,8 @@
 'use client';
 
+import { useLocale } from 'next-intl';
 import type { PublicOptionGroup } from '@/features/catalog/types/catalog.types';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 import { ColorSwatch } from './ColorSwatch';
 import { OptionChip } from './OptionChip';
 
@@ -15,16 +17,19 @@ export function OptionGroup({
     selectedValueId,
     onSelect,
 }: OptionGroupProps): React.JSX.Element | null {
+    const locale = useLocale();
+
     if (group.optionValues.length === 0) return null;
 
     const hasColorValues = group.optionValues.some((v) => v.colorHex !== null);
-    const selectedLabel = group.optionValues.find((v) => v.id === selectedValueId)?.label;
+    const selectedValue = group.optionValues.find((v) => v.id === selectedValueId);
+    const selectedLabel = selectedValue ? getTranslatedField(selectedValue, 'label', locale) : undefined;
 
     return (
         <div className="space-y-3">
             <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-foreground">
-                    {group.name}
+                    {getTranslatedField(group, 'name', locale)}
                 </span>
                 {group.isRequired && (
                     <span className="text-xs text-muted-foreground">(Required)</span>

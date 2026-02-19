@@ -1,7 +1,9 @@
 'use client';
 
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import type { PublicOptionValue } from '@/features/catalog/types/catalog.types';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 
 interface ColorSwatchProps {
     value: PublicOptionValue;
@@ -10,13 +12,15 @@ interface ColorSwatchProps {
 }
 
 export function ColorSwatch({ value, isSelected, onSelect }: ColorSwatchProps): React.JSX.Element {
+    const locale = useLocale();
+
     return (
         <button
             type="button"
             onClick={() => onSelect(value.id)}
             aria-pressed={isSelected}
-            aria-label={value.label}
-            title={value.label}
+            aria-label={getTranslatedField(value, 'label', locale)}
+            title={getTranslatedField(value, 'label', locale)}
             className={cn(
                 'relative h-9 w-9 rounded-full border-2 transition-all duration-150',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',

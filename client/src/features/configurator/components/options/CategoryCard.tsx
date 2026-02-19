@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import {
     Armchair,
     Bed,
@@ -13,6 +14,7 @@ import {
 } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import type { PublicCategory } from '@/features/catalog/types/catalog.types';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 
 /**
  * Maps category slugs to Phosphor icons. Falls back to Package for unknown categories.
@@ -35,6 +37,7 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category, isSelected, onSelect }: CategoryCardProps): React.JSX.Element {
+    const locale = useLocale();
     const Icon = ICON_MAP[category.slug] ?? Package;
 
     return (
@@ -68,7 +71,7 @@ export function CategoryCard({ category, isSelected, onSelect }: CategoryCardPro
                 )}>
                     <Image
                         src={category.imageUrl}
-                        alt={category.name}
+                        alt={getTranslatedField(category, 'name', locale)}
                         fill
                         className="object-cover"
                         sizes="48px"
@@ -97,11 +100,11 @@ export function CategoryCard({ category, isSelected, onSelect }: CategoryCardPro
                         isSelected ? 'text-primary' : 'text-foreground',
                     )}
                 >
-                    {category.name}
+                    {getTranslatedField(category, 'name', locale)}
                 </p>
                 {category.description && (
                     <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
-                        {category.description}
+                        {getTranslatedField(category, 'description', locale)}
                     </p>
                 )}
             </div>

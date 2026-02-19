@@ -1,13 +1,17 @@
 'use client';
 
 import { useCallback } from 'react';
+import { useLocale, useTranslations } from 'next-intl';
 import { useCategoryBySlug } from '@/features/catalog/hooks/useCatalog';
 import type { PublicOptionGroup } from '@/features/catalog/types/catalog.types';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 import { useConfigurator } from '../../hooks/useConfigurator';
 import { OptionGroup } from '../options/OptionGroup';
 import { PricePanel } from '../pricing/PricePanel';
 
 export function Step2Customize(): React.JSX.Element {
+    const t = useTranslations('Configurator');
+    const locale = useLocale();
     const { state, toggleOptionValue } = useConfigurator();
     const { selectedCategorySlug, selectedOptionValueIds } = state;
 
@@ -24,7 +28,7 @@ export function Step2Customize(): React.JSX.Element {
     if (!selectedCategorySlug) {
         return (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                Please select a furniture category first.
+                {t('customize.selectCategoryFirst')}
             </div>
         );
     }
@@ -58,7 +62,7 @@ export function Step2Customize(): React.JSX.Element {
     if (!category) {
         return (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                Category not found. Please go back and select another.
+                {t('customize.categoryNotFound')}
             </div>
         );
     }
@@ -69,10 +73,10 @@ export function Step2Customize(): React.JSX.Element {
         <div className="space-y-6">
             <div>
                 <h2 className="text-xl font-bold text-foreground">
-                    Customize your {category.name}
+                    {t('customize.heading', { name: getTranslatedField(category, 'name', locale) })}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Each selection shapes your final design and price
+                    {t('customize.subheading')}
                 </p>
             </div>
 

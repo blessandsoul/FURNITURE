@@ -7,6 +7,7 @@ export interface PublicCategory {
     currency: string;
     imageUrl: string | null;
     sortOrder: number;
+    translations: Record<string, Record<string, string>> | null;
 }
 
 export interface CategoryWithOptions extends PublicCategory {
@@ -21,6 +22,7 @@ export interface PublicOptionGroup {
     description: string | null;
     isRequired: boolean;
     sortOrder: number;
+    translations: Record<string, Record<string, string>> | null;
     optionValues: PublicOptionValue[];
 }
 
@@ -35,4 +37,5 @@ export interface PublicOptionValue {
     imageUrl: string | null;
     promptHint: string | null;
     sortOrder: number;
+    translations: Record<string, Record<string, string>> | null;
 }

@@ -1,7 +1,9 @@
 'use client';
 
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import type { PublicOptionValue } from '@/features/catalog/types/catalog.types';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 
 interface OptionChipProps {
     value: PublicOptionValue;
@@ -10,6 +12,7 @@ interface OptionChipProps {
 }
 
 export function OptionChip({ value, isSelected, onSelect }: OptionChipProps): React.JSX.Element {
+    const locale = useLocale();
     const hasModifier = value.priceModifier !== 0;
     const modifierLabel =
         hasModifier
@@ -33,7 +36,7 @@ export function OptionChip({ value, isSelected, onSelect }: OptionChipProps): Re
                     : 'border-border bg-secondary text-secondary-foreground hover:border-primary/40 hover:bg-accent',
             )}
         >
-            <span>{value.label}</span>
+            <span>{getTranslatedField(value, 'label', locale)}</span>
             {modifierLabel && (
                 <span
                     className={cn(
