@@ -97,6 +97,7 @@ model FurnitureCategory {
   imageUrl     String?       @map("image_url") @db.VarChar(500)
   isActive     Boolean       @default(true) @map("is_active")
   sortOrder    Int           @default(0) @map("sort_order")
+  translations Json?         @db.Json
   createdAt    DateTime      @default(now()) @map("created_at")
   updatedAt    DateTime      @updatedAt @map("updated_at")
   optionGroups OptionGroup[]
@@ -114,6 +115,7 @@ model OptionGroup {
   isRequired   Boolean           @default(false) @map("is_required")
   isActive     Boolean           @default(true) @map("is_active")
   sortOrder    Int               @default(0) @map("sort_order")
+  translations Json?             @db.Json
   createdAt    DateTime          @default(now()) @map("created_at")
   updatedAt    DateTime          @updatedAt @map("updated_at")
   category     FurnitureCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -136,6 +138,7 @@ model OptionValue {
   promptHint        String?            @map("prompt_hint") @db.Text
   isActive          Boolean            @default(true) @map("is_active")
   sortOrder         Int                @default(0) @map("sort_order")
+  translations      Json?              @db.Json
   createdAt         DateTime           @default(now()) @map("created_at")
   updatedAt         DateTime           @updatedAt @map("updated_at")
   group             OptionGroup        @relation(fields: [groupId], references: [id], onDelete: Cascade)
