@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
     ArrowUp,
     ArrowDown,
@@ -13,30 +14,30 @@ import type { Icon } from '@phosphor-icons/react';
 
 const TRANSACTION_CONFIG: Record<
     CreditTransactionType,
-    { label: string; badgeClass: string; icon: Icon }
+    { translationKey: string; badgeClass: string; icon: Icon }
 > = {
     PURCHASE: {
-        label: 'Purchase',
+        translationKey: 'transactions.typePurchase',
         badgeClass: 'bg-primary/10 text-primary',
         icon: ArrowUp,
     },
     GENERATION: {
-        label: 'Generation',
+        translationKey: 'transactions.typeGeneration',
         badgeClass: 'bg-warning/10 text-warning',
         icon: ArrowDown,
     },
     REFUND: {
-        label: 'Refund',
+        translationKey: 'transactions.typeRefund',
         badgeClass: 'bg-success/10 text-success',
         icon: ArrowsClockwise,
     },
     BONUS: {
-        label: 'Bonus',
+        translationKey: 'transactions.typeBonus',
         badgeClass: 'bg-info/10 text-info',
         icon: Gift,
     },
     ADJUSTMENT: {
-        label: 'Adjustment',
+        translationKey: 'transactions.typeAdjustment',
         badgeClass: 'bg-muted text-muted-foreground',
         icon: Faders,
     },
@@ -55,8 +56,10 @@ interface TransactionItemProps {
 export function TransactionItem({
     transaction,
 }: TransactionItemProps): React.ReactElement {
+    const t = useTranslations('Credits');
     const config = TRANSACTION_CONFIG[transaction.type];
     const IconComponent = config.icon;
+    const label = t(config.translationKey as Parameters<typeof t>[0]);
     const isPositive = transaction.amount > 0;
 
     return (
@@ -75,7 +78,7 @@ export function TransactionItem({
                 {/* Description + date */}
                 <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground">
-                        {transaction.description ?? config.label}
+                        {transaction.description ?? label}
                     </p>
                     <p className="text-xs text-muted-foreground">
                         {dateFormatter.format(new Date(transaction.createdAt))}
@@ -91,7 +94,7 @@ export function TransactionItem({
                         config.badgeClass
                     )}
                 >
-                    {config.label}
+                    {label}
                 </span>
                 <span
                     className={cn(

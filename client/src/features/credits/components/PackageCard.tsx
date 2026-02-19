@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { CreditPackage } from '../types/credits.types';
@@ -17,6 +18,7 @@ export function PackageCard({
     onPurchase,
     isPurchasing,
 }: PackageCardProps): React.ReactElement {
+    const t = useTranslations('Credits');
     const perCredit = (creditPackage.price / creditPackage.credits).toFixed(2);
     const currencySymbol = creditPackage.currency === 'GEL' ? '₾' : '$';
 
@@ -32,7 +34,7 @@ export function PackageCard({
             {/* Best value ribbon */}
             {isBestValue && (
                 <div className="absolute -right-8 top-3 rotate-45 bg-primary px-8 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
-                    Best Value
+                    {t('packages.bestValue')}
                 </div>
             )}
 
@@ -41,7 +43,7 @@ export function PackageCard({
                 <p className="text-3xl font-bold tabular-nums tracking-tight text-foreground">
                     {creditPackage.credits.toLocaleString()}
                 </p>
-                <p className="text-sm text-muted-foreground">credits</p>
+                <p className="text-sm text-muted-foreground">{t('packages.credits')}</p>
             </div>
 
             {/* Price */}
@@ -52,7 +54,7 @@ export function PackageCard({
                 </p>
                 <p className="text-xs text-muted-foreground">
                     {currencySymbol}
-                    {perCredit} per credit
+                    {perCredit} {t('packages.perCredit')}
                 </p>
             </div>
 
@@ -73,7 +75,7 @@ export function PackageCard({
                 onClick={() => onPurchase(creditPackage.id)}
                 disabled={isPurchasing}
             >
-                {isPurchasing ? 'Processing...' : 'Purchase'}
+                {isPurchasing ? t('packages.processing') : t('packages.purchase')}
             </Button>
         </div>
     );

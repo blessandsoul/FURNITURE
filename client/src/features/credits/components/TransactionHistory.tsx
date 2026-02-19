@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { CaretLeft, CaretRight, ClockCounterClockwise } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { useCreditTransactions } from '../hooks/useCredits';
@@ -21,6 +22,8 @@ function TransactionSkeleton(): React.ReactElement {
 }
 
 export function TransactionHistory(): React.ReactElement {
+    const t = useTranslations('Credits');
+    const tCommon = useTranslations('Common');
     const [page, setPage] = useState(1);
     const { data, isLoading } = useCreditTransactions({
         page,
@@ -41,10 +44,10 @@ export function TransactionHistory(): React.ReactElement {
     return (
         <div>
             <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                Transaction History
+                {t('transactions.title')}
             </h2>
             <p className="mb-6 mt-1 text-sm text-muted-foreground">
-                Your credit purchases and usage.
+                {t('transactions.subtitle')}
             </p>
 
             {isLoading && <TransactionSkeleton />}
@@ -56,10 +59,10 @@ export function TransactionHistory(): React.ReactElement {
                         weight="duotone"
                     />
                     <p className="text-sm font-medium text-muted-foreground">
-                        No transactions yet
+                        {t('transactions.emptyTitle')}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground/70">
-                        Your credit purchases and usage will appear here.
+                        {t('transactions.emptyBody')}
                     </p>
                 </div>
             )}
@@ -76,7 +79,7 @@ export function TransactionHistory(): React.ReactElement {
                     {pagination && pagination.totalPages > 1 && (
                         <div className="mt-4 flex items-center justify-between">
                             <p className="text-sm tabular-nums text-muted-foreground">
-                                Page {pagination.page} of {pagination.totalPages}
+                                {tCommon('pageOf', { page: pagination.page, totalPages: pagination.totalPages })}
                             </p>
                             <div className="flex gap-2">
                                 <Button
@@ -86,7 +89,7 @@ export function TransactionHistory(): React.ReactElement {
                                     disabled={!pagination.hasPreviousPage}
                                 >
                                     <CaretLeft className="mr-1 h-3.5 w-3.5" />
-                                    Previous
+                                    {tCommon('previous')}
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -94,7 +97,7 @@ export function TransactionHistory(): React.ReactElement {
                                     onClick={handleNext}
                                     disabled={!pagination.hasNextPage}
                                 >
-                                    Next
+                                    {tCommon('next')}
                                     <CaretRight className="ml-1 h-3.5 w-3.5" />
                                 </Button>
                             </div>

@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -27,9 +28,11 @@ export function ConfirmDialog({
     onConfirm,
     title,
     description,
-    confirmLabel = 'Confirm',
+    confirmLabel,
     isDestructive = false,
 }: ConfirmDialogProps): React.ReactElement {
+    const tCommon = useTranslations('Common');
+
     return (
         <AlertDialog open={open} onOpenChange={onOpenChange}>
             <AlertDialogContent>
@@ -38,7 +41,7 @@ export function ConfirmDialog({
                     <AlertDialogDescription>{description}</AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogCancel>{tCommon('cancel')}</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={onConfirm}
                         className={
@@ -47,7 +50,7 @@ export function ConfirmDialog({
                                 : ''
                         }
                     >
-                        {confirmLabel}
+                        {confirmLabel ?? tCommon('confirm')}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>

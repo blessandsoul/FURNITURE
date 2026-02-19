@@ -1,14 +1,19 @@
+'use client';
+
 import Link from 'next/link';
-import { Camera, ArrowRight, Sparkle, Sliders } from '@phosphor-icons/react/dist/ssr';
+import { useTranslations } from 'next-intl';
+import { Camera, ArrowRight, Sparkle, Sliders } from '@phosphor-icons/react';
 import { ROUTES } from '@/lib/constants/routes';
 
-const HIGHLIGHTS = [
-    { icon: Camera, text: 'Upload any room photo' },
-    { icon: Sliders, text: '3 transformation modes' },
-    { icon: Sparkle, text: '8 design styles' },
-];
-
 export function ReimagineCTASection(): React.JSX.Element {
+    const t = useTranslations('Home');
+
+    const HIGHLIGHTS = [
+        { icon: Camera, textKey: 'reimagineCTA.highlight1' as const },
+        { icon: Sliders, textKey: 'reimagineCTA.highlight2' as const },
+        { icon: Sparkle, textKey: 'reimagineCTA.highlight3' as const },
+    ];
+
     return (
         <section className="container mx-auto px-4 py-20 md:px-6 lg:px-8">
             <div className="relative overflow-hidden rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] shadow-[--shadow-enamel]">
@@ -20,28 +25,27 @@ export function ReimagineCTASection(): React.JSX.Element {
                     {/* Left: Icon + content */}
                     <div className="flex-1 text-center md:text-left">
                         <span className="mb-4 inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                            New Feature
+                            {t('reimagineCTA.badge')}
                         </span>
 
                         <h2 className="mt-3 text-balance text-2xl font-bold leading-tight text-foreground md:text-3xl">
-                            Reimagine Your Room with AI
+                            {t('reimagineCTA.heading')}
                         </h2>
                         <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground md:mx-0 md:text-base">
-                            Upload a photo of your kitchen, living room, or bedroom — and watch AI
-                            transform it into a completely new design. New furniture, new style, new vibe.
+                            {t('reimagineCTA.body')}
                         </p>
 
                         {/* Highlights */}
                         <ul className="mt-6 flex flex-wrap justify-center gap-4 md:justify-start">
-                            {HIGHLIGHTS.map(({ icon: Icon, text }) => (
+                            {HIGHLIGHTS.map(({ icon: Icon, textKey }) => (
                                 <li
-                                    key={text}
+                                    key={textKey}
                                     className="flex items-center gap-2 text-sm text-muted-foreground"
                                 >
                                     <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10">
                                         <Icon className="h-3.5 w-3.5 text-primary" />
                                     </span>
-                                    {text}
+                                    {t(textKey)}
                                 </li>
                             ))}
                         </ul>
@@ -52,7 +56,7 @@ export function ReimagineCTASection(): React.JSX.Element {
                                 className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-sm motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:brightness-110 motion-safe:active:scale-[0.98]"
                             >
                                 <Camera className="h-4 w-4" weight="bold" />
-                                Try Room Reimagine
+                                {t('reimagineCTA.cta')}
                                 <ArrowRight className="h-4 w-4" />
                             </Link>
                         </div>
@@ -66,13 +70,13 @@ export function ReimagineCTASection(): React.JSX.Element {
                                 <div className="flex w-1/2 items-center justify-center border-r border-dashed border-[--border-crisp] bg-muted/50">
                                     <div className="text-center">
                                         <Camera className="mx-auto h-8 w-8 text-muted-foreground/40" />
-                                        <p className="mt-2 text-xs text-muted-foreground/60">Before</p>
+                                        <p className="mt-2 text-xs text-muted-foreground/60">{t('reimagineCTA.mockBefore')}</p>
                                     </div>
                                 </div>
                                 <div className="flex w-1/2 items-center justify-center bg-primary/5">
                                     <div className="text-center">
                                         <Sparkle className="mx-auto h-8 w-8 text-primary/40" />
-                                        <p className="mt-2 text-xs text-primary/60">After</p>
+                                        <p className="mt-2 text-xs text-primary/60">{t('reimagineCTA.mockAfter')}</p>
                                     </div>
                                 </div>
                             </div>

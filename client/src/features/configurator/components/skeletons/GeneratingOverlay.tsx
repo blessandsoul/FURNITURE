@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { Sparkle } from '@phosphor-icons/react';
 
 interface Step {
@@ -8,18 +9,20 @@ interface Step {
     progress: number; // target % when this step is "active"
 }
 
-const STEPS: Step[] = [
-    { label: 'Analysing your style…',    progress: 15 },
-    { label: 'Composing the scene…',     progress: 35 },
-    { label: 'Rendering materials…',     progress: 58 },
-    { label: 'Applying lighting…',       progress: 76 },
-    { label: 'Finishing details…',       progress: 90 },
-];
-
 // Each step is visible for this many ms before moving to the next
 const STEP_DURATION = 480;
 
 export function GeneratingOverlay(): React.JSX.Element {
+    const t = useTranslations('Configurator');
+
+    const STEPS: Step[] = useMemo(() => [
+        { label: t('generatingOverlay.step1'), progress: 15 },
+        { label: t('generatingOverlay.step2'), progress: 35 },
+        { label: t('generatingOverlay.step3'), progress: 58 },
+        { label: t('generatingOverlay.step4'), progress: 76 },
+        { label: t('generatingOverlay.step5'), progress: 90 },
+    ], [t]);
+
     const [stepIndex, setStepIndex] = useState(0);
     const [visible, setVisible] = useState(true); // drives fade-out before swap
     const [displayedLabel, setDisplayedLabel] = useState(STEPS[0]!.label);
@@ -83,7 +86,7 @@ export function GeneratingOverlay(): React.JSX.Element {
             {/* Step label */}
             <div className="flex flex-col items-center gap-2 text-center">
                 <h3 className="text-base font-semibold text-foreground tracking-tight">
-                    Generating your design
+                    {t('generatingOverlay.heading')}
                 </h3>
                 <p
                     className="text-sm text-muted-foreground transition-opacity duration-180"

@@ -1,42 +1,26 @@
-import { Star } from '@phosphor-icons/react/dist/ssr';
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { Star } from '@phosphor-icons/react';
 
 const TESTIMONIALS = [
-    {
-        id: 1,
-        quote: 'We ordered a custom walnut dining table for our Tbilisi apartment. It arrived in exactly 3 weeks, assembled and ready. The quality is outstanding — far better than anything we found in stores.',
-        name: 'Nino Beridze',
-        city: 'Tbilisi',
-        item: 'Walnut dining table',
-        rating: 5,
-    },
-    {
-        id: 2,
-        quote: 'The AI preview matched the final product almost exactly. I was skeptical at first, but the linen sofa we received was perfect for our Batumi holiday home. Delivery and setup were seamless.',
-        name: 'Giorgi Kvaratskhelia',
-        city: 'Batumi',
-        item: 'Linen sofa',
-        rating: 5,
-    },
-    {
-        id: 3,
-        quote: 'I customized a wardrobe with specific dimensions and materials. The team confirmed everything within 2 hours and delivered on schedule. Exceptional white-glove service from start to finish.',
-        name: 'Mariam Tsereteli',
-        city: 'Kutaisi',
-        item: 'Built-in wardrobe',
-        rating: 5,
-    },
+    { id: 1, quoteKey: 'testimonials.quote1', nameKey: 'testimonials.name1', city: 'Tbilisi', itemKey: 'testimonials.item1', rating: 5 },
+    { id: 2, quoteKey: 'testimonials.quote2', nameKey: 'testimonials.name2', city: 'Batumi', itemKey: 'testimonials.item2', rating: 5 },
+    { id: 3, quoteKey: 'testimonials.quote3', nameKey: 'testimonials.name3', city: 'Kutaisi', itemKey: 'testimonials.item3', rating: 5 },
 ] as const;
 
 export function TestimonialsSection(): React.JSX.Element {
+    const t = useTranslations('Home');
+
     return (
         <section className="bg-muted/30 py-20">
             <div className="container mx-auto px-4 md:px-6 lg:px-8">
                 <div className="mb-10 text-center">
                     <h2 className="text-balance text-2xl font-bold text-foreground md:text-3xl">
-                        What our customers say
+                        {t('testimonials.heading')}
                     </h2>
                     <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-                        Real stories from real homes across Georgia.
+                        {t('testimonials.subheading')}
                     </p>
                 </div>
 
@@ -59,14 +43,14 @@ export function TestimonialsSection(): React.JSX.Element {
 
                             {/* Quote */}
                             <blockquote className="flex-1 text-sm leading-relaxed text-muted-foreground">
-                                &ldquo;{testimonial.quote}&rdquo;
+                                &ldquo;{t(testimonial.quoteKey)}&rdquo;
                             </blockquote>
 
                             {/* Attribution */}
                             <footer className="border-t border-border/50 pt-4">
-                                <p className="text-sm font-semibold text-foreground">{testimonial.name}</p>
+                                <p className="text-sm font-semibold text-foreground">{t(testimonial.nameKey)}</p>
                                 <p className="text-xs text-muted-foreground">
-                                    {testimonial.city} &mdash; {testimonial.item}
+                                    {testimonial.city} &mdash; {t(testimonial.itemKey)}
                                 </p>
                             </footer>
                         </article>

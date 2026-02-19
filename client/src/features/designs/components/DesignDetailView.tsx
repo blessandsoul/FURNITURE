@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import {
     ArrowLeft,
     ChatText,
@@ -32,6 +33,9 @@ interface DesignDetailViewProps {
 }
 
 export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX.Element {
+    const t = useTranslations('Designs');
+    const tCommon = useTranslations('Common');
+    const tNav = useTranslations('Navigation');
     const router = useRouter();
     const { data: design, isLoading, error } = useDesign(designId);
     const deleteDesign = useDeleteDesign();
@@ -49,7 +53,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                 router.push(ROUTES.MY_DESIGNS);
             })
             .catch(() => {
-                toast.error('Failed to delete design');
+                toast.error(t('detail.failedToDelete'));
                 setIsConfirmingDelete(false);
             });
     }, [designId, deleteDesign, isConfirmingDelete, router]);
@@ -77,14 +81,14 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
     if (error || !design) {
         return (
             <div className="flex flex-col items-center justify-center py-24 text-center">
-                <h2 className="text-lg font-semibold text-foreground">Design not found</h2>
+                <h2 className="text-lg font-semibold text-foreground">{t('detail.notFoundTitle')}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    This design may have been deleted or you don&apos;t have access to it.
+                    {t('detail.notFoundBody')}
                 </p>
                 <Button asChild variant="outline" className="mt-4">
                     <Link href={ROUTES.MY_DESIGNS}>
                         <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to My Designs
+                        {t('detail.backToDesigns')}
                     </Link>
                 </Button>
             </div>
@@ -107,7 +111,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                 className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-150 hover:text-foreground"
             >
                 <ArrowLeft className="h-4 w-4" />
-                My Designs
+                {tNav('myDesigns')}
             </Link>
 
             {/* Design Header */}
@@ -124,7 +128,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                                 className="group relative aspect-[4/3] w-full overflow-hidden rounded-xl border border-border/50 bg-muted/30 transition-all duration-300 hover:shadow-md hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:outline-none cursor-pointer"
                             >
                                 <div className="absolute left-2 top-2 z-10 rounded-full bg-black/60 px-2 py-0.5 text-[11px] font-semibold text-white">
-                                    Before
+                                    {tCommon('before')}
                                 </div>
                                 <Image
                                     src={design.roomImageUrl}
@@ -151,7 +155,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                                 )}
                             >
                                 <div className="absolute left-2 top-2 z-10 rounded-full bg-primary px-2 py-0.5 text-[11px] font-semibold text-primary-foreground">
-                                    After
+                                    {tCommon('after')}
                                 </div>
                                 {design.imageUrl ? (
                                     <>
@@ -170,7 +174,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                                     </>
                                 ) : (
                                     <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                                        Not generated yet
+                                        {t('detail.notGenerated')}
                                     </div>
                                 )}
                             </button>
@@ -190,7 +194,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                                 />
                             ) : (
                                 <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
-                                    No preview available
+                                    {t('detail.noPreview')}
                                 </div>
                             )}
                         </div>
@@ -223,7 +227,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                     {/* Price */}
                     <div className="mt-4 rounded-lg border border-border/50 bg-muted/30 p-4">
                         <div className="flex items-baseline justify-between">
-                            <span className="text-sm text-muted-foreground">Total Price</span>
+                            <span className="text-sm text-muted-foreground">{t('detail.totalPrice')}</span>
                             <span className="text-2xl font-bold tabular-nums text-foreground">
                                 ${design.totalPrice.toLocaleString()}
                             </span>
@@ -233,7 +237,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                     {/* Config options */}
                     {options.length > 0 && (
                         <div className="mt-4 space-y-2">
-                            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Configuration</span>
+                            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">{t('detail.configuration')}</span>
                             <div className="flex flex-wrap gap-1.5">
                                 {options.map((opt) => (
                                     <span
@@ -253,14 +257,14 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                         {design.status === 'GENERATED' && (
                             <Button onClick={() => setIsQuoteOpen(true)} className="gap-2">
                                 <ChatText className="h-4 w-4" />
-                                Request Quote
+                                {t('detail.requestQuote')}
                             </Button>
                         )}
 
                         <Button variant="outline" asChild className="gap-2">
                             <Link href={ROUTES.CONFIGURATOR.ROOT}>
                                 <PencilSimple className="h-4 w-4" />
-                                Open in Configurator
+                                {t('detail.openInConfigurator')}
                             </Link>
                         </Button>
 
@@ -280,7 +284,7 @@ export function DesignDetailView({ designId }: DesignDetailViewProps): React.JSX
                             ) : (
                                 <Trash className="h-4 w-4" />
                             )}
-                            {isConfirmingDelete ? 'Confirm Delete' : 'Delete'}
+                            {isConfirmingDelete ? t('detail.confirmDelete') : tCommon('delete')}
                         </Button>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { CurrencyCircleDollar } from '@phosphor-icons/react';
 import { useCreditPackages, usePurchasePackage } from '../hooks/useCredits';
 import { PackageCard } from './PackageCard';
@@ -21,6 +22,7 @@ function PackageGridSkeleton(): React.ReactElement {
 }
 
 export function PackageGrid(): React.ReactElement {
+    const t = useTranslations('Credits');
     const { data: packages, isLoading } = useCreditPackages();
     const { mutateAsync: purchase, isPending } = usePurchasePackage();
     const [selectedPackage, setSelectedPackage] = useState<CreditPackage | null>(null);
@@ -60,10 +62,10 @@ export function PackageGrid(): React.ReactElement {
     return (
         <div>
             <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                Credit Packages
+                {t('packages.title')}
             </h2>
             <p className="mb-6 mt-1 text-sm text-muted-foreground">
-                Choose a package to add credits to your account.
+                {t('packages.subtitle')}
             </p>
 
             {isLoading && <PackageGridSkeleton />}
@@ -75,10 +77,10 @@ export function PackageGrid(): React.ReactElement {
                         weight="duotone"
                     />
                     <p className="text-sm font-medium text-muted-foreground">
-                        No packages available
+                        {t('packages.emptyTitle')}
                     </p>
                     <p className="mt-1 text-xs text-muted-foreground/70">
-                        Check back later for credit packages.
+                        {t('packages.emptyBody')}
                     </p>
                 </div>
             )}

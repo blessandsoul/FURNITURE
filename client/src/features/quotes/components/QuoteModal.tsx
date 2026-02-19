@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -28,6 +29,7 @@ interface QuoteModalProps {
 }
 
 export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): React.JSX.Element {
+    const t = useTranslations('Quotes');
     const { data: design } = useDesign(designId);
     const submitQuote = useSubmitQuote();
 
@@ -51,7 +53,7 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                 message: formData.message || undefined,
             })
                 .then(() => {
-                    toast.success('Quote request sent! We\'ll get back to you soon.');
+                    toast.success(t('successToast'));
                     reset();
                     onOpenChange(false);
                 })
@@ -66,9 +68,9 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Request a Quote</DialogTitle>
+                    <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>
-                        Tell us how to reach you and we&apos;ll send a detailed quote for your design.
+                        {t('description')}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -101,10 +103,10 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                 {/* Form */}
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="quote-name">Name *</Label>
+                        <Label htmlFor="quote-name">{t('nameLabel')}</Label>
                         <Input
                             id="quote-name"
-                            placeholder="Your full name"
+                            placeholder={t('namePlaceholder')}
                             aria-invalid={!!errors.contactName}
                             {...register('contactName')}
                         />
@@ -114,11 +116,11 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="quote-email">Email *</Label>
+                        <Label htmlFor="quote-email">{t('emailLabel')}</Label>
                         <Input
                             id="quote-email"
                             type="email"
-                            placeholder="you@example.com"
+                            placeholder={t('emailPlaceholder')}
                             aria-invalid={!!errors.contactEmail}
                             {...register('contactEmail')}
                         />
@@ -128,11 +130,11 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="quote-phone">Phone *</Label>
+                        <Label htmlFor="quote-phone">{t('phoneLabel')}</Label>
                         <Input
                             id="quote-phone"
                             type="tel"
-                            placeholder="+995 555 000 000"
+                            placeholder={t('phonePlaceholder')}
                             aria-invalid={!!errors.contactPhone}
                             {...register('contactPhone')}
                         />
@@ -142,10 +144,10 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="quote-message">Message</Label>
+                        <Label htmlFor="quote-message">{t('messageLabel')}</Label>
                         <Textarea
                             id="quote-message"
-                            placeholder="Any special requirements or questions..."
+                            placeholder={t('messagePlaceholder')}
                             rows={3}
                             {...register('message')}
                         />
@@ -159,7 +161,7 @@ export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): R
                         disabled={submitQuote.isPending}
                         className="w-full"
                     >
-                        {submitQuote.isPending ? 'Sending...' : 'Send Quote Request'}
+                        {submitQuote.isPending ? t('sending') : t('sendQuoteRequest')}
                     </Button>
                 </form>
             </DialogContent>

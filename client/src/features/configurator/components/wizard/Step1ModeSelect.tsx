@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Couch, Camera, ArrowRight } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import type { ConfiguratorMode } from '../../types/configurator.types';
@@ -9,35 +10,37 @@ interface Step1ModeSelectProps {
     onSelectMode: (mode: ConfiguratorMode) => void;
 }
 
-const MODES: {
-    id: ConfiguratorMode;
-    icon: typeof Couch;
-    title: string;
-    description: string;
-    badge?: string;
-}[] = [
-    {
-        id: 'scratch',
-        icon: Couch,
-        title: 'Design from Scratch',
-        description: 'Pick a furniture type, customize colors and materials, and generate photorealistic AI renders.',
-    },
-    {
-        id: 'reimagine',
-        icon: Camera,
-        title: 'Reimagine Your Room',
-        description: 'Upload a photo of your room and transform it with AI — new furniture, new style, new vibe.',
-        badge: 'New',
-    },
-];
-
 export function Step1ModeSelect({ selectedMode, onSelectMode }: Step1ModeSelectProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
+    const tCommon = useTranslations('Common');
+
+    const MODES: {
+        id: ConfiguratorMode;
+        icon: typeof Couch;
+        title: string;
+        description: string;
+        badge?: string;
+    }[] = [
+        {
+            id: 'scratch',
+            icon: Couch,
+            title: t('modeSelect.scratchTitle'),
+            description: t('modeSelect.scratchDescription'),
+        },
+        {
+            id: 'reimagine',
+            icon: Camera,
+            title: t('modeSelect.reimagineTitle'),
+            description: t('modeSelect.reimagineDescription'),
+            badge: t('modeSelect.newBadge'),
+        },
+    ];
     return (
         <div className="flex flex-col items-center gap-6">
             <div className="animate-fade-up text-center">
-                <h2 className="text-xl font-bold text-foreground">What would you like to do?</h2>
+                <h2 className="text-xl font-bold text-foreground">{t('modeSelect.heading')}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Choose your creative path
+                    {t('modeSelect.subheading')}
                 </p>
             </div>
 
@@ -122,7 +125,7 @@ export function Step1ModeSelect({ selectedMode, onSelectMode }: Step1ModeSelectP
                                         : 'text-muted-foreground/0 group-hover:text-muted-foreground',
                                 )}
                             >
-                                {isSelected ? 'Selected' : 'Select'}
+                                {isSelected ? tCommon('selected') : tCommon('select')}
                                 <ArrowRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-0.5" weight="bold" />
                             </div>
 

@@ -42,15 +42,16 @@ interface PasswordRequirement {
 }
 
 function PasswordRequirements({ password }: { password: string }): React.ReactElement | null {
+    const t = useTranslations('Auth');
     const requirements: PasswordRequirement[] = useMemo(() => [
-        { met: password.length >= 8, label: '8+ characters' },
-        { met: /[A-Z]/.test(password), label: 'Uppercase letter' },
-        { met: /[a-z]/.test(password), label: 'Lowercase letter' },
-        { met: /[0-9]/.test(password), label: 'Number' },
-    ], [password]);
+        { met: password.length >= 8, label: t('passwordRequirements.minChars') },
+        { met: /[A-Z]/.test(password), label: t('passwordRequirements.uppercase') },
+        { met: /[a-z]/.test(password), label: t('passwordRequirements.lowercase') },
+        { met: /[0-9]/.test(password), label: t('passwordRequirements.number') },
+    ], [password, t]);
 
     const score = requirements.filter((r) => r.met).length;
-    const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'] as const;
+    const labels = ['', t('passwordStrength.weak'), t('passwordStrength.fair'), t('passwordStrength.good'), t('passwordStrength.strong')] as const;
 
     if (password.length === 0) return null;
 
@@ -79,7 +80,7 @@ function PasswordRequirements({ password }: { password: string }): React.ReactEl
                     ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                    Password strength:{' '}
+                    {t('passwordStrength.label')}{' '}
                     <span
                         className={`font-medium ${score <= 1
                                 ? 'text-destructive'
@@ -131,13 +132,13 @@ export function RegisterForm(): React.ReactElement {
             phone: z
                 .string()
                 .min(1, t('validation.required'))
-                .regex(/^\+?[0-9]{7,15}$/, 'Please enter a valid phone number'),
+                .regex(/^\+?[0-9]{7,15}$/, t('validation.phoneInvalid')),
             password: z
                 .string()
                 .min(8, t('validation.passwordMin'))
-                .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
-                .regex(/[a-z]/, 'Must contain at least one lowercase letter')
-                .regex(/[0-9]/, 'Must contain at least one number'),
+                .regex(/[A-Z]/, t('validation.uppercaseRequired'))
+                .regex(/[a-z]/, t('validation.lowercaseRequired'))
+                .regex(/[0-9]/, t('validation.numberRequired')),
             confirmPassword: z.string().min(1, t('validation.required')),
         })
         .refine((data) => data.password === data.confirmPassword, {
@@ -185,7 +186,7 @@ export function RegisterForm(): React.ReactElement {
                     {t('registerTitle')}
                 </h1>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                    Get started with AtlasFurniture for free
+                    {t('registerSubtitle')}
                 </p>
             </motion.div>
 
@@ -216,11 +217,11 @@ export function RegisterForm(): React.ReactElement {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium">
-                                        First name
+                                        {t('firstNameLabel')}
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="John"
+                                            placeholder={t('firstNamePlaceholder')}
                                             autoComplete="given-name"
                                             {...field}
                                         />
@@ -235,11 +236,11 @@ export function RegisterForm(): React.ReactElement {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium">
-                                        Last name
+                                        {t('lastNameLabel')}
                                     </FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Doe"
+                                            placeholder={t('lastNamePlaceholder')}
                                             autoComplete="family-name"
                                             {...field}
                                         />
@@ -263,7 +264,7 @@ export function RegisterForm(): React.ReactElement {
                                     <FormControl>
                                         <Input
                                             type="email"
-                                            placeholder="you@example.com"
+                                            placeholder={t('emailPlaceholder')}
                                             autoComplete="email"
                                             {...field}
                                         />
@@ -282,14 +283,14 @@ export function RegisterForm(): React.ReactElement {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-sm font-medium">
-                                        Phone number
+                                        {t('phoneLabel')}
                                     </FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Phone className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                                             <Input
                                                 type="tel"
-                                                placeholder="+995 555 123 456"
+                                                placeholder={t('phonePlaceholder')}
                                                 autoComplete="tel"
                                                 className="pl-9"
                                                 {...field}
@@ -316,7 +317,7 @@ export function RegisterForm(): React.ReactElement {
                                         <div className="relative">
                                             <Input
                                                 type={showPassword ? 'text' : 'password'}
-                                                placeholder="Create a strong password"
+                                                placeholder={t('createPasswordPlaceholder')}
                                                 autoComplete="new-password"
                                                 className="pr-10"
                                                 {...field}
@@ -325,7 +326,7 @@ export function RegisterForm(): React.ReactElement {
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors duration-150 hover:text-foreground"
-                                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                                aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                                                 tabIndex={-1}
                                             >
                                                 {showPassword ? (
@@ -358,7 +359,7 @@ export function RegisterForm(): React.ReactElement {
                                         <div className="relative">
                                             <Input
                                                 type={showConfirm ? 'text' : 'password'}
-                                                placeholder="Re-enter your password"
+                                                placeholder={t('confirmPasswordPlaceholder')}
                                                 autoComplete="new-password"
                                                 className="pr-10"
                                                 {...field}
@@ -367,7 +368,7 @@ export function RegisterForm(): React.ReactElement {
                                                 type="button"
                                                 onClick={() => setShowConfirm(!showConfirm)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors duration-150 hover:text-foreground"
-                                                aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                                                aria-label={showConfirm ? t('hidePassword') : t('showPassword')}
                                                 tabIndex={-1}
                                             >
                                                 {showConfirm ? (

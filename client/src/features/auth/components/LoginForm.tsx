@@ -75,7 +75,7 @@ export function LoginForm(): React.ReactElement {
                     {t('loginTitle')}
                 </h1>
                 <p className="mt-1.5 text-sm text-muted-foreground">
-                    Sign in to your account to continue
+                    {t('loginSubtitle')}
                 </p>
             </motion.div>
 
@@ -111,7 +111,7 @@ export function LoginForm(): React.ReactElement {
                                     <FormControl>
                                         <Input
                                             type="email"
-                                            placeholder="you@example.com"
+                                            placeholder={t('emailPlaceholder')}
                                             autoComplete="email"
                                             {...field}
                                         />
@@ -137,14 +137,14 @@ export function LoginForm(): React.ReactElement {
                                             href={ROUTES.RESET_PASSWORD}
                                             className="text-xs font-medium text-muted-foreground transition-colors duration-150 hover:text-primary"
                                         >
-                                            Forgot password?
+                                            {t('forgotPassword')}
                                         </Link>
                                     </div>
                                     <FormControl>
                                         <div className="relative">
                                             <Input
                                                 type={showPassword ? 'text' : 'password'}
-                                                placeholder="Enter your password"
+                                                placeholder={t('passwordPlaceholder')}
                                                 autoComplete="current-password"
                                                 className="pr-10"
                                                 {...field}
@@ -153,7 +153,7 @@ export function LoginForm(): React.ReactElement {
                                                 type="button"
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors duration-150 hover:text-foreground"
-                                                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                                aria-label={showPassword ? t('hidePassword') : t('showPassword')}
                                                 tabIndex={-1}
                                             >
                                                 {showPassword ? (

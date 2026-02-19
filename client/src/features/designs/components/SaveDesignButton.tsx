@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Heart } from '@phosphor-icons/react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -14,11 +15,13 @@ interface SaveDesignButtonProps {
  * this button now simply navigates to "My Designs" to view saved work.
  */
 export function SaveDesignButton({ designId }: SaveDesignButtonProps): React.JSX.Element {
+    const t = useTranslations('Designs');
+
     if (!designId) {
         return (
             <Button variant="outline" disabled className="w-full justify-start gap-2">
                 <Heart className="h-4 w-4" />
-                Saving design...
+                {t('saveButton.saving')}
             </Button>
         );
     }
@@ -27,7 +30,7 @@ export function SaveDesignButton({ designId }: SaveDesignButtonProps): React.JSX
         <Link href={ROUTES.MY_DESIGNS} className="w-full">
             <Button variant="outline" className="w-full justify-start gap-2">
                 <Heart className="h-4 w-4" weight="fill" />
-                View in My Designs
+                {t('saveButton.viewInMyDesigns')}
             </Button>
         </Link>
     );

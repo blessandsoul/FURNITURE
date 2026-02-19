@@ -151,19 +151,15 @@ export default function LanguageSwitcher() {
 
     return (
         <div ref={ref} className="relative">
-            {/* Trigger button */}
+            {/* Trigger button — compact flag-only */}
             <button
                 type="button"
                 disabled={isPending}
                 onClick={() => setOpen((v) => !v)}
-                className="flex items-center gap-2 rounded-lg border border-border/60 bg-background/60 px-2.5 py-1.5 text-sm backdrop-blur-sm transition-all duration-200 hover:bg-accent/50 hover:border-border active:scale-[0.97] disabled:opacity-50"
+                aria-label="Change language"
+                className="flex size-8 items-center justify-center rounded-md transition-colors duration-150 hover:bg-accent active:scale-[0.97] disabled:opacity-50"
             >
-                <GlobeIcon />
                 {current.flag}
-                <span className={`hidden text-[13px] font-medium tracking-tight sm:inline ${current.fontClass}`}>
-                    {current.shortLabel}
-                </span>
-                <ChevronDown open={open} />
             </button>
 
             {/* Dropdown */}

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useCallback, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Trash, SpinnerGap } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -11,19 +12,19 @@ import { ROUTES } from '@/lib/constants/routes';
 import { useDeleteDesign } from '../hooks/useDesigns';
 import type { DesignWithCategory, DesignStatus } from '../types/design.types';
 
-const STATUS_CONFIG: Record<DesignStatus, { label: string; dotClass: string; bgClass: string }> = {
+const STATUS_CONFIG: Record<DesignStatus, { translationKey: string; dotClass: string; bgClass: string }> = {
     DRAFT: {
-        label: 'Draft',
+        translationKey: 'statusFilter.draft',
         dotClass: 'bg-muted-foreground',
         bgClass: 'bg-muted text-muted-foreground',
     },
     GENERATED: {
-        label: 'Generated',
+        translationKey: 'statusFilter.generated',
         dotClass: 'bg-success',
         bgClass: 'bg-success/10 text-success',
     },
     QUOTED: {
-        label: 'Quoted',
+        translationKey: 'statusFilter.quoted',
         dotClass: 'bg-primary',
         bgClass: 'bg-primary/10 text-primary',
     },
@@ -34,10 +35,13 @@ interface SavedDesignCardProps {
 }
 
 export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Element {
+    const t = useTranslations('Designs');
+    const tCommon = useTranslations('Common');
     const deleteDesign = useDeleteDesign();
     const [isConfirming, setIsConfirming] = useState(false);
 
     const status = STATUS_CONFIG[design.status] ?? STATUS_CONFIG.DRAFT;
+    const statusLabel = t(status.translationKey as Parameters<typeof t>[0]);
 
     const handleDelete = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
@@ -49,7 +53,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
         }
         deleteDesign.mutateAsync(design.id)
             .catch(() => {
-                toast.error('Failed to delete design');
+                toast.error(t('detail.failedToDelete'));
                 setIsConfirming(false);
             });
     }, [design.id, deleteDesign, isConfirming]);
@@ -84,7 +88,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
                     />
                 ) : (
                     <div className="flex h-full w-full items-center justify-center text-[10px] text-muted-foreground">
-                        N/A
+                        {tCommon('na')}
                     </div>
                 )}
             </div>
@@ -105,7 +109,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
                 status.bgClass,
             )}>
                 <span className={cn('h-1.5 w-1.5 rounded-full', status.dotClass)} />
-                {status.label}
+                {statusLabel}
             </span>
 
             {/* Price */}
@@ -127,7 +131,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
                             {deleteDesign.isPending ? (
                                 <SpinnerGap className="h-3 w-3 animate-spin" />
                             ) : (
-                                'Delete'
+                                tCommon('delete')
                             )}
                         </Button>
                         <Button
@@ -136,7 +140,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
                             onClick={handleCancelDelete}
                             className="h-7 px-2 text-xs text-muted-foreground"
                         >
-                            Cancel
+                            {tCommon('cancel')}
                         </Button>
                     </div>
                 ) : (
@@ -145,7 +149,7 @@ export function SavedDesignCard({ design }: SavedDesignCardProps): React.JSX.Ele
                         variant="ghost"
                         onClick={handleDelete}
                         className="h-7 w-7 p-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive hover:bg-destructive/10 focus-visible:opacity-100"
-                        aria-label="Delete design"
+                        aria-label={tCommon('deleteDesign')}
                     >
                         <Trash className="h-3.5 w-3.5" />
                     </Button>

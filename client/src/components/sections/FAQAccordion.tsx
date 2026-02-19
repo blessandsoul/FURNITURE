@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
     Accordion,
     AccordionContent,
@@ -13,15 +14,17 @@ interface FAQAccordionProps {
 }
 
 export function FAQAccordion({ items }: FAQAccordionProps): React.JSX.Element {
+    const t = useTranslations('Home');
+
     return (
         <Accordion type="single" collapsible className="w-full">
             {items.map((item) => (
                 <AccordionItem key={item.id} value={item.id}>
                     <AccordionTrigger className="text-left text-sm font-semibold text-foreground hover:text-primary">
-                        {item.question}
+                        {t(item.questionKey)}
                     </AccordionTrigger>
                     <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                        {item.answer}
+                        {t(item.answerKey)}
                     </AccordionContent>
                 </AccordionItem>
             ))}

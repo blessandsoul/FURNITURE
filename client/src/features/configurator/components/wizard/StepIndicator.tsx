@@ -1,23 +1,29 @@
-import { CheckFat } from '@phosphor-icons/react/dist/ssr';
+'use client';
+
+import { useTranslations } from 'next-intl';
+import { CheckFat } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import type { ConfiguratorStep } from '../../types/configurator.types';
-
-const DEFAULT_STEPS = [
-    { number: 1 as ConfiguratorStep, label: 'Choose Style' },
-    { number: 2 as ConfiguratorStep, label: 'Customize' },
-    { number: 3 as ConfiguratorStep, label: 'Your Design' },
-    { number: 4 as ConfiguratorStep, label: 'Video' },
-];
 
 interface StepIndicatorProps {
     currentStep: ConfiguratorStep;
     steps?: { number: ConfiguratorStep; label: string }[];
 }
 
-export function StepIndicator({ currentStep, steps = DEFAULT_STEPS }: StepIndicatorProps): React.JSX.Element {
+export function StepIndicator({ currentStep, steps }: StepIndicatorProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
+
+    const DEFAULT_STEPS = [
+        { number: 1 as ConfiguratorStep, label: t('stepIndicator.chooseStyle') },
+        { number: 2 as ConfiguratorStep, label: t('stepIndicator.customize') },
+        { number: 3 as ConfiguratorStep, label: t('stepIndicator.yourDesign') },
+        { number: 4 as ConfiguratorStep, label: t('stepIndicator.video') },
+    ];
+
+    const resolvedSteps = steps ?? DEFAULT_STEPS;
     return (
         <nav aria-label="Configuration steps" className="flex items-center justify-center gap-0">
-            {steps.map((step, index) => {
+            {resolvedSteps.map((step, index) => {
                 const isCompleted = currentStep > step.number;
                 const isCurrent = currentStep === step.number;
                 const isUpcoming = currentStep < step.number;
@@ -51,7 +57,7 @@ export function StepIndicator({ currentStep, steps = DEFAULT_STEPS }: StepIndica
                             </span>
                         </div>
 
-                        {index < steps.length - 1 && (
+                        {index < resolvedSteps.length - 1 && (
                             <div
                                 className={cn(
                                     'mx-2 mb-5 h-0.5 w-12 transition-all duration-500 sm:w-20',

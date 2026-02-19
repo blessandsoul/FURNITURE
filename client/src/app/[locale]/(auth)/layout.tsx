@@ -4,12 +4,14 @@ import Link from 'next/link';
 import { Armchair } from '@phosphor-icons/react';
 import { motion, MotionConfig } from 'motion/react';
 import { APP_NAME } from '@/lib/constants/app.constants';
+import { useTranslations } from 'next-intl';
 
 export default function AuthLayout({
     children,
 }: {
     children: React.ReactNode;
 }): React.ReactElement {
+    const t = useTranslations('Auth');
     return (
         <MotionConfig reducedMotion="user">
             <div className="flex min-h-dvh">
@@ -74,7 +76,7 @@ export default function AuthLayout({
                             transition={{ delay: 0.5, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                             className="max-w-xs text-balance text-2xl font-bold leading-tight lg:text-3xl"
                         >
-                            Design your dream furniture with AI
+                            {t('layout.tagline')}
                         </motion.h2>
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
@@ -82,8 +84,7 @@ export default function AuthLayout({
                             transition={{ delay: 0.7, duration: 0.6, ease: 'easeOut' as const }}
                             className="max-w-xs text-sm leading-relaxed text-primary-foreground/60"
                         >
-                            Pick a style, customize every detail, and watch your
-                            vision come to life — all in minutes.
+                            {t('layout.body')}
                         </motion.p>
                     </div>
 

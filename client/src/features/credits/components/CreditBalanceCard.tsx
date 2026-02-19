@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Coins, Sparkle } from '@phosphor-icons/react';
 import { cn } from '@/lib/utils';
 import type { CreditBalance } from '../types/credits.types';
@@ -31,6 +32,8 @@ export function CreditBalanceCard({
     generationStatus,
     isLoading,
 }: CreditBalanceCardProps): React.ReactElement {
+    const t = useTranslations('Credits');
+
     if (isLoading) return <BalanceSkeleton />;
 
     const creditCount = balance?.balance ?? 0;
@@ -47,7 +50,7 @@ export function CreditBalanceCard({
                     </div>
                     <div>
                         <p className="text-sm font-medium text-muted-foreground">
-                            Available Credits
+                            {t('balance.title')}
                         </p>
                         <p
                             className={cn(
@@ -85,10 +88,10 @@ export function CreditBalanceCard({
                                 hasFree ? 'text-success' : 'text-muted-foreground'
                             )}
                         >
-                            {freeRemaining} free today
+                            {t('balance.freeToday', { count: freeRemaining })}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                            Daily AI generations
+                            {t('balance.dailyGenerations')}
                         </p>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 import { DownloadSimple, ArrowsClockwise, ChatText, Heart, SpinnerGap } from '@phosphor-icons/react';
 import { useCallback, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/lib/constants/routes';
 import { QuoteModal } from '@/features/quotes/components/QuoteModal';
@@ -16,6 +17,7 @@ interface ResultActionsProps {
 }
 
 export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, onRetry }: ResultActionsProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
     const [isQuoteOpen, setIsQuoteOpen] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
 
@@ -52,7 +54,7 @@ export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, o
                         className="w-full justify-start gap-2"
                     >
                         <ChatText className="h-4 w-4" />
-                        Request Quote
+                        {t('resultActions.requestQuote')}
                     </Button>
                 )}
 
@@ -67,7 +69,7 @@ export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, o
                     ) : (
                         <DownloadSimple className="h-4 w-4" />
                     )}
-                    {isDownloading ? 'Downloading...' : 'Download Image'}
+                    {isDownloading ? t('resultActions.downloading') : t('resultActions.downloadImage')}
                 </Button>
 
                 <Button
@@ -81,7 +83,7 @@ export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, o
                     ) : (
                         <ArrowsClockwise className="h-4 w-4" />
                     )}
-                    {isRegenerating ? 'Regenerating...' : 'Regenerate'}
+                    {isRegenerating ? t('resultActions.regenerating') : t('resultActions.regenerate')}
                 </Button>
 
                 {designId && (
@@ -91,7 +93,7 @@ export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, o
                             className="w-full justify-start gap-2"
                         >
                             <Heart className="h-4 w-4" />
-                            View My Designs
+                            {t('resultActions.viewMyDesigns')}
                         </Button>
                     </Link>
                 )}
@@ -101,7 +103,7 @@ export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, o
                     onClick={onRestart}
                     className="mt-1 text-center text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline transition-colors duration-150"
                 >
-                    Start over
+                    {t('resultActions.startOver')}
                 </button>
             </div>
 

@@ -1,3 +1,5 @@
+import type { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { HeroSection } from '@/components/sections/HeroSection';
@@ -11,11 +13,13 @@ import { ProcessSection } from '@/components/sections/ProcessSection';
 import { FAQSection } from '@/components/sections/FAQSection';
 import { HowItWorksSection } from '@/components/sections/HowItWorksSection';
 
-export const metadata = {
-    title: 'Atlas Furniture — Design Your Furniture with AI',
-    description:
-        'Pick a style, customize colors and materials, and get a photorealistic AI preview with instant pricing. Design your dream furniture in minutes.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const t = await getTranslations('Metadata');
+    return {
+        title: t('homeTitle'),
+        description: t('homeDescription'),
+    };
+}
 
 export default function HomePage(): React.JSX.Element {
     return (

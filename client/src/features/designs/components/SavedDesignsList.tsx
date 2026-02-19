@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { MagnifyingGlass, Palette, Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -68,6 +69,8 @@ function filterAndSort(
 }
 
 export function SavedDesignsList(): React.JSX.Element {
+    const t = useTranslations('Designs');
+    const tNav = useTranslations('Navigation');
     const { data, isLoading } = useMyDesigns();
     const designs = data?.items ?? [];
     const totalItems = data?.pagination.totalItems ?? designs.length;
@@ -114,14 +117,14 @@ export function SavedDesignsList(): React.JSX.Element {
                 <div className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
                     <Palette className="h-6 w-6 text-primary" />
                 </div>
-                <h3 className="text-base font-semibold text-foreground">No saved designs yet</h3>
+                <h3 className="text-base font-semibold text-foreground">{t('emptyTitle')}</h3>
                 <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                    Design your perfect furniture and save it here to compare options later.
+                    {t('emptyBody')}
                 </p>
                 <Button asChild className="mt-5 gap-2">
                     <Link href={ROUTES.CONFIGURATOR.ROOT}>
                         <Plus className="h-4 w-4" />
-                        Start Designing
+                        {tNav('startDesigning')}
                     </Link>
                 </Button>
             </div>
@@ -136,7 +139,7 @@ export function SavedDesignsList(): React.JSX.Element {
                 <div className="relative w-full sm:w-56">
                     <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                     <Input
-                        placeholder="Search designs..."
+                        placeholder={t('searchPlaceholder')}
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         className="pl-9"
@@ -149,10 +152,10 @@ export function SavedDesignsList(): React.JSX.Element {
                         <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                        <SelectItem value="ALL">All status</SelectItem>
-                        <SelectItem value="DRAFT">Draft</SelectItem>
-                        <SelectItem value="GENERATED">Generated</SelectItem>
-                        <SelectItem value="QUOTED">Quoted</SelectItem>
+                        <SelectItem value="ALL">{t('statusFilter.all')}</SelectItem>
+                        <SelectItem value="DRAFT">{t('statusFilter.draft')}</SelectItem>
+                        <SelectItem value="GENERATED">{t('statusFilter.generated')}</SelectItem>
+                        <SelectItem value="QUOTED">{t('statusFilter.quoted')}</SelectItem>
                     </SelectContent>
                 </Select>
 
@@ -162,17 +165,19 @@ export function SavedDesignsList(): React.JSX.Element {
                         <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                        <SelectItem value="recent">Most recent</SelectItem>
-                        <SelectItem value="oldest">Oldest first</SelectItem>
-                        <SelectItem value="price-high">Price: high to low</SelectItem>
-                        <SelectItem value="price-low">Price: low to high</SelectItem>
-                        <SelectItem value="name">Name A-Z</SelectItem>
+                        <SelectItem value="recent">{t('sortBy.mostRecent')}</SelectItem>
+                        <SelectItem value="oldest">{t('sortBy.oldestFirst')}</SelectItem>
+                        <SelectItem value="price-high">{t('sortBy.priceHighToLow')}</SelectItem>
+                        <SelectItem value="price-low">{t('sortBy.priceLowToHigh')}</SelectItem>
+                        <SelectItem value="name">{t('sortBy.nameAZ')}</SelectItem>
                     </SelectContent>
                 </Select>
 
                 {/* Count */}
                 <span className="ml-auto text-xs tabular-nums text-muted-foreground">
-                    {filteredDesigns.length} of {totalItems} design{totalItems !== 1 ? 's' : ''}
+                    {totalItems !== 1
+                        ? t('countPlural', { filtered: filteredDesigns.length, total: totalItems })
+                        : t('count', { filtered: filteredDesigns.length, total: totalItems })}
                 </span>
             </div>
 
@@ -187,14 +192,14 @@ export function SavedDesignsList(): React.JSX.Element {
                 <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/50 py-12 text-center">
                     <MagnifyingGlass className="mb-2 h-6 w-6 text-muted-foreground/50" />
                     <p className="text-sm text-muted-foreground">
-                        No designs match your filters
+                        {t('emptyFilterTitle')}
                     </p>
                     <button
                         type="button"
                         onClick={() => { setSearch(''); setStatusFilter('ALL'); }}
                         className="mt-2 text-xs font-medium text-primary hover:underline"
                     >
-                        Clear filters
+                        {t('clearFilters')}
                     </button>
                 </div>
             )}

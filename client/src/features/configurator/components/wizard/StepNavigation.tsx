@@ -3,6 +3,7 @@
 import { ArrowLeft, ArrowRight, Sparkle } from '@phosphor-icons/react';
 import { useCallback } from 'react';
 import { useRouter } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/lib/constants/routes';
 import type { ConfiguratorStep } from '../../types/configurator.types';
@@ -30,6 +31,7 @@ export function StepNavigation({
     onBack,
     maxSteps = 4,
 }: StepNavigationProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
     const router = useRouter();
 
     const handleNext = useCallback(() => {
@@ -63,7 +65,7 @@ export function StepNavigation({
                 className="gap-2"
             >
                 <ArrowLeft className="h-4 w-4" />
-                Back
+                {t('navigation.back')}
             </Button>
 
             {isLastNavStep ? (
@@ -75,12 +77,12 @@ export function StepNavigation({
                     {isGenerating ? (
                         <>
                             <Sparkle className="h-4 w-4 motion-safe:animate-pulse" />
-                            Generating…
+                            {t('navigation.generating')}
                         </>
                     ) : (
                         <>
                             <Sparkle className="h-4 w-4" />
-                            {isReimagine ? 'Reimagine Room' : 'Generate Design'}
+                            {isReimagine ? t('navigation.reimagineRoom') : t('navigation.generateDesign')}
                         </>
                     )}
                 </Button>
@@ -90,7 +92,7 @@ export function StepNavigation({
                     disabled={!canProceed}
                     className="gap-2"
                 >
-                    Continue
+                    {t('navigation.continue')}
                     <ArrowRight className="h-4 w-4" />
                 </Button>
             )}

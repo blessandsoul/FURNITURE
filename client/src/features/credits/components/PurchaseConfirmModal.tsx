@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import {
     Dialog,
     DialogContent,
@@ -27,6 +28,9 @@ export function PurchaseConfirmModal({
     onConfirm,
     isPending,
 }: PurchaseConfirmModalProps): React.ReactElement {
+    const t = useTranslations('Credits');
+    const tCommon = useTranslations('Common');
+
     if (!selectedPackage) return <></>;
 
     const currencySymbol = selectedPackage.currency === 'GEL' ? '₾' : '$';
@@ -37,10 +41,10 @@ export function PurchaseConfirmModal({
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <ShoppingCart className="h-5 w-5 text-primary" weight="duotone" />
-                        Confirm Purchase
+                        {t('purchaseModal.title')}
                     </DialogTitle>
                     <DialogDescription>
-                        Review the package details before purchasing.
+                        {t('purchaseModal.description')}
                     </DialogDescription>
                 </DialogHeader>
 
@@ -56,8 +60,7 @@ export function PurchaseConfirmModal({
                         </span>
                     </div>
                     <p className="mt-1.5 text-sm text-muted-foreground">
-                        {selectedPackage.credits.toLocaleString()} credits will be added
-                        to your balance
+                        {t('purchaseModal.creditsAdded', { count: selectedPackage.credits.toLocaleString() })}
                     </p>
                 </div>
 
@@ -67,12 +70,12 @@ export function PurchaseConfirmModal({
                         onClick={() => onOpenChange(false)}
                         disabled={isPending}
                     >
-                        Cancel
+                        {tCommon('cancel')}
                     </Button>
                     <Button onClick={onConfirm} disabled={isPending}>
                         {isPending
-                            ? 'Processing...'
-                            : `Buy ${selectedPackage.credits.toLocaleString()} Credits`}
+                            ? t('purchaseModal.processing')
+                            : t('purchaseModal.buyCredits', { count: selectedPackage.credits.toLocaleString() })}
                     </Button>
                 </DialogFooter>
             </DialogContent>

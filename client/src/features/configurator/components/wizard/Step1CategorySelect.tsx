@@ -1,20 +1,22 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { useCategories } from '@/features/catalog/hooks/useCatalog';
 import { useConfigurator } from '../../hooks/useConfigurator';
 import { CategoryCard } from '../options/CategoryCard';
 import { CategoryGridSkeleton } from '../skeletons/CategoryGridSkeleton';
 
 export function Step1CategorySelect(): React.JSX.Element {
+    const t = useTranslations('Configurator');
     const { state, setCategory } = useConfigurator();
     const { data: categories, isLoading, error } = useCategories();
 
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-xl font-bold text-foreground">Choose Your Furniture</h2>
+                <h2 className="text-xl font-bold text-foreground">{t('categorySelect.heading')}</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Select the type of furniture you&apos;d like to design
+                    {t('categorySelect.subheading')}
                 </p>
             </div>
 
@@ -22,7 +24,7 @@ export function Step1CategorySelect(): React.JSX.Element {
 
             {error && (
                 <div className="flex items-center justify-center py-12 text-sm text-destructive">
-                    Failed to load categories. Please try again.
+                    {t('categorySelect.errorLoad')}
                 </div>
             )}
 
@@ -41,7 +43,7 @@ export function Step1CategorySelect(): React.JSX.Element {
 
             {!state.selectedCategoryId && !isLoading && (
                 <p className="text-center text-xs text-muted-foreground">
-                    Select a category to continue to customization
+                    {t('categorySelect.helperText')}
                 </p>
             )}
         </div>
