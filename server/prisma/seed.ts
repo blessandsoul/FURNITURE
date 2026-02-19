@@ -47,6 +47,10 @@ async function main(): Promise<void> {
       currency: 'GEL',
       isActive: true,
       sortOrder: 0,
+      translations: {
+        ka: { name: 'დივანი', description: 'ინდივიდუალურად დიზაინირებული დივნები თქვენი ზუსტი სპეციფიკაციების მიხედვით. აირჩიეთ სტილი, მასალა, ფერი და კომფორტის ვარიანტები.' },
+        ru: { name: 'Диван', description: 'Диваны, разработанные по вашим точным спецификациям. Выберите стиль, материал, цвет и варианты комфорта.' },
+      },
     },
   });
 
@@ -56,8 +60,8 @@ async function main(): Promise<void> {
 
   // Helper to upsert a group + its values
   async function seedGroup(
-    group: { name: string; slug: string; description: string; isRequired: boolean; sortOrder: number },
-    values: { label: string; slug: string; description?: string; priceModifier: number; colorHex?: string; promptHint: string; sortOrder: number }[],
+    group: { name: string; slug: string; description: string; isRequired: boolean; sortOrder: number; translations?: Record<string, Record<string, string>> },
+    values: { label: string; slug: string; description?: string; priceModifier: number; colorHex?: string; promptHint: string; sortOrder: number; translations?: Record<string, Record<string, string>> }[],
   ): Promise<void> {
     const created = await prisma.optionGroup.upsert({
       where: { categoryId_slug: { categoryId: sofa.id, slug: group.slug } },
@@ -69,6 +73,7 @@ async function main(): Promise<void> {
         description: group.description,
         isRequired: group.isRequired,
         sortOrder: group.sortOrder,
+        translations: group.translations ?? undefined,
       },
     });
 
@@ -85,6 +90,7 @@ async function main(): Promise<void> {
           colorHex: v.colorHex,
           promptHint: v.promptHint,
           sortOrder: v.sortOrder,
+          translations: v.translations ?? undefined,
         },
       });
     }
@@ -100,18 +106,19 @@ async function main(): Promise<void> {
       description: 'Choose the primary color of your sofa upholstery',
       isRequired: true,
       sortOrder: 0,
+      translations: { ka: { name: 'ფერი', description: 'აირჩიეთ თქვენი დივნის ძირითადი ფერი' }, ru: { name: 'Цвет', description: 'Выберите основной цвет обивки дивана' } },
     },
     [
-      { label: 'Navy Blue', slug: 'navy-blue', priceModifier: 0, colorHex: '#1B3A5C', promptHint: 'deep navy blue colored upholstery', sortOrder: 0 },
-      { label: 'Charcoal Gray', slug: 'charcoal-gray', priceModifier: 0, colorHex: '#36454F', promptHint: 'dark charcoal gray colored upholstery', sortOrder: 1 },
-      { label: 'Forest Green', slug: 'forest-green', priceModifier: 20, colorHex: '#228B22', promptHint: 'rich forest green colored upholstery', sortOrder: 2 },
-      { label: 'Burgundy', slug: 'burgundy', priceModifier: 20, colorHex: '#800020', promptHint: 'deep burgundy wine-red colored upholstery', sortOrder: 3 },
-      { label: 'Cream', slug: 'cream', priceModifier: 0, colorHex: '#FFFDD0', promptHint: 'warm cream off-white colored upholstery', sortOrder: 4 },
-      { label: 'Cognac', slug: 'cognac', priceModifier: 30, colorHex: '#9A463D', promptHint: 'warm cognac brown colored upholstery', sortOrder: 5 },
-      { label: 'Slate Blue', slug: 'slate-blue', priceModifier: 10, colorHex: '#6A7B8B', promptHint: 'muted slate blue colored upholstery', sortOrder: 6 },
-      { label: 'Terracotta', slug: 'terracotta', priceModifier: 15, colorHex: '#CC5533', promptHint: 'earthy terracotta orange-brown colored upholstery', sortOrder: 7 },
-      { label: 'Olive', slug: 'olive', priceModifier: 10, colorHex: '#556B2F', promptHint: 'muted olive green colored upholstery', sortOrder: 8 },
-      { label: 'Mustard', slug: 'mustard', priceModifier: 15, colorHex: '#E1AD01', promptHint: 'warm mustard yellow colored upholstery', sortOrder: 9 },
+      { label: 'Navy Blue', slug: 'navy-blue', priceModifier: 0, colorHex: '#1B3A5C', promptHint: 'deep navy blue colored upholstery', sortOrder: 0, translations: { ka: { label: 'მუქი ლურჯი' }, ru: { label: 'Тёмно-синий' } } },
+      { label: 'Charcoal Gray', slug: 'charcoal-gray', priceModifier: 0, colorHex: '#36454F', promptHint: 'dark charcoal gray colored upholstery', sortOrder: 1, translations: { ka: { label: 'მუქი ნაცრისფერი' }, ru: { label: 'Угольно-серый' } } },
+      { label: 'Forest Green', slug: 'forest-green', priceModifier: 20, colorHex: '#228B22', promptHint: 'rich forest green colored upholstery', sortOrder: 2, translations: { ka: { label: 'ტყის მწვანე' }, ru: { label: 'Тёмно-зелёный' } } },
+      { label: 'Burgundy', slug: 'burgundy', priceModifier: 20, colorHex: '#800020', promptHint: 'deep burgundy wine-red colored upholstery', sortOrder: 3, translations: { ka: { label: 'ბურგუნდი' }, ru: { label: 'Бордовый' } } },
+      { label: 'Cream', slug: 'cream', priceModifier: 0, colorHex: '#FFFDD0', promptHint: 'warm cream off-white colored upholstery', sortOrder: 4, translations: { ka: { label: 'კრემი' }, ru: { label: 'Кремовый' } } },
+      { label: 'Cognac', slug: 'cognac', priceModifier: 30, colorHex: '#9A463D', promptHint: 'warm cognac brown colored upholstery', sortOrder: 5, translations: { ka: { label: 'კონიაკი' }, ru: { label: 'Коньячный' } } },
+      { label: 'Slate Blue', slug: 'slate-blue', priceModifier: 10, colorHex: '#6A7B8B', promptHint: 'muted slate blue colored upholstery', sortOrder: 6, translations: { ka: { label: 'ფიქალის ლურჯი' }, ru: { label: 'Серо-голубой' } } },
+      { label: 'Terracotta', slug: 'terracotta', priceModifier: 15, colorHex: '#CC5533', promptHint: 'earthy terracotta orange-brown colored upholstery', sortOrder: 7, translations: { ka: { label: 'ტერაკოტა' }, ru: { label: 'Терракотовый' } } },
+      { label: 'Olive', slug: 'olive', priceModifier: 10, colorHex: '#556B2F', promptHint: 'muted olive green colored upholstery', sortOrder: 8, translations: { ka: { label: 'ზეთისხილისფერი' }, ru: { label: 'Оливковый' } } },
+      { label: 'Mustard', slug: 'mustard', priceModifier: 15, colorHex: '#E1AD01', promptHint: 'warm mustard yellow colored upholstery', sortOrder: 9, translations: { ka: { label: 'მდოგვისფერი' }, ru: { label: 'Горчичный' } } },
     ],
   );
 
@@ -123,14 +130,15 @@ async function main(): Promise<void> {
       description: 'Select the upholstery material',
       isRequired: true,
       sortOrder: 1,
+      translations: { ka: { name: 'მასალა', description: 'აირჩიეთ გარეკანის მასალა' }, ru: { name: 'Материал', description: 'Выберите материал обивки' } },
     },
     [
-      { label: 'Italian Leather', slug: 'italian-leather', priceModifier: 350, promptHint: 'premium Italian full-grain leather upholstery with natural grain texture', sortOrder: 0 },
-      { label: 'Velvet', slug: 'velvet', priceModifier: 150, promptHint: 'luxurious soft velvet upholstery with rich sheen and plush texture', sortOrder: 1 },
-      { label: 'Linen', slug: 'linen', priceModifier: 80, promptHint: 'natural linen fabric upholstery with subtle woven texture', sortOrder: 2 },
-      { label: 'Cotton', slug: 'cotton', priceModifier: 0, promptHint: 'durable cotton fabric upholstery with smooth finish', sortOrder: 3 },
-      { label: 'Microfiber', slug: 'microfiber', priceModifier: 60, promptHint: 'stain-resistant microfiber suede-like upholstery', sortOrder: 4 },
-      { label: 'Bouclé', slug: 'boucle', priceModifier: 200, promptHint: 'textured bouclé wool-blend upholstery with characteristic looped yarn', sortOrder: 5 },
+      { label: 'Italian Leather', slug: 'italian-leather', priceModifier: 350, promptHint: 'premium Italian full-grain leather upholstery with natural grain texture', sortOrder: 0, translations: { ka: { label: 'იტალიური ტყავი' }, ru: { label: 'Итальянская кожа' } } },
+      { label: 'Velvet', slug: 'velvet', priceModifier: 150, promptHint: 'luxurious soft velvet upholstery with rich sheen and plush texture', sortOrder: 1, translations: { ka: { label: 'ხავერდი' }, ru: { label: 'Бархат' } } },
+      { label: 'Linen', slug: 'linen', priceModifier: 80, promptHint: 'natural linen fabric upholstery with subtle woven texture', sortOrder: 2, translations: { ka: { label: 'სელი' }, ru: { label: 'Лён' } } },
+      { label: 'Cotton', slug: 'cotton', priceModifier: 0, promptHint: 'durable cotton fabric upholstery with smooth finish', sortOrder: 3, translations: { ka: { label: 'ბამბა' }, ru: { label: 'Хлопок' } } },
+      { label: 'Microfiber', slug: 'microfiber', priceModifier: 60, promptHint: 'stain-resistant microfiber suede-like upholstery', sortOrder: 4, translations: { ka: { label: 'მიკროფიბრა' }, ru: { label: 'Микрофибра' } } },
+      { label: 'Bouclé', slug: 'boucle', priceModifier: 200, promptHint: 'textured bouclé wool-blend upholstery with characteristic looped yarn', sortOrder: 5, translations: { ka: { label: 'ბუკლე' }, ru: { label: 'Букле' } } },
     ],
   );
 
@@ -142,12 +150,13 @@ async function main(): Promise<void> {
       description: 'Choose the sofa size and seating configuration',
       isRequired: true,
       sortOrder: 2,
+      translations: { ka: { name: 'ზომა', description: 'აირჩიეთ დივნის ზომა' }, ru: { name: 'Размер', description: 'Выберите размер дивана' } },
     },
     [
-      { label: '2-Seat', slug: '2-seat', priceModifier: 0, description: 'Compact loveseat, approx. 150cm wide', promptHint: 'compact two-seater loveseat sofa', sortOrder: 0 },
-      { label: '3-Seat', slug: '3-seat', priceModifier: 200, description: 'Standard sofa, approx. 220cm wide', promptHint: 'standard three-seater sofa', sortOrder: 1 },
-      { label: 'L-Shaped', slug: 'l-shaped', priceModifier: 500, description: 'Corner sectional, approx. 280x200cm', promptHint: 'L-shaped corner sectional sofa with chaise lounge', sortOrder: 2 },
-      { label: 'U-Shaped', slug: 'u-shaped', priceModifier: 800, description: 'Large sectional, approx. 320x220cm', promptHint: 'large U-shaped sectional sofa', sortOrder: 3 },
+      { label: '2-Seat', slug: '2-seat', priceModifier: 0, description: 'Compact loveseat, approx. 150cm wide', promptHint: 'compact two-seater loveseat sofa', sortOrder: 0, translations: { ka: { label: '2-ადგილიანი' }, ru: { label: '2-местный' } } },
+      { label: '3-Seat', slug: '3-seat', priceModifier: 200, description: 'Standard sofa, approx. 220cm wide', promptHint: 'standard three-seater sofa', sortOrder: 1, translations: { ka: { label: '3-ადგილიანი' }, ru: { label: '3-местный' } } },
+      { label: 'L-Shaped', slug: 'l-shaped', priceModifier: 500, description: 'Corner sectional, approx. 280x200cm', promptHint: 'L-shaped corner sectional sofa with chaise lounge', sortOrder: 2, translations: { ka: { label: 'L-ფორმის' }, ru: { label: 'Угловой (L)' } } },
+      { label: 'U-Shaped', slug: 'u-shaped', priceModifier: 800, description: 'Large sectional, approx. 320x220cm', promptHint: 'large U-shaped sectional sofa', sortOrder: 3, translations: { ka: { label: 'U-ფორმის' }, ru: { label: 'П-образный (U)' } } },
     ],
   );
 
@@ -159,13 +168,14 @@ async function main(): Promise<void> {
       description: 'Choose the leg style for your sofa',
       isRequired: true,
       sortOrder: 3,
+      translations: { ka: { name: 'ფეხის სტილი', description: 'აირჩიეთ დივნის ფეხების სტილი' }, ru: { name: 'Тип ножек', description: 'Выберите стиль ножек дивана' } },
     },
     [
-      { label: 'Wooden Tapered', slug: 'wooden-tapered', priceModifier: 0, promptHint: 'mid-century modern tapered wooden legs in walnut finish', sortOrder: 0 },
-      { label: 'Metal Hairpin', slug: 'metal-hairpin', priceModifier: 30, promptHint: 'slim black metal hairpin legs', sortOrder: 1 },
-      { label: 'Chrome', slug: 'chrome', priceModifier: 50, promptHint: 'polished chrome metal legs with modern finish', sortOrder: 2 },
-      { label: 'No Legs / Floor', slug: 'no-legs-floor', priceModifier: -20, promptHint: 'floor-level sofa with no visible legs, sitting directly on the ground', sortOrder: 3 },
-      { label: 'Wooden Block', slug: 'wooden-block', priceModifier: 20, promptHint: 'solid wooden block legs in natural oak finish', sortOrder: 4 },
+      { label: 'Wooden Tapered', slug: 'wooden-tapered', priceModifier: 0, promptHint: 'mid-century modern tapered wooden legs in walnut finish', sortOrder: 0, translations: { ka: { label: 'ხის კონუსური' }, ru: { label: 'Деревянные конусные' } } },
+      { label: 'Metal Hairpin', slug: 'metal-hairpin', priceModifier: 30, promptHint: 'slim black metal hairpin legs', sortOrder: 1, translations: { ka: { label: 'მეტალის ჰეარპინი' }, ru: { label: 'Металлические шпильки' } } },
+      { label: 'Chrome', slug: 'chrome', priceModifier: 50, promptHint: 'polished chrome metal legs with modern finish', sortOrder: 2, translations: { ka: { label: 'ქრომი' }, ru: { label: 'Хромированные' } } },
+      { label: 'No Legs / Floor', slug: 'no-legs-floor', priceModifier: -20, promptHint: 'floor-level sofa with no visible legs, sitting directly on the ground', sortOrder: 3, translations: { ka: { label: 'ფეხების გარეშე' }, ru: { label: 'Без ножек' } } },
+      { label: 'Wooden Block', slug: 'wooden-block', priceModifier: 20, promptHint: 'solid wooden block legs in natural oak finish', sortOrder: 4, translations: { ka: { label: 'ხის ბლოკი' }, ru: { label: 'Деревянные кубические' } } },
     ],
   );
 
@@ -177,12 +187,13 @@ async function main(): Promise<void> {
       description: 'How the fabric covers the sofa frame',
       isRequired: true,
       sortOrder: 4,
+      translations: { ka: { name: 'გარეკანის ტიპი', description: 'როგორ ფარავს ქსოვილი ჩარჩოს' }, ru: { name: 'Тип обивки', description: 'Как ткань покрывает каркас' } },
     },
     [
-      { label: 'Full Upholstery', slug: 'full-upholstery', priceModifier: 0, promptHint: 'fully upholstered sofa with fabric covering the entire frame', sortOrder: 0 },
-      { label: 'Semi-Upholstery', slug: 'semi-upholstery', priceModifier: -30, promptHint: 'semi-upholstered sofa with exposed wooden or metal frame accents', sortOrder: 1 },
-      { label: 'Loose Covers', slug: 'loose-covers', priceModifier: 40, promptHint: 'sofa with removable loose slipcovers for easy washing', sortOrder: 2 },
-      { label: 'Fixed', slug: 'fixed', priceModifier: 0, promptHint: 'sofa with tightly fitted fixed upholstery', sortOrder: 3 },
+      { label: 'Full Upholstery', slug: 'full-upholstery', priceModifier: 0, promptHint: 'fully upholstered sofa with fabric covering the entire frame', sortOrder: 0, translations: { ka: { label: 'სრული გარეკანი' }, ru: { label: 'Полная обивка' } } },
+      { label: 'Semi-Upholstery', slug: 'semi-upholstery', priceModifier: -30, promptHint: 'semi-upholstered sofa with exposed wooden or metal frame accents', sortOrder: 1, translations: { ka: { label: 'ნაწილობრივი გარეკანი' }, ru: { label: 'Частичная обивка' } } },
+      { label: 'Loose Covers', slug: 'loose-covers', priceModifier: 40, promptHint: 'sofa with removable loose slipcovers for easy washing', sortOrder: 2, translations: { ka: { label: 'მოსახსნელი საფარი' }, ru: { label: 'Съёмные чехлы' } } },
+      { label: 'Fixed', slug: 'fixed', priceModifier: 0, promptHint: 'sofa with tightly fitted fixed upholstery', sortOrder: 3, translations: { ka: { label: 'ფიქსირებული' }, ru: { label: 'Фиксированная' } } },
     ],
   );
 
@@ -194,12 +205,13 @@ async function main(): Promise<void> {
       description: 'Choose the arm style of your sofa',
       isRequired: true,
       sortOrder: 5,
+      translations: { ka: { name: 'სახელურის ტიპი', description: 'აირჩიეთ სახელურის სტილი' }, ru: { name: 'Тип подлокотников', description: 'Выберите стиль подлокотников' } },
     },
     [
-      { label: 'Rolled', slug: 'rolled', priceModifier: 30, promptHint: 'classic rolled arms with curved outward scroll', sortOrder: 0 },
-      { label: 'Square', slug: 'square', priceModifier: 0, promptHint: 'clean modern square flat arms', sortOrder: 1 },
-      { label: 'Pillow', slug: 'pillow', priceModifier: 20, promptHint: 'soft padded pillow-top arms', sortOrder: 2 },
-      { label: 'Track', slug: 'track', priceModifier: 10, promptHint: 'slim track arms aligned with the sofa back height', sortOrder: 3 },
+      { label: 'Rolled', slug: 'rolled', priceModifier: 30, promptHint: 'classic rolled arms with curved outward scroll', sortOrder: 0, translations: { ka: { label: 'მოხვეული' }, ru: { label: 'Закруглённые' } } },
+      { label: 'Square', slug: 'square', priceModifier: 0, promptHint: 'clean modern square flat arms', sortOrder: 1, translations: { ka: { label: 'კვადრატული' }, ru: { label: 'Прямые' } } },
+      { label: 'Pillow', slug: 'pillow', priceModifier: 20, promptHint: 'soft padded pillow-top arms', sortOrder: 2, translations: { ka: { label: 'ბალიშური' }, ru: { label: 'Подушечные' } } },
+      { label: 'Track', slug: 'track', priceModifier: 10, promptHint: 'slim track arms aligned with the sofa back height', sortOrder: 3, translations: { ka: { label: 'ვიწრო' }, ru: { label: 'Узкие' } } },
     ],
   );
 
@@ -211,12 +223,13 @@ async function main(): Promise<void> {
       description: 'Choose the back cushion style',
       isRequired: true,
       sortOrder: 6,
+      translations: { ka: { name: 'ზურგის სტილი', description: 'აირჩიეთ ზურგის ბალიშის სტილი' }, ru: { name: 'Стиль спинки', description: 'Выберите стиль подушки спинки' } },
     },
     [
-      { label: 'Tight Back', slug: 'tight-back', priceModifier: 0, promptHint: 'tight fitted back with no separate cushions, smooth clean look', sortOrder: 0 },
-      { label: 'Loose Cushion', slug: 'loose-cushion', priceModifier: 40, promptHint: 'loose back cushions that can be rearranged and fluffed', sortOrder: 1 },
-      { label: 'Tufted', slug: 'tufted', priceModifier: 80, promptHint: 'classic button-tufted back with deep diamond pattern', sortOrder: 2 },
-      { label: 'Pillow Back', slug: 'pillow-back', priceModifier: 50, promptHint: 'plush oversized pillow-style back cushions for maximum comfort', sortOrder: 3 },
+      { label: 'Tight Back', slug: 'tight-back', priceModifier: 0, promptHint: 'tight fitted back with no separate cushions, smooth clean look', sortOrder: 0, translations: { ka: { label: 'მჭიდრო ზურგი' }, ru: { label: 'Гладкая спинка' } } },
+      { label: 'Loose Cushion', slug: 'loose-cushion', priceModifier: 40, promptHint: 'loose back cushions that can be rearranged and fluffed', sortOrder: 1, translations: { ka: { label: 'თავისუფალი ბალიში' }, ru: { label: 'Съёмные подушки' } } },
+      { label: 'Tufted', slug: 'tufted', priceModifier: 80, promptHint: 'classic button-tufted back with deep diamond pattern', sortOrder: 2, translations: { ka: { label: 'ტაფტინგი' }, ru: { label: 'Каретная стяжка' } } },
+      { label: 'Pillow Back', slug: 'pillow-back', priceModifier: 50, promptHint: 'plush oversized pillow-style back cushions for maximum comfort', sortOrder: 3, translations: { ka: { label: 'ბალიშის ზურგი' }, ru: { label: 'Подушечная спинка' } } },
     ],
   );
 
@@ -228,11 +241,12 @@ async function main(): Promise<void> {
       description: 'Select the seat cushion fill material',
       isRequired: true,
       sortOrder: 7,
+      translations: { ka: { name: 'ბალიშის ტიპი', description: 'აირჩიეთ სავარძლის ბალიშის შემავსებელი' }, ru: { name: 'Тип наполнителя', description: 'Выберите наполнитель сидения' } },
     },
     [
-      { label: 'High-Density Foam', slug: 'high-density-foam', priceModifier: 0, description: 'Durable supportive foam, holds shape well', promptHint: 'high-density foam seat cushions with firm support', sortOrder: 0 },
-      { label: 'Feather-Down', slug: 'feather-down', priceModifier: 120, description: 'Soft luxury feel, requires occasional fluffing', promptHint: 'luxurious feather and down filled seat cushions with soft sink-in feel', sortOrder: 1 },
-      { label: 'Pocket Spring', slug: 'pocket-spring', priceModifier: 80, description: 'Individual springs for responsive comfort', promptHint: 'pocket spring seat cushions with responsive comfort and bounce', sortOrder: 2 },
+      { label: 'High-Density Foam', slug: 'high-density-foam', priceModifier: 0, description: 'Durable supportive foam, holds shape well', promptHint: 'high-density foam seat cushions with firm support', sortOrder: 0, translations: { ka: { label: 'მაღალი სიმკვრივის ქაფი' }, ru: { label: 'Пенополиуретан' } } },
+      { label: 'Feather-Down', slug: 'feather-down', priceModifier: 120, description: 'Soft luxury feel, requires occasional fluffing', promptHint: 'luxurious feather and down filled seat cushions with soft sink-in feel', sortOrder: 1, translations: { ka: { label: 'ბუმბული' }, ru: { label: 'Перо-пух' } } },
+      { label: 'Pocket Spring', slug: 'pocket-spring', priceModifier: 80, description: 'Individual springs for responsive comfort', promptHint: 'pocket spring seat cushions with responsive comfort and bounce', sortOrder: 2, translations: { ka: { label: 'ჯიბის ზამბარა' }, ru: { label: 'Пружинный блок' } } },
     ],
   );
 
@@ -244,10 +258,11 @@ async function main(): Promise<void> {
       description: 'Standard or deep seat for lounging',
       isRequired: true,
       sortOrder: 8,
+      translations: { ka: { name: 'სავარძლის სიღრმე', description: 'სტანდარტული ან ღრმა სავარძელი' }, ru: { name: 'Глубина сидения', description: 'Стандартная или глубокая посадка' } },
     },
     [
-      { label: 'Standard', slug: 'standard', priceModifier: 0, description: 'Standard depth (~55cm), upright sitting', promptHint: 'standard seat depth sofa for upright comfortable sitting', sortOrder: 0 },
-      { label: 'Deep', slug: 'deep', priceModifier: 60, description: 'Deep seat (~70cm), for lounging', promptHint: 'deep seat sofa designed for relaxed lounging with extra depth', sortOrder: 1 },
+      { label: 'Standard', slug: 'standard', priceModifier: 0, description: 'Standard depth (~55cm), upright sitting', promptHint: 'standard seat depth sofa for upright comfortable sitting', sortOrder: 0, translations: { ka: { label: 'სტანდარტული' }, ru: { label: 'Стандартная' } } },
+      { label: 'Deep', slug: 'deep', priceModifier: 60, description: 'Deep seat (~70cm), for lounging', promptHint: 'deep seat sofa designed for relaxed lounging with extra depth', sortOrder: 1, translations: { ka: { label: 'ღრმა' }, ru: { label: 'Глубокая' } } },
     ],
   );
 
@@ -259,11 +274,12 @@ async function main(): Promise<void> {
       description: 'Choose the overall firmness level',
       isRequired: true,
       sortOrder: 9,
+      translations: { ka: { name: 'სიმაგრე', description: 'აირჩიეთ სიმაგრის დონე' }, ru: { name: 'Жёсткость', description: 'Выберите уровень жёсткости' } },
     },
     [
-      { label: 'Firm', slug: 'firm', priceModifier: 0, promptHint: 'firm structured sofa with solid supportive feel', sortOrder: 0 },
-      { label: 'Medium', slug: 'medium', priceModifier: 0, promptHint: 'medium firmness sofa balancing support and comfort', sortOrder: 1 },
-      { label: 'Soft', slug: 'soft', priceModifier: 30, promptHint: 'soft plush sofa with sink-in comfort', sortOrder: 2 },
+      { label: 'Firm', slug: 'firm', priceModifier: 0, promptHint: 'firm structured sofa with solid supportive feel', sortOrder: 0, translations: { ka: { label: 'მაგარი' }, ru: { label: 'Жёсткий' } } },
+      { label: 'Medium', slug: 'medium', priceModifier: 0, promptHint: 'medium firmness sofa balancing support and comfort', sortOrder: 1, translations: { ka: { label: 'საშუალო' }, ru: { label: 'Средний' } } },
+      { label: 'Soft', slug: 'soft', priceModifier: 30, promptHint: 'soft plush sofa with sink-in comfort', sortOrder: 2, translations: { ka: { label: 'რბილი' }, ru: { label: 'Мягкий' } } },
     ],
   );
 
