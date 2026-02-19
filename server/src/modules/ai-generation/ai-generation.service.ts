@@ -1,18 +1,20 @@
+import fs from 'node:fs/promises';
 import { redis } from '../../libs/redis.js';
 import { logger } from '../../libs/logger.js';
 import { env } from '../../config/env.js';
 import { getGeminiClient } from '../../libs/gemini.js';
 import { saveGeneratedImage } from '../../libs/image-storage.js';
+import { resolveRoomImagePath } from '../../libs/room-image-storage.js';
 import { aiGenerationRepo } from './ai-generation.repo.js';
 import { creditsService } from '../credits/credits.service.js';
-import { buildPrompt } from './prompt-builder.js';
+import { buildPrompt, buildReimaginePrompt } from './prompt-builder.js';
 import { BadRequestError, NotFoundError, ForbiddenError, InternalError } from '../../shared/errors/errors.js';
 import type { PublicAiGeneration, PublicGenerationStatus } from './ai-generation.types.js';
-import type { GenerateInput, AdminGenerationsFilter } from './ai-generation.schemas.js';
+import type { GenerateInput, AdminGenerationsFilter, UserGenerationsFilter } from './ai-generation.schemas.js';
 import type { PaginationInput } from '../../shared/schemas/pagination.schema.js';
 import type { ServicePaginatedResult } from '../../shared/types/index.js';
 import type { AiGeneration } from '@prisma/client';
-import type { PromptBuilderInput } from './prompt-builder.js';
+import type { PromptBuilderInput, PromptBuilderOutput } from './prompt-builder.js';
 
 // ─── Constants ──────────────────────────────────────────────
 
@@ -67,10 +69,12 @@ class AiGenerationService {
       }
 
       // 4. Build prompt — data-driven, no hardcoded furniture types
+      const isReimagine = !!input.roomImageUrl;
+
       const sortedOptions = [...design.optionItems]
         .sort((a, b) => a.optionValue.group.sortOrder - b.optionValue.group.sortOrder);
 
-      const promptInput: PromptBuilderInput = {
+      const basePromptInput: PromptBuilderInput = {
         categoryName: design.category.name,
         categoryDescription: design.category.description,
         options: sortedOptions.map((item) => ({
@@ -82,7 +86,22 @@ class AiGenerationService {
         freeText: input.freeText ?? null,
       };
 
-      const promptOutput = buildPrompt(promptInput);
+      let promptOutput: PromptBuilderOutput;
+      let roomImageBase64: string | undefined;
+
+      if (isReimagine) {
+        promptOutput = buildReimaginePrompt({
+          ...basePromptInput,
+          placementInstructions: input.placementInstructions ?? null,
+        });
+
+        // Read room image from disk and convert to base64 for Gemini
+        const roomImagePath = resolveRoomImagePath(input.roomImageUrl!);
+        const roomImageBuffer = await fs.readFile(roomImagePath);
+        roomImageBase64 = roomImageBuffer.toString('base64');
+      } else {
+        promptOutput = buildPrompt(basePromptInput);
+      }
 
       // 5. Create AiGeneration record (status=PROCESSING)
       const generation = await aiGenerationRepo.create({
@@ -94,11 +113,14 @@ class AiGenerationService {
         status: 'PROCESSING',
         wasFree,
         creditsUsed,
+        generationType: isReimagine ? 'REIMAGINE' : 'SCRATCH',
+        roomImageUrl: input.roomImageUrl ?? null,
+        placementInstructions: input.placementInstructions ?? null,
       });
       generationId = generation.id;
 
-      // 6. Call Gemini API
-      const geminiResult = await this.callGemini(promptOutput);
+      // 6. Call Gemini API (multimodal if reimagine, text-only if scratch)
+      const geminiResult = await this.callGemini(promptOutput, roomImageBase64);
 
       // 7. Save image to disk + generate thumbnail
       const { imageUrl, thumbnailUrl } = await saveGeneratedImage(
@@ -166,8 +188,9 @@ class AiGenerationService {
   async getUserGenerations(
     userId: string,
     pagination: PaginationInput,
+    filters?: UserGenerationsFilter,
   ): Promise<ServicePaginatedResult<PublicAiGeneration>> {
-    const { items, totalItems } = await aiGenerationRepo.findByUserId(userId, pagination);
+    const { items, totalItems } = await aiGenerationRepo.findByUserId(userId, pagination, filters);
     return {
       items: items.map((g) => this.toPublicGeneration(g)),
       totalItems,
@@ -218,10 +241,10 @@ class AiGenerationService {
 
   // ─── Gemini API Call ──────────────────────────────────────
 
-  private async callGemini(promptOutput: {
-    systemInstruction: string;
-    generationPrompt: string;
-  }): Promise<{
+  private async callGemini(
+    promptOutput: { systemInstruction: string; generationPrompt: string },
+    roomImageBase64?: string,
+  ): Promise<{
     base64Data: string;
     promptTokens: number | null;
     totalTokens: number | null;
@@ -229,6 +252,15 @@ class AiGenerationService {
     const ai = getGeminiClient();
     const model = env.GEMINI_MODEL;
     let lastError: unknown = null;
+
+    // Build contents: multimodal if room image provided, text-only otherwise
+    const contents: string | Array<{ inlineData?: { data: string; mimeType: string }; text?: string }> =
+      roomImageBase64
+        ? [
+            { inlineData: { data: roomImageBase64, mimeType: 'image/png' } },
+            { text: promptOutput.generationPrompt },
+          ]
+        : promptOutput.generationPrompt;
 
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
       if (attempt > 0) {
@@ -241,7 +273,7 @@ class AiGenerationService {
 
         const response = await ai.models.generateContent({
           model,
-          contents: promptOutput.generationPrompt,
+          contents,
           config: {
             systemInstruction: promptOutput.systemInstruction,
             responseModalities: ['IMAGE'],
@@ -342,6 +374,9 @@ class AiGenerationService {
       userFreeText: generation.userFreeText,
       model: generation.model,
       status: generation.status,
+      generationType: generation.generationType,
+      roomImageUrl: generation.roomImageUrl,
+      placementInstructions: generation.placementInstructions,
       imageUrl: generation.imageUrl,
       thumbnailUrl: generation.thumbnailUrl,
       errorMessage: generation.errorMessage,

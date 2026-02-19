@@ -61,6 +61,8 @@ class DesignsService {
           currency: priceCalc.currency,
           configSnapshot: configSnapshot as unknown as import('@prisma/client').Prisma.InputJsonValue,
           optionValueIds: input.optionValueIds,
+          roomImageUrl: input.roomImageUrl,
+          roomThumbnailUrl: input.roomThumbnailUrl,
         },
         tx,
       );
@@ -256,6 +258,8 @@ class DesignsService {
       configSnapshot: design.configSnapshot as unknown as ConfigSnapshot,
       imageUrl: design.imageUrl,
       thumbnailUrl: design.thumbnailUrl,
+      roomImageUrl: design.roomImageUrl,
+      roomThumbnailUrl: design.roomThumbnailUrl,
       status: design.status,
       createdAt: design.createdAt.toISOString(),
       updatedAt: design.updatedAt.toISOString(),

@@ -2,7 +2,7 @@
 
 import { ArrowLeft, ArrowRight, Sparkle } from '@phosphor-icons/react';
 import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/lib/constants/routes';
 import type { ConfiguratorStep } from '../../types/configurator.types';
@@ -52,8 +52,6 @@ export function StepNavigation({
         }
     }, [currentStep, basePath, router, onBack]);
 
-    // The "generate" step: step 2 for reimagine (3 steps), step 2 for scratch (before step 3)
-    const isGenerateStep = isReimagine ? currentStep === 2 : currentStep === 2;
     const isLastNavStep = currentStep >= maxSteps - 1;
 
     return (

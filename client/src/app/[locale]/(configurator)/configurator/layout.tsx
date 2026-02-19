@@ -1,3 +1,5 @@
+'use client';
+
 import type { ReactNode } from 'react';
 import { ConfiguratorProvider } from '@/features/configurator/store/configuratorContext';
 

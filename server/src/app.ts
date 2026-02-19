@@ -4,6 +4,7 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import cookie from '@fastify/cookie';
+import multipart from '@fastify/multipart';
 import fastifyStatic from '@fastify/static';
 import { env } from './config/env.js';
 import { logger } from './libs/logger.js';
@@ -26,9 +27,12 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
   await app.register(cors, {
     origin: env.CORS_ORIGIN,
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   });
 
-  await app.register(helmet);
+  await app.register(helmet, {
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  });
 
   await app.register(rateLimit, {
     max: 100,
@@ -39,9 +43,22 @@ export async function buildApp(): Promise<ReturnType<typeof Fastify>> {
     secret: env.COOKIE_SECRET,
   });
 
+  await app.register(multipart, {
+    limits: {
+      fileSize: 5 * 1024 * 1024, // 5MB
+      files: 1,
+    },
+  });
+
   await app.register(fastifyStatic, {
     root: path.resolve(env.IMAGE_STORAGE_PATH),
     prefix: '/uploads/generations/',
+    decorateReply: false,
+  });
+
+  await app.register(fastifyStatic, {
+    root: path.resolve(env.ROOM_IMAGE_STORAGE_PATH),
+    prefix: '/uploads/rooms/',
     decorateReply: false,
   });
 

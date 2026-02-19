@@ -3,12 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, Sparkle, Lightning } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { BeforeAfterSlider } from '@/features/configurator/components/result/BeforeAfterSlider';
 import { ROUTES } from '@/lib/constants/routes';
-
-// Placeholder data URIs — TODO: Replace with real room photos
-const BEFORE_SRC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500'%3E%3Crect width='800' height='500' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-family='system-ui' font-size='18' fill='%236b7280'%3EYour room before%3C/text%3E%3C/svg%3E";
-const AFTER_SRC = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='500'%3E%3Crect width='800' height='500' fill='%23fef3c7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle' font-family='system-ui' font-size='18' fill='%23d97706'%3EAfter AI redesign%3C/text%3E%3C/svg%3E";
 
 export function HeroVariantB(): React.JSX.Element {
     return (
@@ -42,17 +37,16 @@ export function HeroVariantB(): React.JSX.Element {
                 new furniture, colors, and atmosphere in seconds.
             </p>
 
-            {/* Before/After Slider */}
+            {/* TODO: Restore BeforeAfterSlider once room-redesign feature is rebuilt */}
             <div className="mt-10 w-full max-w-2xl">
-                <BeforeAfterSlider
-                    beforeSrc={BEFORE_SRC}
-                    afterSrc={AFTER_SRC}
-                    beforeLabel="Your room"
-                    afterLabel="After AI Design"
-                    className="shadow-2xl"
-                />
+                <div className="flex aspect-[16/10] items-center justify-center rounded-2xl border border-border/50 bg-muted/30 shadow-2xl">
+                    <div className="text-center">
+                        <p className="text-sm font-semibold text-foreground">AI Room Preview</p>
+                        <p className="mt-1 text-xs text-muted-foreground">Coming soon</p>
+                    </div>
+                </div>
                 <p className="mt-3 text-center text-xs text-muted-foreground">
-                    Drag the handle to compare &mdash; real results from Atlas customers
+                    Before &amp; after comparison coming soon
                 </p>
             </div>
 

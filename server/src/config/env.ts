@@ -5,11 +5,11 @@ dotenv.config();
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.coerce.number().int().positive().default(3000),
+  PORT: z.coerce.number().int().positive().default(8000),
   HOST: z.string().default('0.0.0.0'),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   REDIS_URL: z.string().min(1, 'REDIS_URL is required'),
-  CORS_ORIGIN: z.string().default('http://localhost:3001'),
+  CORS_ORIGIN: z.string().default('http://localhost:3000'),
 
   // JWT
   JWT_ACCESS_SECRET: z.string().min(32, 'JWT_ACCESS_SECRET must be at least 32 characters'),
@@ -26,7 +26,11 @@ const envSchema = z.object({
 
   // Image Storage
   IMAGE_STORAGE_PATH: z.string().default('./uploads/generations'),
-  IMAGE_BASE_URL: z.string().default('http://localhost:3000/uploads/generations'),
+  IMAGE_BASE_URL: z.string().default('http://localhost:8000/uploads/generations'),
+
+  // Room Image Storage
+  ROOM_IMAGE_STORAGE_PATH: z.string().default('./uploads/rooms'),
+  ROOM_IMAGE_BASE_URL: z.string().default('http://localhost:8000/uploads/rooms'),
 });
 
 const parsed = envSchema.safeParse(process.env);

@@ -1,20 +1,20 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { useRouter } from '@/i18n/routing';
 import { useCallback } from 'react';
 import { ROUTES } from '@/lib/constants/routes';
+import { useCategoryBySlug } from '@/features/catalog/hooks/useCatalog';
 import { useConfigurator } from '../../hooks/useConfigurator';
 import type { ConfiguratorMode, ConfiguratorStep } from '../../types/configurator.types';
 import { StepIndicator } from './StepIndicator';
 import { StepNavigation } from './StepNavigation';
 import { Step1ModeSelect } from './Step1ModeSelect';
-import { Step1FurnitureStyle } from './Step1FurnitureStyle';
+import { Step1CategorySelect } from './Step1CategorySelect';
 import { Step1RoomUpload } from './Step1RoomUpload';
 import { Step2Customize } from './Step2Customize';
-import { Step2RoomTransform } from './Step2RoomTransform';
+import { Step2RoomCustomize } from './Step2RoomCustomize';
 import { Step3Result } from './Step3Result';
-import { Step3RoomResult } from './Step3RoomResult';
-import { Step4Video } from './Step4Video';
 
 interface ConfiguratorWizardProps {
     basePath?: string;
@@ -43,12 +43,9 @@ export function ConfiguratorWizard({
         canProceedFromRoomUpload,
         canGenerateRedesign,
         setMode,
-        setRoomImage,
-        removeRoomImage,
-        setRoomType,
-        setTransformationMode,
-        setRoomStyle,
     } = useConfigurator();
+
+    const { data: category } = useCategoryBySlug(state.selectedCategorySlug);
 
     const isReimagine = urlMode === 'reimagine';
     const isScratch = urlMode === 'scratch';
@@ -72,7 +69,7 @@ export function ConfiguratorWizard({
         : currentStep === 1
           ? canProceedToStep2
           : currentStep === 2
-            ? canGenerate
+            ? canGenerate(category)
             : false;
 
     // ─── Navigation handlers ──────────────────────────────────────
@@ -96,7 +93,7 @@ export function ConfiguratorWizard({
     // ─── Step labels ──────────────────────────────────────────────
     const reimagineSteps = [
         { number: 1 as ConfiguratorStep, label: 'Upload Room' },
-        { number: 2 as ConfiguratorStep, label: 'Transform' },
+        { number: 2 as ConfiguratorStep, label: 'Configure & Place' },
         { number: 3 as ConfiguratorStep, label: 'Result' },
     ];
 
@@ -122,42 +119,33 @@ export function ConfiguratorWizard({
     // ─── Render step content ──────────────────────────────────────
     function renderStepContent(): React.JSX.Element {
         if (isReimagine) {
-            if (currentStep === 1) {
-                return (
-                    <Step1RoomUpload
-                        roomImageUrl={state.roomRedesign.roomImageUrl}
-                        selectedRoomType={state.roomRedesign.roomType}
-                        onUploadImage={setRoomImage}
-                        onRemoveImage={removeRoomImage}
-                        onSelectRoomType={setRoomType}
-                    />
-                );
-            }
-            if (currentStep === 2) {
-                return (
-                    <Step2RoomTransform
-                        roomImageUrl={state.roomRedesign.roomImageUrl}
-                        selectedMode={state.roomRedesign.transformationMode}
-                        selectedStyle={state.roomRedesign.roomStyle}
-                        onSelectMode={setTransformationMode}
-                        onSelectStyle={setRoomStyle}
-                        basePath={basePath}
-                    />
-                );
-            }
-            if (currentStep === 3) {
-                return <Step3RoomResult basePath={basePath} />;
-            }
+            if (currentStep === 1) return <Step1RoomUpload />;
+            if (currentStep === 2) return <Step2RoomCustomize />;
+            if (currentStep === 3) return <Step3Result basePath={basePath} />;
         }
 
         if (isScratch) {
-            if (currentStep === 1) return <Step1FurnitureStyle />;
+            if (currentStep === 1) return <Step1CategorySelect />;
             if (currentStep === 2) return <Step2Customize />;
             if (currentStep === 3) return <Step3Result basePath={basePath} />;
-            if (currentStep === 4) return <Step4Video basePath={basePath} />;
+            if (currentStep === 4) {
+                // Video step: "Coming Soon" placeholder
+                return (
+                    <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4">
+                        <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+                            Coming Soon
+                        </div>
+                        <h3 className="text-lg font-bold text-foreground">Video Generation</h3>
+                        <p className="max-w-sm text-center text-sm text-muted-foreground">
+                            Generate a video of your furniture design with realistic motion and lighting.
+                            This feature is currently under development.
+                        </p>
+                    </div>
+                );
+            }
         }
 
-        return <Step1FurnitureStyle />;
+        return <Step1CategorySelect />;
     }
 
     const hideNav =

@@ -15,4 +15,36 @@ export const API_ENDPOINTS = {
         UPDATE_ME: '/users/me',
         DELETE_ME: '/users/me',
     },
+    CATALOG: {
+        CATEGORIES: '/catalog/categories',
+        CATEGORY_BY_SLUG: (slug: string) => `/catalog/categories/${slug}`,
+        OPTIONS_BY_CATEGORY: (categoryId: string) => `/catalog/categories/${categoryId}/options`,
+    },
+    CREDITS: {
+        PACKAGES: '/credits/packages',
+        BALANCE: '/credits/balance',
+        TRANSACTIONS: '/credits/transactions',
+        PURCHASE: '/credits/purchase',
+    },
+    DESIGNS: {
+        LIST: '/designs',
+        GET: (id: string) => `/designs/${id}`,
+        CREATE: '/designs',
+        UPDATE: (id: string) => `/designs/${id}`,
+        DELETE: (id: string) => `/designs/${id}`,
+        CALCULATE_PRICE: '/designs/calculate-price',
+    },
+    AI: {
+        GENERATE: '/ai/generate',
+        GENERATIONS: '/ai/generations',
+        GENERATION: (id: string) => `/ai/generations/${id}`,
+        STATUS: '/ai/status',
+        UPLOAD_ROOM_IMAGE: '/ai/upload-room-image',
+    },
+    QUOTES: {
+        LIST: '/quotes',
+        GET: (id: string) => `/quotes/${id}`,
+        CREATE: '/quotes',
+        CANCEL: (id: string) => `/quotes/${id}/cancel`,
+    },
 } as const;

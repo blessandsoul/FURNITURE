@@ -80,6 +80,11 @@ enum QuoteStatus {
   CANCELLED
 }
 
+enum GenerationType {
+  SCRATCH
+  REIMAGINE
+}
+
 // ─── Catalog Models ──────────────────────────────────────
 
 model FurnitureCategory {
@@ -144,16 +149,18 @@ model OptionValue {
 // ─── Design Models ───────────────────────────────────────
 
 model Design {
-  id             String             @id @default(uuid())
-  userId         String             @map("user_id")
-  categoryId     String             @map("category_id")
-  name           String             @db.VarChar(200)
-  totalPrice     Decimal            @map("total_price") @db.Decimal(10, 2)
-  currency       String             @default("GEL") @db.VarChar(3)
-  configSnapshot Json               @map("config_snapshot")
-  imageUrl       String?            @map("image_url") @db.VarChar(500)
-  thumbnailUrl   String?            @map("thumbnail_url") @db.VarChar(500)
-  status         DesignStatus       @default(DRAFT)
+  id                String             @id @default(uuid())
+  userId            String             @map("user_id")
+  categoryId        String             @map("category_id")
+  name              String             @db.VarChar(200)
+  totalPrice        Decimal            @map("total_price") @db.Decimal(10, 2)
+  currency          String             @default("GEL") @db.VarChar(3)
+  configSnapshot    Json               @map("config_snapshot")
+  imageUrl          String?            @map("image_url") @db.VarChar(500)
+  thumbnailUrl      String?            @map("thumbnail_url") @db.VarChar(500)
+  roomImageUrl      String?            @map("room_image_url") @db.VarChar(500)
+  roomThumbnailUrl  String?            @map("room_thumbnail_url") @db.VarChar(500)
+  status            DesignStatus       @default(DRAFT)
   createdAt      DateTime           @default(now()) @map("created_at")
   updatedAt      DateTime           @updatedAt @map("updated_at")
   user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -183,25 +190,28 @@ model DesignOptionItem {
 // ─── AI Generation Models ────────────────────────────────
 
 model AiGeneration {
-  id           String             @id @default(uuid())
-  userId       String             @map("user_id")
-  designId     String?            @map("design_id")
-  prompt       String             @db.Text
-  userFreeText String?            @map("user_free_text") @db.Text
-  model        String             @db.VarChar(50)
-  status       AiGenerationStatus @default(PENDING)
-  imageUrl     String?            @map("image_url") @db.VarChar(500)
-  thumbnailUrl String?            @map("thumbnail_url") @db.VarChar(500)
-  errorMessage String?            @map("error_message") @db.Text
-  promptTokens Int?               @map("prompt_tokens")
-  totalTokens  Int?               @map("total_tokens")
-  wasFree      Boolean            @default(false) @map("was_free")
-  creditsUsed  Int                @default(0) @map("credits_used")
-  durationMs   Int?               @map("duration_ms")
-  createdAt    DateTime           @default(now()) @map("created_at")
-  updatedAt    DateTime           @updatedAt @map("updated_at")
-  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  design       Design?            @relation(fields: [designId], references: [id], onDelete: SetNull)
+  id                    String             @id @default(uuid())
+  userId                String             @map("user_id")
+  designId              String?            @map("design_id")
+  prompt                String             @db.Text
+  userFreeText          String?            @map("user_free_text") @db.Text
+  model                 String             @db.VarChar(50)
+  status                AiGenerationStatus @default(PENDING)
+  generationType        GenerationType     @default(SCRATCH) @map("generation_type")
+  roomImageUrl          String?            @map("room_image_url") @db.VarChar(500)
+  placementInstructions String?            @map("placement_instructions") @db.Text
+  imageUrl              String?            @map("image_url") @db.VarChar(500)
+  thumbnailUrl          String?            @map("thumbnail_url") @db.VarChar(500)
+  errorMessage          String?            @map("error_message") @db.Text
+  promptTokens          Int?               @map("prompt_tokens")
+  totalTokens           Int?               @map("total_tokens")
+  wasFree               Boolean            @default(false) @map("was_free")
+  creditsUsed           Int                @default(0) @map("credits_used")
+  durationMs            Int?               @map("duration_ms")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  updatedAt             DateTime           @updatedAt @map("updated_at")
+  user                  User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  design                Design?            @relation(fields: [designId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([designId])

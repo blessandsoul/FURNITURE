@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Sparkle, Lightning, Armchair } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { BeforeAfterSlider } from '@/features/configurator/components/result/BeforeAfterSlider';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants/routes';
 
@@ -17,10 +16,6 @@ const COLOR_OPTIONS = [
 ] as const;
 
 const BASE_PRICE = 850;
-
-// TODO: Replace with real before/after room photos
-const BEFORE_SRC = 'https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=900&q=80';
-const AFTER_SRC  = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=900&q=80';
 
 function HeroConfiguratorCard(): React.JSX.Element {
     const [selectedColor, setSelectedColor] = useState<string>('cream');
@@ -183,21 +178,20 @@ export function HeroVariantC(): React.JSX.Element {
                     </div>
                 </div>
 
-                {/* ── Bottom: before/after slider ───────────────────────── */}
+                {/* ── Bottom: before/after placeholder ─────────────────── */}
+                {/* TODO: Restore BeforeAfterSlider once room-redesign feature is rebuilt */}
                 <div className="mt-16">
                     <div className="mb-4 flex items-center justify-between">
                         <p className="text-sm font-semibold text-foreground">Room Reimagine — AI in action</p>
-                        <p className="text-xs text-muted-foreground">Drag to compare</p>
                     </div>
-                    <BeforeAfterSlider
-                        beforeSrc={BEFORE_SRC}
-                        afterSrc={AFTER_SRC}
-                        beforeLabel="Before"
-                        afterLabel="After AI Design"
-                        className="shadow-2xl"
-                    />
+                    <div className="flex aspect-[16/10] items-center justify-center rounded-2xl border border-border/50 bg-muted/30 shadow-2xl">
+                        <div className="text-center">
+                            <p className="text-sm font-semibold text-foreground">AI Room Preview</p>
+                            <p className="mt-1 text-xs text-muted-foreground">Coming soon</p>
+                        </div>
+                    </div>
                     <p className="mt-3 text-center text-xs text-muted-foreground">
-                        Real transformation from Atlas Room Reimagine — try it free in the configurator
+                        Before &amp; after comparison coming soon
                     </p>
                 </div>
             </div>

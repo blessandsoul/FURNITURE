@@ -5,6 +5,11 @@ import { authenticate, authorize } from '../../libs/auth.guard.js';
 export async function aiGenerationRoutes(app: FastifyInstance): Promise<void> {
   // ─── User Routes (authenticated) ─────────────────────────
 
+  app.post('/upload-room-image', {
+    preHandler: [authenticate],
+    handler: aiGenerationController.uploadRoomImage.bind(aiGenerationController),
+  });
+
   app.post('/generate', {
     preHandler: [authenticate],
     handler: aiGenerationController.generate.bind(aiGenerationController),

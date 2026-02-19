@@ -6,7 +6,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
 import { useState } from 'react';
-import { Agentation } from 'agentation';
+import axios from 'axios';
 import { store } from '@/store';
 import { AuthInitializer } from '@/features/auth/components/AuthInitializer';
 
@@ -23,7 +23,13 @@ export function Providers({
                         staleTime: 5 * 60 * 1000,
                         gcTime: 10 * 60 * 1000,
                         refetchOnWindowFocus: false,
-                        retry: 1,
+                        retry: (failureCount, error) => {
+                            // Never retry 429 (rate limited) or 401 (handled by interceptor)
+                            if (axios.isAxiosError(error) && (error.response?.status === 429 || error.response?.status === 401)) {
+                                return false;
+                            }
+                            return failureCount < 1;
+                        },
                     },
                 },
             })
@@ -39,7 +45,6 @@ export function Providers({
 >
                     <AuthInitializer>{children}</AuthInitializer>
                     <Toaster position="top-right" richColors />
-                    {process.env.NODE_ENV === 'development' && <Agentation />}
                 </ThemeProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>

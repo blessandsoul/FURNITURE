@@ -3,25 +3,39 @@
 import { Link } from '@/i18n/routing';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Button } from '@/components/ui/button';
-import { Moon, Sun, List, X } from '@phosphor-icons/react';
+import { Moon, Sun, List, X, CurrencyCircleDollar } from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
 import { useCallback, useState } from 'react';
 import { APP_NAME } from '@/lib/constants/app.constants';
+import { ROUTES } from '@/lib/constants/routes';
 import LanguageSwitcher from '../LanguageSwitcher';
 import { useTranslations } from 'next-intl';
+import { useCreditBalance } from '@/features/credits/hooks/useCredits';
+
+function HeaderCreditsBadge(): React.ReactElement {
+    const { data: balance, isLoading } = useCreditBalance();
+
+    if (isLoading) {
+        return <span className="h-6 w-12 animate-pulse rounded-full bg-muted" />;
+    }
+
+    return (
+        <Link
+            href={ROUTES.CREDITS}
+            className="flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary transition-colors duration-150 hover:bg-primary/15"
+        >
+            <CurrencyCircleDollar className="h-3.5 w-3.5" weight="fill" />
+            <span className="tabular-nums">{balance?.balance ?? 0}</span>
+        </Link>
+    );
+}
 
 export function Header(): React.ReactElement {
-    const { isAuthenticated, user, logout } = useAuth();
+    const { isAuthenticated, logout } = useAuth();
     const { theme, setTheme } = useTheme();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const tAuth = useTranslations('Auth');
     const tNav = useTranslations('Navigation');
-    const tCommon = useTranslations('Common');
-
-    // Additional translations needed for Header that might not be in the initial JSON
-    // I will use placeholders or key fallbacks if they don't exist, but I will update JSONs next.
-    // Assuming keys: 'myDesigns', 'signOut' in Navigation or Auth?
-    // Let's stick to what I have or add keys. I'll add 'myDesigns' and 'signOut' to Navigation in next step.
 
     const toggleTheme = useCallback((): void => {
         const next = theme === 'dark' ? 'light' : 'dark';
@@ -35,7 +49,7 @@ export function Header(): React.ReactElement {
     }, [theme, setTheme]);
 
     return (
-        <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl backdrop-saturate-150">
+        <header className="sticky top-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-sm">
             <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
                 {/* Logo */}
                 <Link
@@ -50,12 +64,13 @@ export function Header(): React.ReactElement {
                     <LanguageSwitcher />
                     {isAuthenticated && (
                         <Link
-                            href="/dashboard"
+                            href={ROUTES.MY_DESIGNS}
                             className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
                         >
                             {tNav('myDesigns')}
                         </Link>
                     )}
+                    {isAuthenticated && <HeaderCreditsBadge />}
                     {isAuthenticated ? (
                         <>
                             <div onClick={logout}>
@@ -119,12 +134,17 @@ export function Header(): React.ReactElement {
                     <nav className="flex flex-col gap-3">
                         {isAuthenticated && (
                             <Link
-                                href="/dashboard"
+                                href={ROUTES.MY_DESIGNS}
                                 className="text-sm text-muted-foreground transition-colors duration-150 hover:text-primary"
                                 onClick={() => setIsMobileMenuOpen(false)}
                             >
                                 {tNav('myDesigns')}
                             </Link>
+                        )}
+                        {isAuthenticated && (
+                            <div onClick={() => setIsMobileMenuOpen(false)}>
+                                <HeaderCreditsBadge />
+                            </div>
                         )}
                         {isAuthenticated ? (
                             <>

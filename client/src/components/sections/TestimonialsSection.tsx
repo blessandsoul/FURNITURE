@@ -44,7 +44,7 @@ export function TestimonialsSection(): React.JSX.Element {
                     {TESTIMONIALS.map((testimonial) => (
                         <article
                             key={testimonial.id}
-                            className="flex flex-col gap-4 rounded-xl border border-[--border-crisp] bg-[--surface-enamel] p-6 shadow-[--shadow-enamel] backdrop-blur-md"
+                            className="flex flex-col gap-4 rounded-xl border border-[--border-crisp] bg-[--surface-enamel] p-6 shadow-[--shadow-enamel]"
                         >
                             {/* Stars */}
                             <div

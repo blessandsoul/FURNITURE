@@ -28,7 +28,7 @@ export default function ConfiguratorPage(): React.JSX.Element {
                             <span className="text-primary">Pick. Customize. Generate.</span>
                         </h1>
                         <p className="text-xs text-muted-foreground">
-                            AI-powered · Real-time pricing · No account needed
+                            AI-powered · Real-time pricing · Instant preview
                         </p>
                     </div>
 

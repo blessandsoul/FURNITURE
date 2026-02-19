@@ -23,20 +23,25 @@ export function GeneratingOverlay(): React.JSX.Element {
     const [stepIndex, setStepIndex] = useState(0);
     const [visible, setVisible] = useState(true); // drives fade-out before swap
     const [displayedLabel, setDisplayedLabel] = useState(STEPS[0]!.label);
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState(STEPS[0]!.progress);
 
     useEffect(() => {
-        // Kick off the first progress target immediately
-        setProgress(STEPS[0]!.progress);
-
         let current = 0;
-        let timer: ReturnType<typeof setTimeout>;
+        let cancelled = false;
+        const timers: ReturnType<typeof setTimeout>[] = [];
 
-        const advance = () => {
+        const schedule = (fn: () => void, ms: number): void => {
+            const id = setTimeout(fn, ms);
+            timers.push(id);
+        };
+
+        const advance = (): void => {
+            if (cancelled) return;
             // Fade out current label
             setVisible(false);
 
-            timer = setTimeout(() => {
+            schedule(() => {
+                if (cancelled) return;
                 current = Math.min(current + 1, STEPS.length - 1);
                 const step = STEPS[current]!;
                 setStepIndex(current);
@@ -46,18 +51,19 @@ export function GeneratingOverlay(): React.JSX.Element {
 
                 // Schedule next advance if not on last step
                 if (current < STEPS.length - 1) {
-                    timer = setTimeout(advance, STEP_DURATION);
+                    schedule(advance, STEP_DURATION);
                 }
             }, 180); // 180ms fade-out gap, then swap text
         };
 
         // Start cycling after first step has been shown for STEP_DURATION
-        timer = setTimeout(advance, STEP_DURATION);
+        schedule(advance, STEP_DURATION);
 
-        return () => clearTimeout(timer);
+        return () => {
+            cancelled = true;
+            timers.forEach(clearTimeout);
+        };
     }, []);
-
-    const currentStep = STEPS[stepIndex]!;
 
     return (
         <div className="flex h-full min-h-0 flex-col items-center justify-center gap-10 animate-fade-in">

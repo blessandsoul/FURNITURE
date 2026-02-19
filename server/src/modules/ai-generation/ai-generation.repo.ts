@@ -1,7 +1,7 @@
 import { prisma } from '../../libs/prisma.js';
 import type { AiGeneration, Design, DesignOptionItem, Prisma, DesignStatus } from '@prisma/client';
 import type { PaginationInput } from '../../shared/schemas/pagination.schema.js';
-import type { AdminGenerationsFilter } from './ai-generation.schemas.js';
+import type { AdminGenerationsFilter, UserGenerationsFilter } from './ai-generation.schemas.js';
 
 // ─── Types ──────────────────────────────────────────────────
 
@@ -56,6 +56,9 @@ class AiGenerationRepository {
     status: 'PROCESSING';
     wasFree: boolean;
     creditsUsed: number;
+    generationType: 'SCRATCH' | 'REIMAGINE';
+    roomImageUrl: string | null;
+    placementInstructions: string | null;
   }): Promise<AiGeneration> {
     return prisma.aiGeneration.create({
       data: {
@@ -67,6 +70,9 @@ class AiGenerationRepository {
         status: data.status,
         wasFree: data.wasFree,
         creditsUsed: data.creditsUsed,
+        generationType: data.generationType,
+        roomImageUrl: data.roomImageUrl,
+        placementInstructions: data.placementInstructions,
       },
     });
   }
@@ -83,17 +89,23 @@ class AiGenerationRepository {
   async findByUserId(
     userId: string,
     pagination: PaginationInput,
+    filters?: UserGenerationsFilter,
   ): Promise<{ items: AiGeneration[]; totalItems: number }> {
     const skip = (pagination.page - 1) * pagination.limit;
+    const where: Prisma.AiGenerationWhereInput = { userId };
+
+    if (filters?.designId) {
+      where.designId = filters.designId;
+    }
 
     const [items, totalItems] = await prisma.$transaction([
       prisma.aiGeneration.findMany({
-        where: { userId },
+        where,
         orderBy: { createdAt: 'desc' },
         skip,
         take: pagination.limit,
       }),
-      prisma.aiGeneration.count({ where: { userId } }),
+      prisma.aiGeneration.count({ where }),
     ]);
 
     return { items, totalItems };

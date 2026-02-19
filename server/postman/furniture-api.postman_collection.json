@@ -69,6 +69,11 @@
 			"key": "generationId",
 			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "roomImageUrl",
+			"value": "",
+			"type": "string"
 		}
 	],
 	"item": [
@@ -82,8 +87,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/health",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["health"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"health"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -130,8 +139,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/register",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "register"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -180,8 +194,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/login",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "login"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -220,8 +239,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/me",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "me"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
 						}
 					},
 					"event": [
@@ -253,8 +277,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/sessions",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "sessions"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"sessions"
+							]
 						}
 					},
 					"event": [
@@ -285,8 +314,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/refresh",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "refresh"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"refresh"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -319,8 +353,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/logout",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "logout"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
 						}
 					},
 					"event": [
@@ -349,8 +388,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/logout-all",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "logout-all"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"logout-all"
+							]
 						}
 					},
 					"event": [
@@ -388,8 +432,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/request-password-reset",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "request-password-reset"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"request-password-reset"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -430,8 +479,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/auth/reset-password",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["auth", "reset-password"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -469,8 +523,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -511,8 +570,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categorySlug}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories", "{{categorySlug}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories",
+								"{{categorySlug}}"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -548,8 +613,15 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}/options",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories", "{{categoryId}}", "options"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories",
+								"{{categoryId}}",
+								"options"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -602,8 +674,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories"
+							]
 						}
 					},
 					"event": [
@@ -644,8 +721,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories", "{{categoryId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories",
+								"{{categoryId}}"
+							]
 						}
 					},
 					"event": [
@@ -675,8 +758,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/categories/{{categoryId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "categories", "{{categoryId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"categories",
+								"{{categoryId}}"
+							]
 						}
 					},
 					"event": [
@@ -714,8 +803,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-groups"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-groups"
+							]
 						}
 					},
 					"event": [
@@ -761,8 +855,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups/{{optionGroupId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-groups", "{{optionGroupId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-groups",
+								"{{optionGroupId}}"
+							]
 						}
 					},
 					"event": [
@@ -792,8 +892,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-groups/{{optionGroupId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-groups", "{{optionGroupId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-groups",
+								"{{optionGroupId}}"
+							]
 						}
 					},
 					"event": [
@@ -831,8 +937,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-values"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-values"
+							]
 						}
 					},
 					"event": [
@@ -879,8 +990,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values/{{optionValueId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-values", "{{optionValueId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-values",
+								"{{optionValueId}}"
+							]
 						}
 					},
 					"event": [
@@ -910,8 +1027,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/catalog/option-values/{{optionValueId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["catalog", "option-values", "{{optionValueId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"catalog",
+								"option-values",
+								"{{optionValueId}}"
+							]
 						}
 					},
 					"event": [
@@ -946,8 +1069,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/packages",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "packages"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"packages"
+							]
 						},
 						"auth": {
 							"type": "noauth"
@@ -980,8 +1108,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/balance",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "balance"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"balance"
+							]
 						}
 					},
 					"event": [
@@ -1012,8 +1145,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/transactions?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "transactions"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"transactions"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1064,8 +1202,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/purchase",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "purchase"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"purchase"
+							]
 						}
 					},
 					"event": [
@@ -1104,8 +1247,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/adjust",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "admin", "adjust"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"admin",
+								"adjust"
+							]
 						}
 					},
 					"event": [
@@ -1144,8 +1293,14 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "admin", "packages"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"admin",
+								"packages"
+							]
 						}
 					},
 					"event": [
@@ -1191,8 +1346,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages/{{packageId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "admin", "packages", "{{packageId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"admin",
+								"packages",
+								"{{packageId}}"
+							]
 						}
 					},
 					"event": [
@@ -1222,8 +1384,15 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/credits/admin/packages/{{packageId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["credits", "admin", "packages", "{{packageId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"credits",
+								"admin",
+								"packages",
+								"{{packageId}}"
+							]
 						}
 					},
 					"event": [
@@ -1267,8 +1436,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs/calculate-price",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs", "calculate-price"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs",
+								"calculate-price"
+							]
 						}
 					},
 					"event": [
@@ -1305,12 +1479,16 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"categoryId\": \"{{categoryId}}\",\n    \"name\": \"My Custom Sofa\",\n    \"optionValueIds\": [\"{{optionValueId1}}\", \"{{optionValueId2}}\"]\n}"
+							"raw": "{\n    \"categoryId\": \"{{categoryId}}\",\n    \"name\": \"My Custom Sofa\",\n    \"optionValueIds\": [\"{{optionValueId1}}\", \"{{optionValueId2}}\"],\n    \"roomImageUrl\": \"http://localhost:3001/uploads/rooms/user-id/abc123.png\",\n    \"roomThumbnailUrl\": \"http://localhost:3001/uploads/rooms/user-id/abc123_thumb.png\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs"
+							]
 						}
 					},
 					"event": [
@@ -1348,8 +1526,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1390,8 +1572,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs", "{{designId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs",
+								"{{designId}}"
+							]
 						}
 					},
 					"event": [
@@ -1432,8 +1619,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs", "{{designId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs",
+								"{{designId}}"
+							]
 						}
 					},
 					"event": [
@@ -1464,8 +1656,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs/{{designId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs", "{{designId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs",
+								"{{designId}}"
+							]
 						}
 					},
 					"event": [
@@ -1494,8 +1691,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/designs/admin/all?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["designs", "admin", "all"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"designs",
+								"admin",
+								"all"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1542,8 +1745,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/ai/status",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["ai", "status"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"status"
+							]
 						}
 					},
 					"event": [
@@ -1583,8 +1791,13 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generate",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["ai", "generate"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"generate"
+							]
 						}
 					},
 					"event": [
@@ -1615,14 +1828,125 @@
 					]
 				},
 				{
+					"name": "Upload Room Image",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "",
+									"description": "Room photo (JPEG, PNG, or WebP, max 5MB)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/upload-room-image",
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"upload-room-image"
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response has room image URLs', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('roomImageUrl');",
+									"    pm.expect(json.data).to.have.property('thumbnailUrl');",
+									"});",
+									"",
+									"if (pm.response.code === 201) {",
+									"    const json = pm.response.json();",
+									"    pm.collectionVariables.set('roomImageUrl', json.data.roomImageUrl);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Generate AI Image (Reimagine)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"designId\": \"{{designId}}\",\n    \"roomImageUrl\": \"{{roomImageUrl}}\",\n    \"placementInstructions\": \"Place the sofa against the left wall, centered under the window\",\n    \"freeText\": \"natural lighting, cozy atmosphere\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generate",
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"generate"
+							]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test('Status code is 200 or 201', function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"pm.test('Response has reimagine generation data', function () {",
+									"    const json = pm.response.json();",
+									"    pm.expect(json.success).to.eql(true);",
+									"    pm.expect(json.data).to.have.property('id');",
+									"    pm.expect(json.data).to.have.property('status');",
+									"    pm.expect(json.data).to.have.property('generationType');",
+									"    pm.expect(json.data.generationType).to.eql('REIMAGINE');",
+									"});",
+									"",
+									"const json = pm.response.json();",
+									"if (json.success && json.data.id) {",
+									"    pm.collectionVariables.set('generationId', json.data.id);",
+									"}"
+								]
+							}
+						}
+					]
+				},
+				{
 					"name": "List My Generations",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generations?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["ai", "generations"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"generations"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1631,6 +1955,12 @@
 								{
 									"key": "limit",
 									"value": "10"
+								},
+								{
+									"key": "designId",
+									"value": "{{designId}}",
+									"description": "Filter by design ID (UUID, optional)",
+									"disabled": true
 								}
 							]
 						}
@@ -1664,8 +1994,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/ai/generations/{{generationId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["ai", "generations", "{{generationId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"generations",
+								"{{generationId}}"
+							]
 						}
 					},
 					"event": [
@@ -1698,8 +2034,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/ai/admin/generations?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["ai", "admin", "generations"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"ai",
+								"admin",
+								"generations"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1765,8 +2107,12 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes"
+							]
 						}
 					},
 					"event": [
@@ -1805,8 +2151,12 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1848,8 +2198,13 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/{{quoteId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "{{quoteId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"{{quoteId}}"
+							]
 						}
 					},
 					"event": [
@@ -1881,8 +2236,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/{{quoteId}}/cancel",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "{{quoteId}}", "cancel"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"{{quoteId}}",
+								"cancel"
+							]
 						}
 					},
 					"event": [
@@ -1912,8 +2273,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/all?page=1&limit=10",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "admin", "all"],
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"admin",
+								"all"
+							],
 							"query": [
 								{
 									"key": "page",
@@ -1959,8 +2326,14 @@
 						"header": [],
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "admin", "{{quoteId}}"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"admin",
+								"{{quoteId}}"
+							]
 						}
 					},
 					"event": [
@@ -2001,8 +2374,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}/status",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "admin", "{{quoteId}}", "status"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"admin",
+								"{{quoteId}}",
+								"status"
+							]
 						}
 					},
 					"event": [
@@ -2042,8 +2422,15 @@
 						},
 						"url": {
 							"raw": "{{baseUrl}}{{apiPrefix}}/quotes/admin/{{quoteId}}/notes",
-							"host": ["{{baseUrl}}{{apiPrefix}}"],
-							"path": ["quotes", "admin", "{{quoteId}}", "notes"]
+							"host": [
+								"{{baseUrl}}{{apiPrefix}}"
+							],
+							"path": [
+								"quotes",
+								"admin",
+								"{{quoteId}}",
+								"notes"
+							]
 						}
 					},
 					"event": [

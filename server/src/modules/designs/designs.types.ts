@@ -25,6 +25,8 @@ export interface PublicDesign {
   configSnapshot: ConfigSnapshot;
   imageUrl: string | null;
   thumbnailUrl: string | null;
+  roomImageUrl: string | null;
+  roomThumbnailUrl: string | null;
   status: DesignStatus;
   createdAt: string;
   updatedAt: string;

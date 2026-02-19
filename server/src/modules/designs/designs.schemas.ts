@@ -6,6 +6,8 @@ export const CreateDesignSchema = z.object({
   categoryId: z.string().uuid('Invalid category ID'),
   name: z.string().min(1, 'Name is required').max(200),
   optionValueIds: z.array(z.string().uuid('Invalid option value ID')).min(1, 'At least one option must be selected'),
+  roomImageUrl: z.string().max(500).optional(),
+  roomThumbnailUrl: z.string().max(500).optional(),
 });
 
 export const UpdateDesignSchema = z.object({

@@ -10,4 +10,9 @@ export const ROUTES = {
         ROOT: '/configurator',
         RESULT: '/configurator/result',
     },
+    MY_DESIGNS: '/my-designs',
+    DESIGN_DETAIL: (id: string) => `/my-designs/${id}`,
+    CREDITS: '/credits',
+    MY_QUOTES: '/my-quotes',
+    QUOTE_DETAIL: (id: string) => `/my-quotes/${id}`,
 } as const;

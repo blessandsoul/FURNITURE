@@ -4,13 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Armchair } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { BeforeAfterSlider } from '@/features/configurator/components/result/BeforeAfterSlider';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/lib/constants/routes';
-
-// TODO: Replace with real before/after room photos
-const BEFORE_SRC = 'https://images.unsplash.com/photo-1560448075-cbc16bb4af8e?w=1200&q=80';
-const AFTER_SRC  = 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1200&q=80';
 
 const COLOR_OPTIONS = [
     { id: 'cream',    label: 'Cream',    hex: '#F5F0E8', modifier: 0 },
@@ -29,7 +24,7 @@ function HeroConfiguratorCard(): React.JSX.Element {
     const total = BASE_PRICE + activeColor.modifier;
 
     return (
-        <div className="relative w-full overflow-hidden rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] p-5 shadow-xl shadow-foreground/10 backdrop-blur-md">
+        <div className="relative w-full overflow-hidden rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] p-5 shadow-xl shadow-foreground/10">
             {/* Glow */}
             <div
                 aria-hidden="true"
@@ -113,16 +108,6 @@ function HeroConfiguratorCard(): React.JSX.Element {
 export function HeroSection(): React.JSX.Element {
     return (
         <section className="relative overflow-hidden px-4 py-10 md:py-14 lg:min-h-[calc(100dvh-4rem)] lg:flex lg:items-center">
-            {/* Warm grain texture overlay for tactile depth */}
-            <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.025]"
-                style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E")`,
-                    backgroundRepeat: 'repeat',
-                    backgroundSize: '128px',
-                }}
-            />
 
             {/* Ambient background gradients */}
             <div
@@ -230,7 +215,7 @@ export function HeroSection(): React.JSX.Element {
                         </div>
                     </div>
 
-                    {/* ── Right column: Before / After slider ────────────── */}
+                    {/* ── Right column: showcase placeholder ────────────── */}
                     <div className="flex-1 min-w-0">
                         {/* Slider label row */}
                         <div className="mb-3 flex items-center justify-between">
@@ -240,16 +225,15 @@ export function HeroSection(): React.JSX.Element {
                             >
                                 AI Room Transformation
                             </span>
-                            <span className="text-[11px] text-muted-foreground/70">← drag to compare →</span>
                         </div>
 
-                        <BeforeAfterSlider
-                            beforeSrc={BEFORE_SRC}
-                            afterSrc={AFTER_SRC}
-                            beforeLabel="Before"
-                            afterLabel="After AI Design"
-                            className="shadow-2xl shadow-foreground/10"
-                        />
+                        {/* TODO: Restore BeforeAfterSlider once room-redesign feature is rebuilt */}
+                        <div className="flex aspect-[16/10] items-center justify-center rounded-2xl border border-border/50 bg-muted/30 shadow-2xl shadow-foreground/10">
+                            <div className="text-center">
+                                <p className="text-sm font-semibold text-foreground">AI Room Preview</p>
+                                <p className="mt-1 text-xs text-muted-foreground">Coming soon</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

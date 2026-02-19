@@ -1,13 +1,58 @@
-import type { FurnitureStyleId, OptionCategory } from '@/features/configurator/types/configurator.types';
+export type DesignStatus = 'DRAFT' | 'GENERATED' | 'QUOTED';
 
-export interface SavedDesign {
-    id: string;
-    name: string;
-    styleId: FurnitureStyleId;
-    styleLabel: string;
-    options: Record<OptionCategory, string | null>;
-    optionLabels: Record<OptionCategory, string | null>;
-    totalPrice: number;
-    imageUrl?: string;
-    createdAt: string;
+export interface ConfigSnapshotOption {
+    groupName: string;
+    groupSlug: string;
+    valueLabel: string;
+    valueSlug: string;
+    priceModifier: number;
 }
+
+export interface ConfigSnapshot {
+    basePrice: number;
+    currency: string;
+    options: ConfigSnapshotOption[];
+}
+
+export interface Design {
+    id: string;
+    userId: string;
+    categoryId: string;
+    name: string;
+    totalPrice: number;
+    currency: string;
+    configSnapshot: ConfigSnapshot;
+    imageUrl: string | null;
+    thumbnailUrl: string | null;
+    roomImageUrl: string | null;
+    roomThumbnailUrl: string | null;
+    status: DesignStatus;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface DesignWithCategory extends Design {
+    categoryName: string;
+    categorySlug: string;
+}
+
+export interface PriceCalculation {
+    basePrice: number;
+    currency: string;
+    options: ConfigSnapshotOption[];
+    totalPrice: number;
+}
+
+export interface CreateDesignRequest {
+    categoryId: string;
+    name: string;
+    optionValueIds: string[];
+    roomImageUrl?: string;
+    roomThumbnailUrl?: string;
+}
+
+export interface UpdateDesignRequest {
+    name?: string;
+    optionValueIds?: string[];
+}
+

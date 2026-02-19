@@ -39,7 +39,7 @@ export function FeaturesSection(): React.JSX.Element {
                     return (
                         <div
                             key={feature.title}
-                            className="rounded-xl border border-[--border-crisp] bg-[--surface-enamel] p-6 backdrop-blur-md shadow-[--shadow-enamel] motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:shadow-[--shadow-enamel-hover] motion-safe:hover:-translate-y-0.5"
+                            className="rounded-xl border border-[--border-crisp] bg-[--surface-enamel] p-6 shadow-[--shadow-enamel] motion-safe:transition-all motion-safe:duration-300 motion-safe:hover:shadow-[--shadow-enamel-hover] motion-safe:hover:-translate-y-0.5"
                         >
                             <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10">
                                 <Icon className="h-5 w-5 text-primary" />

@@ -11,10 +11,10 @@ const HIGHLIGHTS = [
 export function ReimagineCTASection(): React.JSX.Element {
     return (
         <section className="container mx-auto px-4 py-20 md:px-6 lg:px-8">
-            <div className="relative overflow-hidden rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] shadow-[--shadow-enamel] backdrop-blur-md">
+            <div className="relative overflow-hidden rounded-2xl border border-[--border-crisp] bg-[--surface-enamel] shadow-[--shadow-enamel]">
                 {/* Decorative gradient orb */}
-                <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+                <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-2xl" />
+                <div className="pointer-events-none absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-primary/5 blur-2xl" />
 
                 <div className="relative flex flex-col items-center gap-8 px-6 py-12 md:flex-row md:gap-12 md:px-12 md:py-16">
                     {/* Left: Icon + content */}

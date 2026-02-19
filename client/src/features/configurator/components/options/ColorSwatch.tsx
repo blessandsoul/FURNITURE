@@ -1,22 +1,22 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { FurnitureOption } from '../../types/configurator.types';
+import type { PublicOptionValue } from '@/features/catalog/types/catalog.types';
 
 interface ColorSwatchProps {
-    option: FurnitureOption;
+    value: PublicOptionValue;
     isSelected: boolean;
-    onSelect: (optionId: string) => void;
+    onSelect: (valueId: string) => void;
 }
 
-export function ColorSwatch({ option, isSelected, onSelect }: ColorSwatchProps): React.JSX.Element {
+export function ColorSwatch({ value, isSelected, onSelect }: ColorSwatchProps): React.JSX.Element {
     return (
         <button
             type="button"
-            onClick={() => onSelect(option.id)}
+            onClick={() => onSelect(value.id)}
             aria-pressed={isSelected}
-            aria-label={option.label}
-            title={option.label}
+            aria-label={value.label}
+            title={value.label}
             className={cn(
                 'relative h-9 w-9 rounded-full border-2 transition-all duration-150',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2',
@@ -25,7 +25,7 @@ export function ColorSwatch({ option, isSelected, onSelect }: ColorSwatchProps):
                     ? 'border-primary ring-2 ring-primary ring-offset-2'
                     : 'border-border hover:border-primary/50 hover:scale-110',
             )}
-            style={{ backgroundColor: option.colorHex }}
+            style={{ backgroundColor: value.colorHex ?? undefined }}
         />
     );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -15,23 +15,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { useConfigurator } from '@/features/configurator/hooks/useConfigurator';
-import { usePriceCalculator } from '@/features/configurator/hooks/usePriceCalculator';
+import { getErrorMessage } from '@/lib/utils/error';
+import { useDesign } from '@/features/designs/hooks/useDesigns';
+import { useSubmitQuote } from '../hooks/useQuotes';
 import { quoteRequestSchema } from '../schemas/quote.schemas';
-import { quoteService } from '../services/quote.service';
 import type { QuoteFormValues } from '../schemas/quote.schemas';
-import type { QuoteRequest } from '../types/quote.types';
 
 interface QuoteModalProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    imageUrl: string | undefined;
+    designId: string;
 }
 
-export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): React.JSX.Element {
-    const { selectedStyle, selectedOptions } = useConfigurator();
-    const breakdown = usePriceCalculator();
-    const [isSubmitting, setIsSubmitting] = useState(false);
+export function QuoteModal({ open, onOpenChange, designId }: QuoteModalProps): React.JSX.Element {
+    const { data: design } = useDesign(designId);
+    const submitQuote = useSubmitQuote();
 
     const {
         register,
@@ -40,45 +38,29 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
         formState: { errors },
     } = useForm<QuoteFormValues>({
         resolver: zodResolver(quoteRequestSchema),
-        defaultValues: { name: '', phone: '', email: '', city: '', message: '' },
+        defaultValues: { contactName: '', contactEmail: '', contactPhone: '', message: '' },
     });
 
-    const onSubmit = useCallback(async (formData: QuoteFormValues) => {
-        if (!selectedStyle) return;
-
-        setIsSubmitting(true);
-        try {
-            const quoteData: QuoteRequest = {
-                name: formData.name,
-                phone: formData.phone,
-                email: formData.email || undefined,
-                city: formData.city || undefined,
+    const onSubmit = useCallback(
+        (formData: QuoteFormValues) => {
+            submitQuote.mutateAsync({
+                designId,
+                contactName: formData.contactName,
+                contactEmail: formData.contactEmail,
+                contactPhone: formData.contactPhone,
                 message: formData.message || undefined,
-                design: {
-                    styleId: selectedStyle.id,
-                    styleLabel: selectedStyle.label,
-                    options: selectedOptions.map((opt) => ({
-                        category: opt.category,
-                        label: opt.label,
-                        priceModifier: opt.priceModifier,
-                    })),
-                    totalPrice: breakdown.total,
-                    imageUrl,
-                },
-            };
-
-            await quoteService.submitQuote(quoteData);
-            toast.success('Quote request sent! We\'ll get back to you soon.');
-            reset();
-            onOpenChange(false);
-        } catch (error) {
-            toast.error(
-                error instanceof Error ? error.message : 'Failed to send quote request',
-            );
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [selectedStyle, selectedOptions, breakdown.total, imageUrl, reset, onOpenChange]);
+            })
+                .then(() => {
+                    toast.success('Quote request sent! We\'ll get back to you soon.');
+                    reset();
+                    onOpenChange(false);
+                })
+                .catch((error: unknown) => {
+                    toast.error(getErrorMessage(error));
+                });
+        },
+        [designId, submitQuote, reset, onOpenChange],
+    );
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -91,24 +73,24 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
                 </DialogHeader>
 
                 {/* Design summary */}
-                {selectedStyle && (
+                {design && (
                     <div className="rounded-lg border border-border/50 bg-muted/30 p-3">
                         <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-foreground">
-                                {selectedStyle.label}
+                                {design.name}
                             </span>
                             <span className="text-sm font-bold tabular-nums text-foreground">
-                                ${breakdown.total.toLocaleString()}
+                                ${design.totalPrice.toLocaleString()}
                             </span>
                         </div>
-                        {selectedOptions.length > 0 && (
+                        {design.configSnapshot?.options && design.configSnapshot.options.length > 0 && (
                             <div className="mt-2 flex flex-wrap gap-1">
-                                {selectedOptions.map((opt) => (
+                                {design.configSnapshot.options.map((opt) => (
                                     <span
-                                        key={opt.id}
+                                        key={`${opt.groupSlug}-${opt.valueSlug}`}
                                         className="inline-flex rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
                                     >
-                                        {opt.label}
+                                        {opt.valueLabel}
                                     </span>
                                 ))}
                             </div>
@@ -123,11 +105,25 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
                         <Input
                             id="quote-name"
                             placeholder="Your full name"
-                            aria-invalid={!!errors.name}
-                            {...register('name')}
+                            aria-invalid={!!errors.contactName}
+                            {...register('contactName')}
                         />
-                        {errors.name && (
-                            <p className="text-xs text-destructive">{errors.name.message}</p>
+                        {errors.contactName && (
+                            <p className="text-xs text-destructive">{errors.contactName.message}</p>
+                        )}
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="quote-email">Email *</Label>
+                        <Input
+                            id="quote-email"
+                            type="email"
+                            placeholder="you@example.com"
+                            aria-invalid={!!errors.contactEmail}
+                            {...register('contactEmail')}
+                        />
+                        {errors.contactEmail && (
+                            <p className="text-xs text-destructive">{errors.contactEmail.message}</p>
                         )}
                     </div>
 
@@ -137,34 +133,11 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
                             id="quote-phone"
                             type="tel"
                             placeholder="+995 555 000 000"
-                            aria-invalid={!!errors.phone}
-                            {...register('phone')}
+                            aria-invalid={!!errors.contactPhone}
+                            {...register('contactPhone')}
                         />
-                        {errors.phone && (
-                            <p className="text-xs text-destructive">{errors.phone.message}</p>
-                        )}
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="quote-city">City</Label>
-                        <Input
-                            id="quote-city"
-                            placeholder="Your city"
-                            {...register('city')}
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="quote-email">Email (optional)</Label>
-                        <Input
-                            id="quote-email"
-                            type="email"
-                            placeholder="you@example.com"
-                            aria-invalid={!!errors.email}
-                            {...register('email')}
-                        />
-                        {errors.email && (
-                            <p className="text-xs text-destructive">{errors.email.message}</p>
+                        {errors.contactPhone && (
+                            <p className="text-xs text-destructive">{errors.contactPhone.message}</p>
                         )}
                     </div>
 
@@ -183,10 +156,10 @@ export function QuoteModal({ open, onOpenChange, imageUrl }: QuoteModalProps): R
 
                     <Button
                         type="submit"
-                        disabled={isSubmitting}
+                        disabled={submitQuote.isPending}
                         className="w-full"
                     >
-                        {isSubmitting ? 'Sending...' : 'Send Quote Request'}
+                        {submitQuote.isPending ? 'Sending...' : 'Send Quote Request'}
                     </Button>
                 </form>
             </DialogContent>

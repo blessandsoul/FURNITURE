@@ -1,58 +1,12 @@
-export type FurnitureStyleId =
-    | 'sofa'
-    | 'bed'
-    | 'dining-table'
-    | 'coffee-table'
-    | 'wardrobe'
-    | 'bookshelf'
-    | 'armchair'
-    | 'desk';
-
-export type OptionCategory = 'color' | 'material' | 'leg_style' | 'size' | 'upholstery';
+// ─── Configurator Core Types ─────────────────────────────────────────────────
+// Dynamic, catalog-driven configurator state. All furniture data comes from
+// the server catalog API — no hardcoded style IDs or option categories.
 
 export type ConfiguratorStep = 1 | 2 | 3 | 4;
 
-export interface VideoMotion {
-    id: string;
-    label: string;           // UI: "Open doors"
-    description: string;     // UI tooltip: "Both doors swing open smoothly"
-    videoPrompt: string;     // Full video generation prompt
-}
+export type ConfiguratorMode = 'scratch' | 'reimagine';
 
-export interface FurnitureStyle {
-    id: FurnitureStyleId;
-    label: string;
-    description: string;
-    basePrice: number;
-    iconName: string;
-    promptFragment: string;
-    videoMotions: VideoMotion[];
-}
-
-export interface VideoGenerationRequest {
-    imageUrl: string;
-    videoPrompt: string;
-    styleId: FurnitureStyleId;
-}
-
-export interface VideoGenerationResponse {
-    videoUrl: string;
-    motionLabel: string;
-}
-
-export interface FurnitureOption {
-    id: string;
-    category: OptionCategory;
-    label: string;
-    priceModifier: number;
-    colorHex?: string;
-    promptFragment: string;
-}
-
-export interface ConfiguratorSelections {
-    style: FurnitureStyleId | null;
-    options: Record<OptionCategory, string | null>;
-}
+// ─── Price Types (used by PricePanel / PriceBreakdownCard) ──────────────────
 
 export interface PriceLineItem {
     label: string;
@@ -63,24 +17,35 @@ export interface PriceLineItem {
 export interface PriceBreakdown {
     lineItems: PriceLineItem[];
     total: number;
+    currency: string;
 }
+
+// ─── Configurator State ─────────────────────────────────────────────────────
 
 export interface ConfiguratorState {
     mode: ConfiguratorMode;
-    selections: ConfiguratorSelections;
+    selectedCategoryId: string | null;
+    selectedCategorySlug: string | null;
+    selectedOptionValueIds: string[];
     generatedImageUrls: string[];
+    savedDesignId: string | null;
+    generationId: string | null;
     roomRedesign: RoomRedesignState;
 }
 
+// ─── Configurator Actions ───────────────────────────────────────────────────
+
 export type ConfiguratorAction =
     | { type: 'SET_MODE'; payload: ConfiguratorMode }
-    | { type: 'SET_STYLE'; payload: FurnitureStyleId }
-    | { type: 'SET_OPTION'; payload: { category: OptionCategory; optionId: string } }
-    | { type: 'CLEAR_OPTION'; payload: { category: OptionCategory } }
-    | { type: 'SET_IMAGE_URLS'; payload: string[] }
-    | { type: 'LOAD_DESIGN'; payload: { selections: ConfiguratorSelections; imageUrls?: string[] } }
+    | { type: 'SET_CATEGORY'; payload: { id: string; slug: string } }
+    | { type: 'TOGGLE_OPTION_VALUE'; payload: { groupId: string; valueId: string; isRequired: boolean; groupValueIds: string[] } }
+    | { type: 'ADD_GENERATED_IMAGE'; payload: string }
+    | { type: 'SET_GENERATED_IMAGES'; payload: string[] }
+    | { type: 'SET_SAVED_DESIGN'; payload: string }
+    | { type: 'SET_GENERATION_ID'; payload: string }
     | { type: 'HYDRATE_SESSION'; payload: ConfiguratorState }
-    | { type: 'SET_ROOM_IMAGE'; payload: string }
+    | { type: 'SET_ROOM_IMAGE'; payload: { roomImageUrl: string; thumbnailUrl: string } }
+    | { type: 'SET_PLACEMENT_INSTRUCTIONS'; payload: string }
     | { type: 'SET_ROOM_TYPE'; payload: RoomType }
     | { type: 'SET_TRANSFORMATION_MODE'; payload: TransformationMode }
     | { type: 'SET_ROOM_STYLE'; payload: RoomDesignStyle }
@@ -88,27 +53,27 @@ export type ConfiguratorAction =
     | { type: 'RESET_ROOM_REDESIGN' }
     | { type: 'RESET' };
 
-export interface FurniturePreset {
+// ─── Video Types (kept for Step 4 — "Coming Soon" placeholder) ──────────────
+
+export interface VideoMotion {
     id: string;
     label: string;
     description: string;
-    styleId: FurnitureStyleId;
-    options: Record<OptionCategory, string | null>;
+    videoPrompt: string;
 }
 
-export interface ImageGenerationRequest {
-    prompt: string;
-    styleId?: string;
+export interface VideoGenerationRequest {
+    imageUrl: string;
+    videoPrompt: string;
+    styleId: string;
 }
 
-export interface ImageGenerationResponse {
-    imageUrls: string[];     // 6 variations
-    revisedPrompt?: string;
+export interface VideoGenerationResponse {
+    videoUrl: string;
+    motionLabel: string;
 }
 
-// ─── Room Reimagine Types ────────────────────────────────────────────────────
-
-export type ConfiguratorMode = 'scratch' | 'reimagine';
+// ─── Room Reimagine Types (kept — "Coming Soon" placeholder) ────────────────
 
 export type RoomType = 'kitchen' | 'living-room' | 'bedroom' | 'bathroom' | 'office';
 
@@ -126,22 +91,12 @@ export type RoomDesignStyle =
 
 export interface RoomRedesignState {
     roomImageUrl: string | null;
+    roomThumbnailUrl: string | null;
+    placementInstructions: string;
     roomType: RoomType | null;
     transformationMode: TransformationMode | null;
     roomStyle: RoomDesignStyle | null;
     resultImageUrl: string | null;
-}
-
-export interface RoomRedesignRequest {
-    roomImage: string;
-    roomType: RoomType;
-    transformationMode: TransformationMode;
-    roomStyle: RoomDesignStyle;
-}
-
-export interface RoomRedesignResponse {
-    resultImageUrl: string;
-    appliedStyle: string;
 }
 
 export interface RoomTypeOption {

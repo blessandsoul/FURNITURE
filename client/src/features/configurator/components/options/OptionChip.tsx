@@ -1,27 +1,27 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import type { FurnitureOption } from '../../types/configurator.types';
+import type { PublicOptionValue } from '@/features/catalog/types/catalog.types';
 
 interface OptionChipProps {
-    option: FurnitureOption;
+    value: PublicOptionValue;
     isSelected: boolean;
-    onSelect: (optionId: string) => void;
+    onSelect: (valueId: string) => void;
 }
 
-export function OptionChip({ option, isSelected, onSelect }: OptionChipProps): React.JSX.Element {
-    const hasModifier = option.priceModifier !== 0;
+export function OptionChip({ value, isSelected, onSelect }: OptionChipProps): React.JSX.Element {
+    const hasModifier = value.priceModifier !== 0;
     const modifierLabel =
         hasModifier
-            ? option.priceModifier > 0
-                ? `+$${option.priceModifier}`
-                : `-$${Math.abs(option.priceModifier)}`
+            ? value.priceModifier > 0
+                ? `+$${value.priceModifier}`
+                : `-$${Math.abs(value.priceModifier)}`
             : null;
 
     return (
         <button
             type="button"
-            onClick={() => onSelect(option.id)}
+            onClick={() => onSelect(value.id)}
             aria-pressed={isSelected}
             className={cn(
                 'relative inline-flex flex-col items-center gap-0.5 rounded-lg px-3 py-2 text-sm font-medium',
@@ -33,7 +33,7 @@ export function OptionChip({ option, isSelected, onSelect }: OptionChipProps): R
                     : 'border-border bg-secondary text-secondary-foreground hover:border-primary/40 hover:bg-accent',
             )}
         >
-            <span>{option.label}</span>
+            <span>{value.label}</span>
             {modifierLabel && (
                 <span
                     className={cn(

@@ -1,42 +1,41 @@
 'use client';
 
-import { DownloadSimple, LinkSimple, ChatText } from '@phosphor-icons/react';
+import { DownloadSimple, ArrowsClockwise, ChatText, Heart, SpinnerGap } from '@phosphor-icons/react';
 import { useCallback, useState } from 'react';
-import { toast } from 'sonner';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/lib/constants/routes';
-import { useConfiguratorContext } from '../../store/configuratorContext';
-import { encodeDesignToParams } from '../../lib/share';
 import { QuoteModal } from '@/features/quotes/components/QuoteModal';
 
 interface ResultActionsProps {
     imageUrl: string | undefined;
+    designId: string | null;
+    isRegenerating: boolean;
     onRestart: () => void;
+    onRetry: () => void;
 }
 
-export function ResultActions({ imageUrl, onRestart }: ResultActionsProps): React.JSX.Element {
-    const { state } = useConfiguratorContext();
+export function ResultActions({ imageUrl, designId, isRegenerating, onRestart, onRetry }: ResultActionsProps): React.JSX.Element {
     const [isQuoteOpen, setIsQuoteOpen] = useState(false);
+    const [isDownloading, setIsDownloading] = useState(false);
 
-    const handleShare = useCallback(async () => {
-        try {
-            const designParams = encodeDesignToParams(state.selections);
-            designParams.set('step', '3');
-            const shareUrl = `${window.location.origin}${ROUTES.CONFIGURATOR.ROOT}?${designParams.toString()}`;
-            await navigator.clipboard.writeText(shareUrl);
-            toast.success('Link copied to clipboard');
-        } catch {
-            toast.error('Could not copy link');
-        }
-    }, [state.selections]);
-
-    const handleDownload = useCallback(() => {
+    const handleDownload = useCallback(async () => {
         if (!imageUrl) return;
-        const anchor = document.createElement('a');
-        anchor.href = imageUrl;
-        anchor.download = 'atlas-furniture-design.png';
-        anchor.rel = 'noopener noreferrer';
-        anchor.click();
+        setIsDownloading(true);
+        try {
+            const response = await fetch(imageUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = blobUrl;
+            anchor.download = 'atlas-furniture-design.png';
+            anchor.click();
+            URL.revokeObjectURL(blobUrl);
+        } catch {
+            window.open(imageUrl, '_blank', 'noopener,noreferrer');
+        } finally {
+            setIsDownloading(false);
+        }
     }, [imageUrl]);
 
     const handleQuote = useCallback(() => {
@@ -46,32 +45,56 @@ export function ResultActions({ imageUrl, onRestart }: ResultActionsProps): Reac
     return (
         <>
             <div className="flex flex-col gap-2">
+                {designId && (
+                    <Button
+                        variant="outline"
+                        onClick={handleQuote}
+                        className="w-full justify-start gap-2"
+                    >
+                        <ChatText className="h-4 w-4" />
+                        Request Quote
+                    </Button>
+                )}
+
                 <Button
                     onClick={handleDownload}
-                    disabled={!imageUrl}
+                    disabled={!imageUrl || isDownloading}
+                    variant="outline"
                     className="w-full justify-start gap-2"
                 >
-                    <DownloadSimple className="h-4 w-4" />
-                    Download Image
+                    {isDownloading ? (
+                        <SpinnerGap className="h-4 w-4 animate-spin" />
+                    ) : (
+                        <DownloadSimple className="h-4 w-4" />
+                    )}
+                    {isDownloading ? 'Downloading...' : 'Download Image'}
                 </Button>
 
                 <Button
                     variant="outline"
-                    onClick={handleShare}
+                    onClick={onRetry}
+                    disabled={!designId || isRegenerating}
                     className="w-full justify-start gap-2"
                 >
-                    <LinkSimple className="h-4 w-4" />
-                    Copy Share Link
+                    {isRegenerating ? (
+                        <SpinnerGap className="h-4 w-4 animate-spin" />
+                    ) : (
+                        <ArrowsClockwise className="h-4 w-4" />
+                    )}
+                    {isRegenerating ? 'Regenerating...' : 'Regenerate'}
                 </Button>
 
-                <Button
-                    variant="outline"
-                    onClick={handleQuote}
-                    className="w-full justify-start gap-2"
-                >
-                    <ChatText className="h-4 w-4" />
-                    Request Quote
-                </Button>
+                {designId && (
+                    <Link href={ROUTES.MY_DESIGNS} className="w-full">
+                        <Button
+                            variant="outline"
+                            className="w-full justify-start gap-2"
+                        >
+                            <Heart className="h-4 w-4" />
+                            View My Designs
+                        </Button>
+                    </Link>
+                )}
 
                 <button
                     type="button"
@@ -82,11 +105,13 @@ export function ResultActions({ imageUrl, onRestart }: ResultActionsProps): Reac
                 </button>
             </div>
 
-            <QuoteModal
-                open={isQuoteOpen}
-                onOpenChange={setIsQuoteOpen}
-                imageUrl={imageUrl}
-            />
+            {designId && (
+                <QuoteModal
+                    open={isQuoteOpen}
+                    onOpenChange={setIsQuoteOpen}
+                    designId={designId}
+                />
+            )}
         </>
     );
 }

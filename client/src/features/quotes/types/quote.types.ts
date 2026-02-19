@@ -1,26 +1,38 @@
-import type { FurnitureStyleId } from '@/features/configurator/types/configurator.types';
+export type QuoteStatus = 'PENDING' | 'VIEWED' | 'CONTACTED' | 'COMPLETED' | 'CANCELLED';
 
-export interface QuoteDesignSummary {
-    styleId: FurnitureStyleId;
-    styleLabel: string;
-    options: { category: string; label: string; priceModifier: number }[];
-    totalPrice: number;
-    imageUrl?: string;
+export interface Quote {
+    id: string;
+    userId: string;
+    designId: string;
+    contactName: string;
+    contactEmail: string;
+    contactPhone: string;
+    message: string | null;
+    quotedPrice: number | null;
+    currency: string;
+    status: QuoteStatus;
+    adminNotes: string | null;
+    respondedAt: string | null;
+    createdAt: string;
+    updatedAt: string;
 }
 
-export interface QuoteRequest {
-    name: string;
-    phone: string;
-    email?: string;
-    city?: string;
+export interface QuoteWithDesign extends Quote {
+    design: {
+        name: string;
+        totalPrice: number;
+        currency: string;
+        imageUrl: string | null;
+        thumbnailUrl: string | null;
+        status: string;
+    };
+}
+
+export interface CreateQuoteRequest {
+    designId: string;
+    contactName: string;
+    contactEmail: string;
+    contactPhone: string;
     message?: string;
-    design: QuoteDesignSummary;
 }
 
-export interface QuoteFormData {
-    name: string;
-    phone: string;
-    email: string;
-    city: string;
-    message: string;
-}

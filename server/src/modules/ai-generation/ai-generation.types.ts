@@ -1,4 +1,4 @@
-import type { AiGenerationStatus } from '@prisma/client';
+import type { AiGenerationStatus, GenerationType } from '@prisma/client';
 
 export interface PublicAiGeneration {
   id: string;
@@ -8,6 +8,9 @@ export interface PublicAiGeneration {
   userFreeText: string | null;
   model: string;
   status: AiGenerationStatus;
+  generationType: GenerationType;
+  roomImageUrl: string | null;
+  placementInstructions: string | null;
   imageUrl: string | null;
   thumbnailUrl: string | null;
   errorMessage: string | null;

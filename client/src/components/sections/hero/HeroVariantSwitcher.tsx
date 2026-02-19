@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 type HeroVariant = 'A' | 'B' | 'C';
@@ -8,13 +9,17 @@ interface HeroVariantSwitcherProps {
     current: HeroVariant;
 }
 
+function setCookie(name: string, value: string, maxAge: number): void {
+    globalThis.document.cookie = `${name}=${value}; path=/; max-age=${maxAge}`;
+}
+
 export function HeroVariantSwitcher({ current }: HeroVariantSwitcherProps): React.JSX.Element {
     const router = useRouter();
 
-    function handleSelect(variant: HeroVariant): void {
-        document.cookie = `heroVariant=${variant}; path=/; max-age=86400`;
+    const handleSelect = useCallback((variant: HeroVariant): void => {
+        setCookie('heroVariant', variant, 86400);
         router.refresh();
-    }
+    }, [router]);
 
     return (
         <div className="fixed top-4 right-4 z-50 flex items-center gap-1 rounded-full border border-border bg-background/90 p-1 shadow-lg backdrop-blur-md">

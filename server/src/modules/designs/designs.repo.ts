@@ -72,6 +72,8 @@ class DesignsRepository {
       currency: string;
       configSnapshot: Prisma.InputJsonValue;
       optionValueIds: string[];
+      roomImageUrl?: string;
+      roomThumbnailUrl?: string;
     },
     tx?: Prisma.TransactionClient,
   ): Promise<Design> {
@@ -84,6 +86,8 @@ class DesignsRepository {
         totalPrice: data.totalPrice,
         currency: data.currency,
         configSnapshot: data.configSnapshot,
+        roomImageUrl: data.roomImageUrl ?? null,
+        roomThumbnailUrl: data.roomThumbnailUrl ?? null,
         optionItems: {
           create: data.optionValueIds.map((optionValueId) => ({ optionValueId })),
         },

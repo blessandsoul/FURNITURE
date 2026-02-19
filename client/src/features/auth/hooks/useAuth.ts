@@ -31,7 +31,7 @@ export const useAuth = (): UseAuthReturn => {
         mutationFn: (data: ILoginRequest) => authService.login(data),
         onSuccess: (data) => {
             dispatch(setCredentials({ user: data.user }));
-            const redirectTo = searchParams.get('from') || '/dashboard';
+            const redirectTo = searchParams.get('from') || '/my-designs';
             router.push(redirectTo);
         },
     });
@@ -40,7 +40,7 @@ export const useAuth = (): UseAuthReturn => {
         mutationFn: (data: IRegisterRequest) => authService.register(data),
         onSuccess: (data) => {
             dispatch(setCredentials({ user: data.user }));
-            router.push('/dashboard');
+            router.push('/my-designs');
         },
     });
 

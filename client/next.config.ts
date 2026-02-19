@@ -3,6 +3,10 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 const withNextIntl = createNextIntlPlugin();
 
+// Extract API server hostname for image optimization
+const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1';
+const apiUrl = new URL(apiBaseUrl);
+
 const nextConfig: NextConfig = {
   async headers() {
     return [
@@ -26,6 +30,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'placehold.co',
+      },
+      {
+        protocol: apiUrl.protocol.replace(':', '') as 'http' | 'https',
+        hostname: apiUrl.hostname,
+        port: apiUrl.port,
       },
     ],
   },

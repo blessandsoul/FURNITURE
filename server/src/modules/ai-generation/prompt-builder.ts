@@ -62,6 +62,36 @@ const PHOTOGRAPHY_DIRECTION = `=== PHOTOGRAPHY DIRECTION ===
 - Render style: Photorealistic product photography, sharp focus, subtle depth of field on background
 - Quality: High-resolution commercial product shot, e-commerce catalog quality`;
 
+// ─── Reimagine Constants ────────────────────────────────────
+
+const REIMAGINE_SYSTEM_INSTRUCTION = `You are an expert interior designer and photorealistic image compositor.
+You receive a photograph of a real room and specifications for a piece of furniture.
+Your task is to generate a new image showing the specified furniture naturally placed in the room.
+
+STRICT RULES:
+- The output MUST look like an authentic photograph — indistinguishable from a real photo
+- Match the room's existing lighting, perspective, shadows, and color temperature exactly
+- The placed furniture must have correct proportions relative to the room
+- Maintain the room's existing walls, floor, ceiling, and architectural features
+- Do not add text, watermarks, labels, or logos
+- Do not add people, pets, or living beings
+- Keep all existing elements of the room intact unless placement instructions say otherwise
+- The furniture piece must cast appropriate shadows consistent with the room's light sources`;
+
+const REIMAGINE_COMPOSITING_DIRECTION = `=== COMPOSITING DIRECTION ===
+- Perspective: Match the exact camera angle and lens distortion of the original photograph
+- Lighting: Analyze the room's existing light sources and replicate their effect on the furniture
+- Shadows: Generate floor shadows and ambient occlusion that match the room's lighting setup
+- Materials: Render furniture materials with accurate reflections and texture detail
+- Color grading: Match the color temperature and exposure of the original photograph
+- Integration: The furniture should look like it was always part of the room
+- Quality: High-resolution, photorealistic composite — indistinguishable from a real photograph`;
+
+/** Additional input for reimagine mode */
+export interface ReimaginePromptInput extends PromptBuilderInput {
+  placementInstructions: string | null;
+}
+
 // ─── Sanitization ───────────────────────────────────────────
 
 /**
@@ -103,6 +133,63 @@ function formatOption(option: PromptOptionItem): string {
  * category requires zero code changes: the admin just configures the category
  * description and option value prompt hints via the catalog API.
  */
+export function buildReimaginePrompt(input: ReimaginePromptInput): PromptBuilderOutput {
+  const sections: string[] = [];
+
+  // Section 1: Room placement request
+  sections.push('=== ROOM FURNITURE PLACEMENT REQUEST ===');
+  sections.push('');
+  sections.push('I am providing a photograph of a room. Place the following furniture into this room:');
+  sections.push('');
+  sections.push(`FURNITURE TYPE: ${input.categoryName}`);
+
+  if (input.categoryDescription?.trim()) {
+    sections.push(`CONTEXT: ${input.categoryDescription.trim()}`);
+  }
+
+  // Section 2: Furniture specifications from selected options
+  if (input.options.length > 0) {
+    sections.push('');
+    sections.push('=== FURNITURE SPECIFICATIONS ===');
+    for (const option of input.options) {
+      sections.push(formatOption(option));
+    }
+  }
+
+  // Section 3: Placement instructions (sanitized)
+  if (input.placementInstructions?.trim()) {
+    const sanitized = sanitizeFreeText(input.placementInstructions);
+    if (sanitized.length > 0) {
+      sections.push('');
+      sections.push('=== PLACEMENT INSTRUCTIONS ===');
+      sections.push(sanitized);
+    }
+  }
+
+  // Section 4: User free text (optional, sanitized)
+  if (input.freeText?.trim()) {
+    const sanitized = sanitizeFreeText(input.freeText);
+    if (sanitized.length > 0) {
+      sections.push('');
+      sections.push('=== ADDITIONAL DETAILS ===');
+      sections.push(sanitized);
+    }
+  }
+
+  // Section 5: Compositing direction
+  sections.push('');
+  sections.push(REIMAGINE_COMPOSITING_DIRECTION);
+
+  const generationPrompt = sections.join('\n');
+  const fullPromptForLog = `[SYSTEM]\n${REIMAGINE_SYSTEM_INSTRUCTION}\n\n[PROMPT]\n${generationPrompt}`;
+
+  return {
+    systemInstruction: REIMAGINE_SYSTEM_INSTRUCTION,
+    generationPrompt,
+    fullPromptForLog,
+  };
+}
+
 export function buildPrompt(input: PromptBuilderInput): PromptBuilderOutput {
   const sections: string[] = [];
 

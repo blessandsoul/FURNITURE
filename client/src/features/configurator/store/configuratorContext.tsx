@@ -1,27 +1,18 @@
 'use client';
 
 import { createContext, useContext, useEffect, useReducer, useRef, type ReactNode } from 'react';
-import { useSearchParams } from 'next/navigation';
 import type {
     ConfiguratorAction,
     ConfiguratorState,
-    OptionCategory,
     RoomRedesignState,
 } from '../types/configurator.types';
-import { decodeDesignFromParams, hasDesignInParams } from '../lib/share';
 
 const SESSION_KEY = 'atlas_configurator_state';
 
-const EMPTY_OPTIONS: Record<OptionCategory, string | null> = {
-    color: null,
-    material: null,
-    leg_style: null,
-    size: null,
-    upholstery: null,
-};
-
 const EMPTY_ROOM_REDESIGN: RoomRedesignState = {
     roomImageUrl: null,
+    roomThumbnailUrl: null,
+    placementInstructions: '',
     roomType: null,
     transformationMode: null,
     roomStyle: null,
@@ -30,32 +21,14 @@ const EMPTY_ROOM_REDESIGN: RoomRedesignState = {
 
 const initialState: ConfiguratorState = {
     mode: 'scratch',
-    selections: {
-        style: null,
-        options: { ...EMPTY_OPTIONS },
-    },
+    selectedCategoryId: null,
+    selectedCategorySlug: null,
+    selectedOptionValueIds: [],
     generatedImageUrls: [],
+    savedDesignId: null,
+    generationId: null,
     roomRedesign: { ...EMPTY_ROOM_REDESIGN },
 };
-
-function loadInitialState(searchParams: URLSearchParams): ConfiguratorState {
-    // URL params are deterministic (same on server & client), so safe to read here.
-    if (hasDesignInParams(searchParams)) {
-        const selections = decodeDesignFromParams(searchParams);
-        if (selections) {
-            return {
-                mode: 'scratch',
-                selections,
-                generatedImageUrls: [],
-                roomRedesign: { ...EMPTY_ROOM_REDESIGN },
-            };
-        }
-    }
-
-    // sessionStorage is deferred to useEffect (see ConfiguratorProvider)
-    // to avoid hydration mismatch between server (no storage) and client.
-    return initialState;
-}
 
 function loadFromSession(): ConfiguratorState | null {
     if (typeof window === 'undefined') return null;
@@ -66,19 +39,16 @@ function loadFromSession(): ConfiguratorState | null {
         return {
             ...initialState,
             ...parsed,
-            selections: {
-                ...initialState.selections,
-                ...(parsed.selections ?? {}),
-                options: {
-                    ...EMPTY_OPTIONS,
-                    ...(parsed.selections?.options ?? {}),
-                },
-            },
+            selectedOptionValueIds: Array.isArray(parsed.selectedOptionValueIds)
+                ? parsed.selectedOptionValueIds
+                : [],
+            generatedImageUrls: Array.isArray(parsed.generatedImageUrls)
+                ? parsed.generatedImageUrls
+                : [],
             roomRedesign: {
                 ...EMPTY_ROOM_REDESIGN,
                 ...(parsed.roomRedesign ?? {}),
-                // Don't restore base64 image from session — too large
-                roomImageUrl: null,
+                // Don't restore generated result image from session
                 resultImageUrl: null,
             },
         };
@@ -94,68 +64,83 @@ function configuratorReducer(state: ConfiguratorState, action: ConfiguratorActio
                 ...initialState,
                 mode: action.payload,
             };
-        case 'SET_STYLE':
+
+        case 'SET_CATEGORY':
             return {
                 ...state,
-                selections: {
-                    style: action.payload,
-                    options: { ...EMPTY_OPTIONS },
-                },
+                selectedCategoryId: action.payload.id,
+                selectedCategorySlug: action.payload.slug,
+                selectedOptionValueIds: [],
                 generatedImageUrls: [],
+                savedDesignId: null,
+                generationId: null,
             };
-        case 'SET_OPTION':
+
+        case 'TOGGLE_OPTION_VALUE': {
+            const { valueId, isRequired, groupValueIds } = action.payload;
+
+            if (isRequired) {
+                const alreadySelected = state.selectedOptionValueIds.includes(valueId);
+                if (alreadySelected) return state;
+                // Remove any existing selection from this group, then add the new one
+                const withoutGroup = state.selectedOptionValueIds.filter(
+                    (id) => !groupValueIds.includes(id),
+                );
+                return {
+                    ...state,
+                    selectedOptionValueIds: [...withoutGroup, valueId],
+                };
+            }
+
+            // Optional groups: toggle
+            const exists = state.selectedOptionValueIds.includes(valueId);
             return {
                 ...state,
-                selections: {
-                    ...state.selections,
-                    options: {
-                        ...state.selections.options,
-                        [action.payload.category]: action.payload.optionId,
-                    },
-                },
+                selectedOptionValueIds: exists
+                    ? state.selectedOptionValueIds.filter((id) => id !== valueId)
+                    : [...state.selectedOptionValueIds, valueId],
             };
-        case 'CLEAR_OPTION':
-            return {
-                ...state,
-                selections: {
-                    ...state.selections,
-                    options: {
-                        ...state.selections.options,
-                        [action.payload.category]: null,
-                    },
-                },
-            };
-        case 'SET_IMAGE_URLS':
+        }
+
+        case 'ADD_GENERATED_IMAGE':
+            return { ...state, generatedImageUrls: [...state.generatedImageUrls, action.payload] };
+
+        case 'SET_GENERATED_IMAGES':
             return { ...state, generatedImageUrls: action.payload };
-        case 'LOAD_DESIGN':
-            return {
-                ...initialState,
-                mode: 'scratch',
-                selections: {
-                    ...action.payload.selections,
-                    options: {
-                        ...EMPTY_OPTIONS,
-                        ...action.payload.selections.options,
-                    },
-                },
-                generatedImageUrls: action.payload.imageUrls ?? [],
-            };
+
+        case 'SET_SAVED_DESIGN':
+            return { ...state, savedDesignId: action.payload };
+
+        case 'SET_GENERATION_ID':
+            return { ...state, generationId: action.payload };
+
         case 'SET_ROOM_IMAGE':
-            return { ...state, roomRedesign: { ...state.roomRedesign, roomImageUrl: action.payload, resultImageUrl: null } };
+            return { ...state, roomRedesign: { ...state.roomRedesign, roomImageUrl: action.payload.roomImageUrl, roomThumbnailUrl: action.payload.thumbnailUrl, resultImageUrl: null } };
+
+        case 'SET_PLACEMENT_INSTRUCTIONS':
+            return { ...state, roomRedesign: { ...state.roomRedesign, placementInstructions: action.payload } };
+
         case 'SET_ROOM_TYPE':
             return { ...state, roomRedesign: { ...state.roomRedesign, roomType: action.payload } };
+
         case 'SET_TRANSFORMATION_MODE':
             return { ...state, roomRedesign: { ...state.roomRedesign, transformationMode: action.payload, resultImageUrl: null } };
+
         case 'SET_ROOM_STYLE':
             return { ...state, roomRedesign: { ...state.roomRedesign, roomStyle: action.payload, resultImageUrl: null } };
+
         case 'SET_ROOM_RESULT':
             return { ...state, roomRedesign: { ...state.roomRedesign, resultImageUrl: action.payload } };
+
         case 'RESET_ROOM_REDESIGN':
             return { ...state, roomRedesign: { ...EMPTY_ROOM_REDESIGN } };
+
         case 'HYDRATE_SESSION':
             return action.payload;
+
         case 'RESET':
             return initialState;
+
         default:
             return state;
     }
@@ -169,37 +154,30 @@ interface ConfiguratorContextValue {
 const ConfiguratorContext = createContext<ConfiguratorContextValue | null>(null);
 
 export function ConfiguratorProvider({ children }: { children: ReactNode }): React.JSX.Element {
-    const searchParams = useSearchParams();
-    const [state, dispatch] = useReducer(
-        configuratorReducer,
-        searchParams,
-        loadInitialState,
-    );
+    const [state, dispatch] = useReducer(configuratorReducer, initialState);
 
     // Hydrate from sessionStorage after mount to avoid SSR/client mismatch.
-    // Skip if URL params already provided state (shared link takes priority).
     const hydrated = useRef(false);
     useEffect(() => {
         if (hydrated.current) return;
         hydrated.current = true;
 
-        if (hasDesignInParams(searchParams)) return;
-
         const saved = loadFromSession();
-        if (saved && saved.selections.style !== null) {
+        if (saved && saved.selectedCategoryId !== null) {
             dispatch({ type: 'HYDRATE_SESSION', payload: saved });
         }
-    }, [searchParams]);
+    }, []);
 
     // Persist to sessionStorage on every state change.
-    // Strip base64 images to avoid exceeding sessionStorage quota.
+    // Skip until hydration is complete to avoid overwriting saved session with initialState.
     useEffect(() => {
+        if (!hydrated.current) return;
         try {
             const toSave: ConfiguratorState = {
                 ...state,
                 roomRedesign: {
                     ...state.roomRedesign,
-                    roomImageUrl: null,
+                    // Don't persist generated result image
                     resultImageUrl: null,
                 },
             };
