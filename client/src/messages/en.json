@@ -11,13 +11,49 @@
         "noAccount": "Don't have an account?",
         "loginLink": "Login",
         "registerLink": "Register",
+        "signOut": "Sign Out",
+        "loginSubtitle": "Sign in to your account to continue",
+        "registerSubtitle": "Get started with AtlasFurniture for free",
+        "forgotPassword": "Forgot password?",
+        "emailPlaceholder": "you@example.com",
+        "passwordPlaceholder": "Enter your password",
+        "createPasswordPlaceholder": "Create a strong password",
+        "confirmPasswordPlaceholder": "Re-enter your password",
+        "hidePassword": "Hide password",
+        "showPassword": "Show password",
+        "firstNameLabel": "First name",
+        "lastNameLabel": "Last name",
+        "phoneLabel": "Phone number",
+        "firstNamePlaceholder": "John",
+        "lastNamePlaceholder": "Doe",
+        "phonePlaceholder": "+995 555 123 456",
         "validation": {
             "required": "This field is required",
             "emailInvalid": "Invalid email address",
-            "passwordMin": "Password must be at least 6 characters",
-            "passwordsDoNotMatch": "Passwords do not match"
+            "passwordMin": "Password must be at least 8 characters",
+            "passwordsDoNotMatch": "Passwords do not match",
+            "phoneInvalid": "Please enter a valid phone number",
+            "uppercaseRequired": "Must contain at least one uppercase letter",
+            "lowercaseRequired": "Must contain at least one lowercase letter",
+            "numberRequired": "Must contain at least one number"
         },
-        "signOut": "Sign Out"
+        "passwordStrength": {
+            "label": "Password strength:",
+            "weak": "Weak",
+            "fair": "Fair",
+            "good": "Good",
+            "strong": "Strong"
+        },
+        "passwordRequirements": {
+            "minChars": "8+ characters",
+            "uppercase": "Uppercase letter",
+            "lowercase": "Lowercase letter",
+            "number": "Number"
+        },
+        "layout": {
+            "tagline": "Design your dream furniture with AI",
+            "body": "Pick a style, customize every detail, and watch your vision come to life — all in minutes."
+        }
     },
     "Common": {
         "loading": "Loading...",
@@ -25,13 +61,494 @@
         "save": "Save",
         "cancel": "Cancel",
         "delete": "Delete",
-        "edit": "Edit"
+        "edit": "Edit",
+        "confirm": "Confirm",
+        "back": "Back",
+        "continue": "Continue",
+        "previous": "Previous",
+        "next": "Next",
+        "tryAgain": "Try again",
+        "goBack": "Go back",
+        "goHome": "Go Home",
+        "before": "Before",
+        "after": "After",
+        "selected": "Selected",
+        "select": "Select",
+        "aiGenerated": "AI Generated",
+        "latest": "Latest",
+        "free": "Free",
+        "total": "Total",
+        "na": "N/A",
+        "allRightsReserved": "All rights reserved.",
+        "toggleTheme": "Toggle theme",
+        "toggleMenu": "Toggle menu",
+        "language": "Language",
+        "pageOf": "Page {page} of {totalPages}",
+        "deleteDesign": "Delete design"
     },
     "Navigation": {
         "home": "Home",
         "products": "Products",
         "about": "About Us",
         "contact": "Contact",
-        "myDesigns": "My Designs"
+        "myDesigns": "My Designs",
+        "startDesigning": "Start Designing",
+        "credits": "Credits"
+    },
+    "Home": {
+        "hero": {
+            "overline": "AI-Powered Furniture Design",
+            "headline": "Design Your Perfect Furniture in Minutes",
+            "headlinePerfect": "Perfect",
+            "headlineFurniture": "Furniture",
+            "headlineInMinutes": "in Minutes",
+            "subtitle": "Upload your room, choose a style — watch AI transform it. Then customize with real-time pricing.",
+            "ctaStart": "Start Designing",
+            "ctaAccount": "Create free account",
+            "ordersDelivered": "orders delivered",
+            "customerRating": "customer rating",
+            "avgDelivery": "avg. delivery",
+            "roomTransformation": "AI Room Transformation",
+            "roomLiveBadge": "Live",
+            "mockBefore": "Before",
+            "mockAfter": "After",
+            "roomDescription": "Upload a photo — AI redesigns your room",
+            "roomCta": "Try Now",
+            "configuratorTitle": "Custom Furniture — Try Live",
+            "interactive": "Interactive",
+            "productLabel": "3-Seater Linen Sofa — {color}",
+            "colorExtra": "+${modifier} color",
+            "delivery": "incl. delivery & assembly",
+            "customizeYours": "Customize yours",
+            "selectColor": "Select {color}"
+        },
+        "colors": {
+            "cream": "Cream",
+            "charcoal": "Charcoal",
+            "sand": "Sand",
+            "forest": "Forest",
+            "rust": "Rust"
+        },
+        "trustBadges": {
+            "ordersCompleted": "Orders Completed",
+            "fromCustomers": "from 340 customers",
+            "citiesCovered": "Cities Covered",
+            "averageDelivery": "Average Delivery"
+        },
+        "features": {
+            "heading": "Everything you need to design with confidence",
+            "subheading": "No design background required. Our system guides you from blank canvas to finished design.",
+            "customizableTitle": "Fully Customizable",
+            "customizableDescription": "Choose from 8 furniture types with dozens of color, material, size, and finish combinations. Every detail is yours to control.",
+            "aiPreviewsTitle": "AI-Generated Previews",
+            "aiPreviewsDescription": "Your selections are turned into a photorealistic prompt and rendered by AI — see your furniture before you buy it.",
+            "pricingTitle": "Live Pricing",
+            "pricingDescription": "Every option you choose updates the price instantly. Red velvet? +$80. Leather? +$200. No hidden costs, ever."
+        },
+        "howItWorks": {
+            "heading": "Three steps to your dream furniture",
+            "subheading": "From idea to photorealistic render — the entire process takes under two minutes.",
+            "step1Title": "Pick a Furniture Type",
+            "step1Description": "Choose from sofa, bed, dining table, desk, wardrobe, and more. Eight categories to start from.",
+            "step2Title": "Customize Every Detail",
+            "step2Description": "Select color, material, leg style, and size. Watch the price update live as you make each choice.",
+            "step3Title": "Get Your AI Preview",
+            "step3Description": "Hit \"Generate Design\" and receive a photorealistic rendering of your custom furniture within seconds.",
+            "cta": "Try it now — it's free"
+        },
+        "presets": {
+            "badge": "Designer Picks",
+            "heading": "Start from a curated design",
+            "subheading": "Skip the choices — pick a designer preset and customize from there.",
+            "emptyTitle": "Featured designs coming soon",
+            "emptyBody": "Curated presets will appear here once the catalog is live.",
+            "startFromScratch": "Or start from scratch"
+        },
+        "gallery": {
+            "heading": "Delivered to real homes",
+            "subheading": "Every piece you see was designed through Atlas and delivered to a customer in Georgia.",
+            "item1": "Custom oak dining table",
+            "item2": "Walnut bookshelf unit",
+            "item3": "Linen sofa, dove white",
+            "item4": "Espresso side table",
+            "item5": "White lacquer wardrobe",
+            "item6": "Sage velvet armchair"
+        },
+        "testimonials": {
+            "heading": "What our customers say",
+            "subheading": "Real stories from real homes across Georgia.",
+            "quote1": "We ordered a custom walnut dining table for our Tbilisi apartment. It arrived in exactly 3 weeks, assembled and ready. The quality is outstanding — far better than anything we found in stores.",
+            "name1": "Nino Beridze",
+            "item1": "Walnut dining table",
+            "quote2": "The AI preview matched the final product almost exactly. I was skeptical at first, but the linen sofa we received was perfect for our Batumi holiday home. Delivery and setup were seamless.",
+            "name2": "Giorgi Kvaratskhelia",
+            "item2": "Linen sofa",
+            "quote3": "I customized a wardrobe with specific dimensions and materials. The team confirmed everything within 2 hours and delivered on schedule. Exceptional white-glove service from start to finish.",
+            "name3": "Mariam Tsereteli",
+            "item3": "Built-in wardrobe"
+        },
+        "reimagineCTA": {
+            "badge": "New Feature",
+            "heading": "Reimagine Your Room with AI",
+            "body": "Upload a photo of your kitchen, living room, or bedroom — and watch AI transform it into a completely new design. New furniture, new style, new vibe.",
+            "highlight1": "Upload any room photo",
+            "highlight2": "3 transformation modes",
+            "highlight3": "8 design styles",
+            "cta": "Try Room Reimagine",
+            "mockBefore": "Before",
+            "mockAfter": "After"
+        },
+        "process": {
+            "heading": "What happens after you order",
+            "subheading": "You always know exactly where your furniture is in the process — from quote to delivery.",
+            "step1Title": "Request a Quote",
+            "step1Description": "Submit your design and contact details. We confirm your order and production timeline within 2 hours.",
+            "step2Title": "Production Begins",
+            "step2Description": "Expert craftsmen build your piece to exact specifications. Production takes 2–3 weeks depending on complexity.",
+            "step3Title": "Quality Check",
+            "step3Description": "Every piece is inspected against your confirmed design before leaving the workshop. No exceptions.",
+            "step4Title": "Delivery & Setup",
+            "step4Description": "White-glove delivery to any city in Georgia. Our team assembles and positions your furniture — you just enjoy it."
+        },
+        "faq": {
+            "heading": "Frequently asked questions",
+            "subheading": "Everything you need to know before placing your order.",
+            "q1": "How long does delivery take?",
+            "a1": "Standard delivery takes 3 weeks from order confirmation. Complex custom pieces may take up to 4 weeks. We send you a precise timeline within 2 hours of your order.",
+            "q2": "Can I modify my design after ordering?",
+            "a2": "Minor modifications (color, finish) are possible within the first 24 hours at no extra cost. Structural changes after production begins may incur additional fees and time.",
+            "q3": "What materials do you use?",
+            "a3": "We work with solid oak, walnut, birch, and MDF for painted pieces. Upholstery options include linen, velvet, boucle, and full-grain leather. All wood is responsibly sourced.",
+            "q4": "Do you deliver outside the capital?",
+            "a4": "Yes. We deliver to 12 cities across Georgia including Tbilisi, Batumi, Kutaisi, Rustavi, Gori, and Zugdidi. White-glove assembly is included for all cities at no additional cost.",
+            "q5": "What if I am not satisfied with the result?",
+            "a5": "We stand behind every piece. If the delivered furniture does not match the confirmed design specifications, we will repair or replace it at no cost. Customer satisfaction is our guarantee.",
+            "q6": "Is the AI preview exactly what I will receive?",
+            "a6": "The AI preview is a photorealistic representation of your design choices — not a photograph of the final piece. Slight variations in wood grain and fabric texture are natural. The dimensions, colors, and materials are guaranteed to match your confirmed order."
+        }
+    },
+    "Configurator": {
+        "modeSelect": {
+            "heading": "What would you like to do?",
+            "subheading": "Choose your creative path",
+            "scratchTitle": "Design from Scratch",
+            "scratchDescription": "Pick a furniture type, customize colors and materials, and generate photorealistic AI renders.",
+            "reimagineTitle": "Reimagine Your Room",
+            "reimagineDescription": "Upload a photo of your room and transform it with AI — new furniture, new style, new vibe.",
+            "newBadge": "New"
+        },
+        "categorySelect": {
+            "heading": "Choose Your Furniture",
+            "subheading": "Select the type of furniture you'd like to design",
+            "errorLoad": "Failed to load categories. Please try again.",
+            "helperText": "Select a category to continue to customization"
+        },
+        "roomUpload": {
+            "heading": "Upload Your Room",
+            "subheading": "Upload a photo of your room and we'll place your configured furniture in it",
+            "removeAria": "Remove room image",
+            "photoUploaded": "Room photo uploaded",
+            "dragDrop": "Drag & drop your room photo",
+            "orBrowse": "or click to browse",
+            "fileTypes": "JPEG, PNG, or WebP \u00b7 Max 5MB",
+            "uploading": "Uploading...",
+            "helperText": "Upload a room photo to continue to customization",
+            "invalidType": "Please upload a JPEG, PNG, or WebP image.",
+            "tooLarge": "Image must be under 5MB.",
+            "uploadAria": "Upload room photo"
+        },
+        "options": {
+            "required": "(Required)",
+            "fromPrice": "from {price}"
+        },
+        "customize": {
+            "selectCategoryFirst": "Please select a furniture category first.",
+            "categoryNotFound": "Category not found. Please go back and select another.",
+            "heading": "Customize your {name}",
+            "subheading": "Each selection shapes your final design and price"
+        },
+        "roomCustomize": {
+            "uploadFirst": "Please upload a room photo first.",
+            "yourRoom": "Your room",
+            "configureDescription": "Configure your {name} and describe placement below",
+            "heading": "Configure & Place your {name}",
+            "subheading": "Customize your furniture and tell us where to place it in your room",
+            "placementLabel": "Placement Instructions",
+            "optional": "(optional)",
+            "placementPlaceholder": "e.g., Place the sofa against the left wall, facing the window. Center it between the two side tables.",
+            "placementHint": "Describe where the furniture should appear in your room photo"
+        },
+        "result": {
+            "completePrevious": "Please complete the previous steps first.",
+            "noCredits": "No credits remaining",
+            "noCreditsBody": "Purchase credits to generate AI images of your design",
+            "buyCredits": "Buy Credits",
+            "roomReimagined": "Your Room",
+            "roomReimagined2": "Reimagined",
+            "designTitle": "Your",
+            "designTitle2": "Design",
+            "generationFailed": "Generation failed",
+            "generating": "Generating...",
+            "generationFailedFallback": "Generation failed. Please try again."
+        },
+        "navigation": {
+            "back": "Back",
+            "generating": "Generating\u2026",
+            "reimagineRoom": "Reimagine Room",
+            "generateDesign": "Generate Design",
+            "continue": "Continue"
+        },
+        "stepIndicator": {
+            "chooseStyle": "Choose Style",
+            "customize": "Customize",
+            "yourDesign": "Your Design",
+            "video": "Video",
+            "uploadRoom": "Upload Room",
+            "configurePlace": "Configure & Place",
+            "result": "Result",
+            "comingSoon": "Coming Soon",
+            "videoGeneration": "Video Generation",
+            "videoDescription": "Generate a video of your furniture design with realistic motion and lighting. This feature is currently under development."
+        },
+        "generatingOverlay": {
+            "heading": "Generating your design",
+            "step1": "Analysing your style\u2026",
+            "step2": "Composing the scene\u2026",
+            "step3": "Rendering materials\u2026",
+            "step4": "Applying lighting\u2026",
+            "step5": "Finishing details\u2026"
+        },
+        "resultActions": {
+            "requestQuote": "Request Quote",
+            "downloadImage": "Download Image",
+            "downloading": "Downloading...",
+            "regenerate": "Regenerate",
+            "regenerating": "Regenerating...",
+            "viewMyDesigns": "View My Designs",
+            "startOver": "Start over"
+        },
+        "pricing": {
+            "priceBreakdown": "Price Breakdown",
+            "selectOptions": "Select options to see pricing",
+            "total": "Total"
+        },
+        "statusBadge": {
+            "freeLeft": "{count} free left",
+            "credits": "{count} credits"
+        },
+        "sidebar": {
+            "modeSelect": {
+                "badge": "Let's get started",
+                "title": "What would you like to create?",
+                "subtitle": "Choose your path — design new furniture or transform an existing room.",
+                "tip1": "Design custom furniture from scratch",
+                "tip2": "Reimagine any room with AI",
+                "tip3": "Photorealistic renders in seconds",
+                "hint": "Pick a path to begin. You can always start over."
+            },
+            "scratch": {
+                "step1": {
+                    "badge": "Step 1 of 4",
+                    "title": "Choose your furniture type.",
+                    "subtitle": "Pick what you want to design — sofa, bed, desk, and more.",
+                    "tip1": "8 furniture types available",
+                    "tip2": "Each has unique customization options",
+                    "tip3": "AI render generated at the end",
+                    "hint": "Tap any card to select it, then hit Continue."
+                },
+                "step2": {
+                    "badge": "Step 2 of 4",
+                    "title": "Customize the details.",
+                    "subtitle": "Choose colors, materials, and finishes. Price updates instantly.",
+                    "tip1": "Mix and match any options",
+                    "tip2": "Price adjusts in real time",
+                    "tip3": "Each option shapes the AI prompt",
+                    "hint": "Select at least one option to unlock Generate."
+                },
+                "step3": {
+                    "badge": "Step 3 of 4",
+                    "title": "Your AI render is ready.",
+                    "subtitle": "Review your design, save it, or bring it to life with a video.",
+                    "tip1": "Photorealistic product render",
+                    "tip2": "Final price breakdown",
+                    "tip3": "Generate a video on the next step",
+                    "hint": "Love it? Save the image or hit Generate Video."
+                },
+                "step4": {
+                    "badge": "Step 4 of 4",
+                    "title": "Bring your design to life.",
+                    "subtitle": "Pick a scene style and animation — we'll render a cinematic video.",
+                    "tip1": "3 scene styles: Luxury, Lifestyle, Commercial",
+                    "tip2": "Pick any motion animation",
+                    "tip3": "Download your video when done",
+                    "hint": "Select a scene style, then pick a motion to generate."
+                }
+            },
+            "reimagine": {
+                "step1": {
+                    "badge": "Step 1 of 3",
+                    "title": "Upload your room photo.",
+                    "subtitle": "Take a photo of the room you want to transform.",
+                    "tip1": "JPEG, PNG, or WebP up to 10MB",
+                    "tip2": "5 room types supported",
+                    "tip3": "AI transforms your space",
+                    "hint": "Upload a clear, well-lit photo for best results."
+                },
+                "step2": {
+                    "badge": "Step 2 of 3",
+                    "title": "Choose your transformation.",
+                    "subtitle": "Select what to change and pick a design style.",
+                    "tip1": "3 transformation modes",
+                    "tip2": "8 interior design styles",
+                    "tip3": "Before/after comparison",
+                    "hint": "Pick a mode and style, then hit Reimagine Room."
+                },
+                "step3": {
+                    "badge": "Step 3 of 3",
+                    "title": "Your room, reimagined.",
+                    "subtitle": "Compare before and after with the interactive slider.",
+                    "tip1": "Drag the slider to compare",
+                    "tip2": "Download your redesign",
+                    "tip3": "Try different styles",
+                    "hint": "Love it? Download the result or try another style."
+                }
+            },
+            "progressReimagine": "AI room transformation",
+            "progressScratch": "No design skills needed"
+        },
+        "page": {
+            "mobileHeadline": "Design your furniture.",
+            "mobileSubline": "Pick. Customize. Generate.",
+            "mobileDescription": "AI-powered \u00b7 Real-time pricing \u00b7 Instant preview"
+        }
+    },
+    "Credits": {
+        "pageTitle": "Credits",
+        "pageSubtitle": "Purchase credits to generate AI images of your furniture designs.",
+        "balance": {
+            "title": "Available Credits",
+            "freeToday": "{count} free today",
+            "dailyGenerations": "Daily AI generations"
+        },
+        "packages": {
+            "title": "Credit Packages",
+            "subtitle": "Choose a package to add credits to your account.",
+            "emptyTitle": "No packages available",
+            "emptyBody": "Check back later for credit packages.",
+            "bestValue": "Best Value",
+            "credits": "credits",
+            "perCredit": "per credit",
+            "processing": "Processing...",
+            "purchase": "Purchase"
+        },
+        "purchaseModal": {
+            "title": "Confirm Purchase",
+            "description": "Review the package details before purchasing.",
+            "creditsAdded": "{count} credits will be added to your balance",
+            "processing": "Processing...",
+            "buyCredits": "Buy {count} Credits"
+        },
+        "transactions": {
+            "title": "Transaction History",
+            "subtitle": "Your credit purchases and usage.",
+            "emptyTitle": "No transactions yet",
+            "emptyBody": "Your credit purchases and usage will appear here.",
+            "typePurchase": "Purchase",
+            "typeGeneration": "Generation",
+            "typeRefund": "Refund",
+            "typeBonus": "Bonus",
+            "typeAdjustment": "Adjustment"
+        }
+    },
+    "Designs": {
+        "pageTitle": "My Designs",
+        "newDesign": "New Design",
+        "searchPlaceholder": "Search designs...",
+        "statusFilter": {
+            "all": "All status",
+            "draft": "Draft",
+            "generated": "Generated",
+            "quoted": "Quoted"
+        },
+        "sortBy": {
+            "mostRecent": "Most recent",
+            "oldestFirst": "Oldest first",
+            "priceHighToLow": "Price: high to low",
+            "priceLowToHigh": "Price: low to high",
+            "nameAZ": "Name A-Z"
+        },
+        "count": "{filtered} of {total} design",
+        "countPlural": "{filtered} of {total} designs",
+        "emptyTitle": "No saved designs yet",
+        "emptyBody": "Design your perfect furniture and save it here to compare options later.",
+        "emptyFilterTitle": "No designs match your filters",
+        "clearFilters": "Clear filters",
+        "detail": {
+            "notFoundTitle": "Design not found",
+            "notFoundBody": "This design may have been deleted or you don't have access to it.",
+            "backToDesigns": "Back to My Designs",
+            "totalPrice": "Total Price",
+            "configuration": "Configuration",
+            "notGenerated": "Not generated yet",
+            "noPreview": "No preview available",
+            "requestQuote": "Request Quote",
+            "openInConfigurator": "Open in Configurator",
+            "confirmDelete": "Confirm Delete",
+            "failedToDelete": "Failed to delete design"
+        },
+        "generation": {
+            "emptyTitle": "No generations yet",
+            "emptyBody": "This design hasn't been generated yet. Open it in the configurator to create your first AI visualization.",
+            "historyTitle": "Generation History",
+            "statusCompleted": "Completed",
+            "statusFailed": "Failed",
+            "statusProcessing": "Processing",
+            "statusPending": "Pending",
+            "current": "Current",
+            "generating": "Generating...",
+            "generationFailed": "Generation failed",
+            "justNow": "Just now",
+            "minutesAgo": "{count}m ago",
+            "hoursAgo": "{count}h ago",
+            "daysAgo": "{count}d ago",
+            "credit": "{count} credit",
+            "creditPlural": "{count} credits"
+        },
+        "saveButton": {
+            "saving": "Saving design...",
+            "viewInMyDesigns": "View in My Designs"
+        }
+    },
+    "Quotes": {
+        "title": "Request a Quote",
+        "description": "Tell us how to reach you and we'll send a detailed quote for your design.",
+        "nameLabel": "Name *",
+        "namePlaceholder": "Your full name",
+        "emailLabel": "Email *",
+        "emailPlaceholder": "you@example.com",
+        "phoneLabel": "Phone *",
+        "phonePlaceholder": "+995 555 000 000",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Any special requirements or questions...",
+        "sending": "Sending...",
+        "sendQuoteRequest": "Send Quote Request",
+        "successToast": "Quote request sent! We'll get back to you soon."
+    },
+    "Errors": {
+        "pageNotFound": "Page Not Found",
+        "pageNotFoundBody": "The page you're looking for doesn't exist or has been moved.",
+        "somethingWentWrong": "Something went wrong"
+    },
+    "Metadata": {
+        "homeTitle": "Atlas Furniture \u2014 Design Your Furniture with AI",
+        "homeDescription": "Pick a style, customize colors and materials, and get a photorealistic AI preview with instant pricing. Design your dream furniture in minutes.",
+        "loginTitle": "Sign In",
+        "registerTitle": "Create Account",
+        "creditsTitle": "Credits \u2014 Atlas Furniture",
+        "creditsDescription": "Purchase credits and manage your AI generation balance.",
+        "myDesignsTitle": "My Designs \u2014 Atlas Furniture",
+        "myDesignsDescription": "View and manage your saved furniture designs.",
+        "configuratorTitle": "Furniture Configurator \u2014 Atlas Furniture",
+        "configuratorDescription": "Pick a style, customize colors and materials, get a photorealistic AI preview and instant pricing."
     }
 }

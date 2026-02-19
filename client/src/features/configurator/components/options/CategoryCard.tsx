@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
     Armchair,
     Bed,
@@ -38,6 +38,7 @@ interface CategoryCardProps {
 
 export function CategoryCard({ category, isSelected, onSelect }: CategoryCardProps): React.JSX.Element {
     const locale = useLocale();
+    const t = useTranslations('Configurator');
     const Icon = ICON_MAP[category.slug] ?? Package;
 
     return (
@@ -117,7 +118,7 @@ export function CategoryCard({ category, isSelected, onSelect }: CategoryCardPro
                         : 'bg-secondary text-secondary-foreground',
                 )}
             >
-                from ${category.basePrice}
+                {t('options.fromPrice', { price: `${category.currency} ${category.basePrice}` })}
             </div>
 
             {isSelected && (

@@ -2,7 +2,9 @@
 
 import { useCallback } from 'react';
 import Image from 'next/image';
+import { useLocale, useTranslations } from 'next-intl';
 import { useCategoryBySlug } from '@/features/catalog/hooks/useCatalog';
+import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 import type { PublicOptionGroup } from '@/features/catalog/types/catalog.types';
 import { useConfigurator } from '../../hooks/useConfigurator';
 import { OptionGroup } from '../options/OptionGroup';
@@ -11,6 +13,8 @@ import { PricePanel } from '../pricing/PricePanel';
 const MAX_PLACEMENT_CHARS = 500;
 
 export function Step2RoomCustomize(): React.JSX.Element {
+    const t = useTranslations('Configurator');
+    const locale = useLocale();
     const { state, toggleOptionValue, setPlacementInstructions } = useConfigurator();
     const { selectedCategorySlug, selectedOptionValueIds, roomRedesign } = state;
 
@@ -37,7 +41,7 @@ export function Step2RoomCustomize(): React.JSX.Element {
     if (!selectedCategorySlug) {
         return (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                Please upload a room photo first.
+                {t('roomCustomize.uploadFirst')}
             </div>
         );
     }
@@ -71,7 +75,7 @@ export function Step2RoomCustomize(): React.JSX.Element {
     if (!category) {
         return (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                Category not found. Please go back and select another.
+                {t('customize.categoryNotFound')}
             </div>
         );
     }
@@ -94,9 +98,9 @@ export function Step2RoomCustomize(): React.JSX.Element {
                         />
                     </div>
                     <div>
-                        <p className="text-xs font-semibold text-foreground">Your room</p>
+                        <p className="text-xs font-semibold text-foreground">{t('roomCustomize.yourRoom')}</p>
                         <p className="text-[11px] text-muted-foreground">
-                            Configure your {category.name.toLowerCase()} and describe placement below
+                            {t('roomCustomize.configureDescription', { name: getTranslatedField(category, 'name', locale).toLowerCase() })}
                         </p>
                     </div>
                 </div>
@@ -104,10 +108,10 @@ export function Step2RoomCustomize(): React.JSX.Element {
 
             <div>
                 <h2 className="text-xl font-bold text-foreground">
-                    Configure & Place your {category.name}
+                    {t('roomCustomize.heading', { name: getTranslatedField(category, 'name', locale) })}
                 </h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                    Customize your furniture and tell us where to place it in your room
+                    {t('roomCustomize.subheading')}
                 </p>
             </div>
 
@@ -136,8 +140,8 @@ export function Step2RoomCustomize(): React.JSX.Element {
                                 htmlFor="placement-instructions"
                                 className="text-sm font-semibold text-foreground"
                             >
-                                Placement Instructions
-                                <span className="ml-1 text-xs font-normal text-muted-foreground">(optional)</span>
+                                {t('roomCustomize.placementLabel')}
+                                <span className="ml-1 text-xs font-normal text-muted-foreground">{t('roomCustomize.optional')}</span>
                             </label>
                             <span className="text-[11px] text-muted-foreground">
                                 {roomRedesign.placementInstructions.length}/{MAX_PLACEMENT_CHARS}
@@ -147,13 +151,13 @@ export function Step2RoomCustomize(): React.JSX.Element {
                             id="placement-instructions"
                             value={roomRedesign.placementInstructions}
                             onChange={handlePlacementChange}
-                            placeholder="e.g., Place the sofa against the left wall, facing the window. Center it between the two side tables."
+                            placeholder={t('roomCustomize.placementPlaceholder')}
                             rows={3}
                             maxLength={MAX_PLACEMENT_CHARS}
                             className="w-full resize-none rounded-xl border border-border/70 bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 transition-colors duration-150 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                         />
                         <p className="text-[11px] text-muted-foreground/60">
-                            Describe where the furniture should appear in your room photo
+                            {t('roomCustomize.placementHint')}
                         </p>
                     </div>
                 </div>

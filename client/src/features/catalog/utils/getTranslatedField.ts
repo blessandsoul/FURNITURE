@@ -1,6 +1,5 @@
 interface Translatable {
     translations: Record<string, Record<string, string>> | null;
-    [key: string]: unknown;
 }
 
 /**
@@ -15,5 +14,5 @@ export function getTranslatedField<T extends Translatable>(
     if (locale !== 'en' && item.translations?.[locale]?.[field]) {
         return item.translations[locale][field];
     }
-    return String(item[field] ?? '');
+    return String((item as Record<string, unknown>)[field] ?? '');
 }

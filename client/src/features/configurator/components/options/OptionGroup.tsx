@@ -1,6 +1,6 @@
 'use client';
 
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import type { PublicOptionGroup } from '@/features/catalog/types/catalog.types';
 import { getTranslatedField } from '@/features/catalog/utils/getTranslatedField';
 import { ColorSwatch } from './ColorSwatch';
@@ -18,6 +18,7 @@ export function OptionGroup({
     onSelect,
 }: OptionGroupProps): React.JSX.Element | null {
     const locale = useLocale();
+    const t = useTranslations('Configurator');
 
     if (group.optionValues.length === 0) return null;
 
@@ -32,7 +33,7 @@ export function OptionGroup({
                     {getTranslatedField(group, 'name', locale)}
                 </span>
                 {group.isRequired && (
-                    <span className="text-xs text-muted-foreground">(Required)</span>
+                    <span className="text-xs text-muted-foreground">{t('options.required')}</span>
                 )}
                 {selectedLabel && (
                     <span className="text-xs text-muted-foreground">

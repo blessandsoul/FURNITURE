@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, ArrowsClockwise, WarningCircle, DownloadSimple, SpinnerGap, MagnifyingGlassPlus } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,8 @@ interface Step3ResultProps {
 }
 
 export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3ResultProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
+    const tCommon = useTranslations('Common');
     const router = useRouter();
     const {
         state,
@@ -66,7 +69,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
             setIsRegenerating(false);
         }
         if (generation.status === 'FAILED') {
-            setError(generation.errorMessage ?? 'Generation failed. Please try again.');
+            setError(generation.errorMessage ?? t('result.generationFailedFallback'));
             setIsRegenerating(false);
         }
     }, [generation, addGeneratedImage]);
@@ -180,7 +183,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
     if (!selectedCategoryId) {
         return (
             <div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
-                Please complete the previous steps first.
+                {t('result.completePrevious')}
             </div>
         );
     }
@@ -195,23 +198,23 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
             <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4">
                 <WarningCircle className="h-10 w-10 text-warning" />
                 <div className="text-center">
-                    <p className="text-sm font-semibold text-foreground">No credits remaining</p>
+                    <p className="text-sm font-semibold text-foreground">{t('result.noCredits')}</p>
                     <p className="mt-1 text-xs text-muted-foreground">
-                        Purchase credits to generate AI images of your design
+                        {t('result.noCreditsBody')}
                     </p>
                 </div>
                 <Button
                     onClick={() => router.push(ROUTES.CREDITS)}
                     className="mt-2"
                 >
-                    Buy Credits
+                    {t('result.buyCredits')}
                 </Button>
                 <button
                     type="button"
                     onClick={handleBack}
                     className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline transition-colors duration-150"
                 >
-                    Go back
+                    {tCommon('goBack')}
                 </button>
             </div>
         );
@@ -235,12 +238,12 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
             <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4 rounded-2xl border border-destructive/20 bg-destructive/5">
                 <WarningCircle className="h-10 w-10 text-destructive" />
                 <div className="text-center">
-                    <p className="text-sm font-semibold text-foreground">Generation failed</p>
+                    <p className="text-sm font-semibold text-foreground">{t('result.generationFailed')}</p>
                     <p className="mt-1 text-xs text-muted-foreground">{error}</p>
                 </div>
                 <Button variant="outline" size="sm" onClick={handleRetry}>
                     <ArrowsClockwise className="mr-2 h-4 w-4" />
-                    Try again
+                    {tCommon('tryAgain')}
                 </Button>
             </div>
         );
@@ -259,13 +262,13 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                         className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                     >
                         <ArrowLeft className="h-4 w-4" />
-                        Back
+                        {tCommon('back')}
                     </button>
                     <h2 className="text-base font-bold text-foreground">
                         {state.mode === 'reimagine' ? (
-                            <>Your Room <span className="text-primary">Reimagined</span></>
+                            <>{t('result.roomReimagined')} <span className="text-primary">{t('result.roomReimagined2')}</span></>
                         ) : (
-                            <>Your{' '}<span className="text-primary">{category?.name ?? 'Furniture'}</span>{' '}Design</>
+                            <>{t('result.designTitle')}{' '}<span className="text-primary">{category?.name ?? 'Furniture'}</span>{' '}{t('result.designTitle2')}</>
                         )}
                     </h2>
                     <GenerationStatusBadge />
@@ -286,7 +289,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                 className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-border/50 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:outline-none cursor-pointer"
                             >
                                 <div className="absolute left-3 top-3 z-10 rounded-full bg-black/60 px-2.5 py-0.5 text-xs font-semibold text-white">
-                                    Before
+                                    {tCommon('before')}
                                 </div>
                                 <Image
                                     src={state.roomRedesign.roomImageUrl}
@@ -308,7 +311,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                 className="group relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:outline-none cursor-pointer"
                             >
                                 <div className="absolute left-3 top-3 z-10 rounded-full bg-primary px-2.5 py-0.5 text-xs font-semibold text-primary-foreground">
-                                    After
+                                    {tCommon('after')}
                                 </div>
                                 <Image
                                     src={generatedImageUrls[0]}
@@ -337,7 +340,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                             />
                             <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/50 to-transparent px-4 py-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                                 <span className="text-xs font-semibold text-white/90">
-                                    AI Generated
+                                    {tCommon('aiGenerated')}
                                 </span>
                                 <button
                                     type="button"
@@ -345,7 +348,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                     className="flex items-center gap-1.5 rounded-lg bg-white/20 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/30"
                                 >
                                     <DownloadSimple className="h-3.5 w-3.5" />
-                                    Save
+                                    {tCommon('save')}
                                 </button>
                             </div>
                         </div>
@@ -370,7 +373,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                     {index === generatedImageUrls.length - 1 && (
                                         <div className="absolute left-2 top-2">
                                             <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
-                                                Latest
+                                                {tCommon('latest')}
                                             </span>
                                         </div>
                                     )}
@@ -384,7 +387,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                             className="flex items-center gap-1 rounded-lg bg-white/20 px-2 py-1 text-[10px] font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/30"
                                         >
                                             <DownloadSimple className="h-3 w-3" />
-                                            Save
+                                            {tCommon('save')}
                                         </button>
                                     </div>
                                 </div>
@@ -396,7 +399,7 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                                     <div className="flex flex-col items-center gap-2">
                                         <SpinnerGap className="h-8 w-8 animate-spin text-primary" />
                                         <span className="text-xs font-medium text-muted-foreground">
-                                            Generating...
+                                            {t('result.generating')}
                                         </span>
                                     </div>
                                 </div>

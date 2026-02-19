@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from '@/i18n/routing';
 import { useCallback } from 'react';
+import { useTranslations } from 'next-intl';
 import { ROUTES } from '@/lib/constants/routes';
 import { useCategoryBySlug } from '@/features/catalog/hooks/useCatalog';
 import { useConfigurator } from '../../hooks/useConfigurator';
@@ -29,6 +30,7 @@ function parseStep(raw: string | null): ConfiguratorStep {
 export function ConfiguratorWizard({
     basePath = ROUTES.CONFIGURATOR.ROOT,
 }: ConfiguratorWizardProps): React.JSX.Element {
+    const t = useTranslations('Configurator');
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -92,16 +94,16 @@ export function ConfiguratorWizard({
 
     // ─── Step labels ──────────────────────────────────────────────
     const reimagineSteps = [
-        { number: 1 as ConfiguratorStep, label: 'Upload Room' },
-        { number: 2 as ConfiguratorStep, label: 'Configure & Place' },
-        { number: 3 as ConfiguratorStep, label: 'Result' },
+        { number: 1 as ConfiguratorStep, label: t('stepIndicator.uploadRoom') },
+        { number: 2 as ConfiguratorStep, label: t('stepIndicator.configurePlace') },
+        { number: 3 as ConfiguratorStep, label: t('stepIndicator.result') },
     ];
 
     const scratchSteps = [
-        { number: 1 as ConfiguratorStep, label: 'Choose Style' },
-        { number: 2 as ConfiguratorStep, label: 'Customize' },
-        { number: 3 as ConfiguratorStep, label: 'Your Design' },
-        { number: 4 as ConfiguratorStep, label: 'Video' },
+        { number: 1 as ConfiguratorStep, label: t('stepIndicator.chooseStyle') },
+        { number: 2 as ConfiguratorStep, label: t('stepIndicator.customize') },
+        { number: 3 as ConfiguratorStep, label: t('stepIndicator.yourDesign') },
+        { number: 4 as ConfiguratorStep, label: t('stepIndicator.video') },
     ];
 
     // ─── Mode selection screen (no mode in URL yet) ───────────────
@@ -133,12 +135,11 @@ export function ConfiguratorWizard({
                 return (
                     <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4">
                         <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                            Coming Soon
+                            {t('stepIndicator.comingSoon')}
                         </div>
-                        <h3 className="text-lg font-bold text-foreground">Video Generation</h3>
+                        <h3 className="text-lg font-bold text-foreground">{t('stepIndicator.videoGeneration')}</h3>
                         <p className="max-w-sm text-center text-sm text-muted-foreground">
-                            Generate a video of your furniture design with realistic motion and lighting.
-                            This feature is currently under development.
+                            {t('stepIndicator.videoDescription')}
                         </p>
                     </div>
                 );
