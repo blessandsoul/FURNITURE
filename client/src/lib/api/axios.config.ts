@@ -32,9 +32,10 @@ const processQueue = (
     failedQueue = [];
 };
 
-// Auth endpoints that should never trigger a token refresh attempt
+// Auth endpoints that should never trigger a token refresh attempt.
+// Note: /auth/me is intentionally NOT here — it's a normal authenticated
+// endpoint that should trigger refresh when the access token is expired.
 const SKIP_REFRESH_URLS = [
-    API_ENDPOINTS.AUTH.ME,
     API_ENDPOINTS.AUTH.REFRESH,
     API_ENDPOINTS.AUTH.LOGIN,
     API_ENDPOINTS.AUTH.REGISTER,
@@ -50,6 +51,11 @@ apiClient.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+
+        // 429 Too Many Requests — reject immediately, no retry or refresh
+        if (error.response?.status === 429) {
+            return Promise.reject(error);
+        }
 
         if (
             error.response?.status === 401 &&
