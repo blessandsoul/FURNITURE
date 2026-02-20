@@ -99,15 +99,23 @@
         "hero": {
             "overline": "AI-Powered Furniture Design",
             "headline": "Design Your Perfect Furniture in Minutes",
+            "headlineCreate": "Design Your Perfect",
             "headlinePerfect": "Perfect",
             "headlineFurniture": "Furniture",
             "headlineInMinutes": "in Minutes",
+            "furnitureChair": "Chair",
+            "furnitureTable": "Table",
+            "furnitureWardrobe": "Wardrobe",
+            "furnitureBed": "Bed",
+            "furnitureSofa": "Sofa",
+            "furnitureShelf": "Shelf",
             "subtitle": "Upload your room, choose a style — watch AI transform it. Then customize with real-time pricing.",
             "ctaStart": "Start Designing",
             "ctaAccount": "Create free account",
             "ordersDelivered": "orders delivered",
             "customerRating": "customer rating",
             "avgDelivery": "avg. delivery",
+            "avgDeliveryValue": "3 wks",
             "roomTransformation": "AI Room Transformation",
             "roomLiveBadge": "Live",
             "mockBefore": "Before",
@@ -133,7 +141,8 @@
             "ordersCompleted": "Orders Completed",
             "fromCustomers": "from 340 customers",
             "citiesCovered": "Cities Covered",
-            "averageDelivery": "Average Delivery"
+            "averageDelivery": "Average Delivery",
+            "averageDeliveryValue": "3 wks"
         },
         "features": {
             "heading": "Everything you need to design with confidence",
@@ -172,7 +181,17 @@
             "item3": "Linen sofa, dove white",
             "item4": "Espresso side table",
             "item5": "White lacquer wardrobe",
-            "item6": "Sage velvet armchair"
+            "item6": "Sage velvet armchair",
+            "materialOak": "Solid Oak",
+            "materialWalnut": "Walnut",
+            "materialLinen": "Linen",
+            "materialLacquer": "Lacquer",
+            "materialVelvet": "Velvet",
+            "tagBestseller": "Bestseller",
+            "tagNew": "New",
+            "tagPopular": "Popular",
+            "fromPrice": "from",
+            "daysLabel": "days"
         },
         "testimonials": {
             "heading": "What our customers say",

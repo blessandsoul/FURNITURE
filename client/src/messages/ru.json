@@ -99,15 +99,23 @@
         "hero": {
             "overline": "Дизайн мебели с помощью AI",
             "headline": "Создайте идеальную мебель за считанные минуты",
+            "headlineCreate": "Создайте идеальный",
             "headlinePerfect": "Идеальную",
             "headlineFurniture": "Мебель",
             "headlineInMinutes": "за минуты",
+            "furnitureChair": "стул",
+            "furnitureTable": "стол",
+            "furnitureWardrobe": "шкаф",
+            "furnitureBed": "кровать",
+            "furnitureSofa": "диван",
+            "furnitureShelf": "полку",
             "subtitle": "Загрузите фото комнаты, выберите стиль — и AI преобразит её. Затем настройте всё с моментальным расчётом цены.",
             "ctaStart": "Начать дизайн",
             "ctaAccount": "Создать бесплатный аккаунт",
             "ordersDelivered": "заказов доставлено",
             "customerRating": "оценка клиентов",
             "avgDelivery": "сред. доставка",
+            "avgDeliveryValue": "3 нед.",
             "roomTransformation": "AI-преображение комнаты",
             "roomLiveBadge": "Активно",
             "mockBefore": "До",
@@ -133,7 +141,8 @@
             "ordersCompleted": "Выполненных заказов",
             "fromCustomers": "от 340 клиентов",
             "citiesCovered": "Городов доставки",
-            "averageDelivery": "Среднее время доставки"
+            "averageDelivery": "Среднее время доставки",
+            "averageDeliveryValue": "3 нед."
         },
         "features": {
             "heading": "Всё, что нужно для уверенного проектирования",
@@ -172,7 +181,17 @@
             "item3": "Льняной диван, белый голубь",
             "item4": "Журнальный столик эспрессо",
             "item5": "Белый лакированный шкаф",
-            "item6": "Кресло из шалфейного бархата"
+            "item6": "Кресло из шалфейного бархата",
+            "materialOak": "Дуб",
+            "materialWalnut": "Орех",
+            "materialLinen": "Лён",
+            "materialLacquer": "Лак",
+            "materialVelvet": "Бархат",
+            "tagBestseller": "Хит продаж",
+            "tagNew": "Новинка",
+            "tagPopular": "Популярное",
+            "fromPrice": "от",
+            "daysLabel": "дней"
         },
         "testimonials": {
             "heading": "Что говорят наши клиенты",

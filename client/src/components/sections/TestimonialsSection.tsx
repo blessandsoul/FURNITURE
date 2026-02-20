@@ -30,28 +30,28 @@ export function TestimonialsSection(): React.JSX.Element {
                             key={testimonial.id}
                             className="flex flex-col gap-4 rounded-xl border border-[--border-crisp] bg-[--surface-enamel] p-6 shadow-[--shadow-enamel]"
                         >
-                            {/* Stars */}
-                            <div
-                                className="flex gap-0.5"
-                                aria-label={`${testimonial.rating} out of 5 stars`}
-                                role="img"
-                            >
-                                {Array.from({ length: testimonial.rating }).map((_, i) => (
-                                    <Star key={i} className="h-3.5 w-3.5 text-warning" weight="fill" />
-                                ))}
-                            </div>
-
                             {/* Quote */}
                             <blockquote className="flex-1 text-sm leading-relaxed text-muted-foreground">
                                 &ldquo;{t(testimonial.quoteKey)}&rdquo;
                             </blockquote>
 
-                            {/* Attribution */}
-                            <footer className="border-t border-border/50 pt-4">
-                                <p className="text-sm font-semibold text-foreground">{t(testimonial.nameKey)}</p>
-                                <p className="text-xs text-muted-foreground">
-                                    {testimonial.city} &mdash; {t(testimonial.itemKey)}
-                                </p>
+                            {/* Attribution + Stars */}
+                            <footer className="flex items-end justify-between border-t border-border/50 pt-4">
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">{t(testimonial.nameKey)}</p>
+                                    <p className="text-xs text-muted-foreground">
+                                        {testimonial.city} &mdash; {t(testimonial.itemKey)}
+                                    </p>
+                                </div>
+                                <div
+                                    className="flex gap-0.5"
+                                    aria-label={`${testimonial.rating} out of 5 stars`}
+                                    role="img"
+                                >
+                                    {Array.from({ length: testimonial.rating }).map((_, i) => (
+                                        <Star key={i} className="h-3.5 w-3.5 text-warning" weight="fill" />
+                                    ))}
+                                </div>
                             </footer>
                         </article>
                     ))}

@@ -5,6 +5,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { Providers } from './providers';
+import { ChatAssistant } from '@/features/chat-assistant';
 import '../globals.css';
 
 const geistSans = Geist({
@@ -69,7 +70,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${notoSansGeorgian.variable} ${spaceGrotesk.variable} ${cormorantGaramond.variable} font-sans antialiased`}
       >
         <NextIntlClientProvider messages={messages}>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <ChatAssistant />
+          </Providers>
         </NextIntlClientProvider>
       </body>
     </html>

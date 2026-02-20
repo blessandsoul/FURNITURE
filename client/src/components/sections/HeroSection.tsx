@@ -1,10 +1,20 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { ArrowRight } from '@phosphor-icons/react';
+import RotatingText from '@/components/ui/RotatingText';
+import { ImageCompare } from '@/components/ui/ImageCompare';
 import { ROUTES } from '@/lib/constants/routes';
+
+const FURNITURE_WORDS = [
+    'სკამი',
+    'მაგიდა',
+    'კარადა',
+    'საწოლი',
+    'დივანი',
+    'თარო',
+] as const;
 
 export function HeroSection(): React.JSX.Element {
     const t = useTranslations('Home');
@@ -43,10 +53,24 @@ export function HeroSection(): React.JSX.Element {
 
                         {/* Headline — dramatic typographic hierarchy */}
                         <h1
-                            className="text-[2.6rem] font-bold leading-[1.08] tracking-[-0.03em] text-foreground md:text-5xl lg:text-[3.2rem] xl:text-[3.8rem]"
+                            className="font-bold leading-[1.12] tracking-[-0.03em] text-foreground text-[clamp(1.65rem,7vw,2.6rem)] lg:text-[clamp(1.9rem,2.9vw,3rem)]"
                             style={{ fontFamily: 'var(--font-display)' }}
                         >
-                            {t('hero.headline')}
+                            {t('hero.headlineCreate')}{' '}
+                            <span className="inline-flex overflow-hidden whitespace-nowrap py-[0.15em] -my-[0.15em] px-[0.1em] -mx-[0.1em] align-bottom italic">
+                                <RotatingText
+                                    texts={[...FURNITURE_WORDS]}
+                                    rotationInterval={2200}
+                                    staggerDuration={0.03}
+                                    staggerFrom="first"
+                                    mainClassName="inline-flex text-brand-accent"
+                                    splitBy="characters"
+                                    transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                                    initial={{ y: 40, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    exit={{ y: -40, opacity: 0 }}
+                                />
+                            </span>
                         </h1>
 
                         {/* Subtitle */}
@@ -83,7 +107,7 @@ export function HeroSection(): React.JSX.Element {
                             {[
                                 { stat: '1,200+', label: t('hero.ordersDelivered') },
                                 { stat: '4.9★',   label: t('hero.customerRating') },
-                                { stat: '3 wks',  label: t('hero.avgDelivery') },
+                                { stat: t('hero.avgDeliveryValue'),  label: t('hero.avgDelivery') },
                             ].map(({ stat, label }, i) => (
                                 <div key={label} className="flex items-center gap-4">
                                     {i > 0 && <div className="h-3 w-px bg-border/70" />}
@@ -119,45 +143,26 @@ export function HeroSection(): React.JSX.Element {
 
                         {/* Before/After showcase card */}
                         <div className="group relative overflow-hidden rounded-2xl border border-border/50 shadow-2xl shadow-foreground/10">
-                            {/* Before / After image split */}
-                            <div className="flex aspect-[16/10]">
-                                {/* Before side */}
-                                <div className="relative w-1/2 overflow-hidden">
-                                    <Image
-                                        src="/before.jpg"
-                                        alt={t('hero.mockBefore')}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 1024px) 50vw, 28vw"
-                                        priority
-                                    />
-                                    <span className="absolute bottom-2.5 left-2.5 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur-sm sm:bottom-3 sm:left-3 sm:text-xs">
-                                        {t('hero.mockBefore')}
-                                    </span>
-                                </div>
+                            {/* Interactive image comparison slider */}
+                            <div className="relative aspect-16/10">
+                                <ImageCompare
+                                    beforeSrc="/gallery/before-after-3a.jpg"
+                                    afterSrc="/gallery/before-after-3b.jpg"
+                                    beforeAlt={t('hero.mockBefore')}
+                                    afterAlt={t('hero.mockAfter')}
+                                    initialPosition={50}
+                                    className="h-full w-full"
+                                />
 
-                                {/* After side */}
-                                <div className="relative w-1/2 overflow-hidden border-l-2 border-primary/30">
-                                    <Image
-                                        src="/after.png"
-                                        alt={t('hero.mockAfter')}
-                                        fill
-                                        className="object-cover"
-                                        sizes="(max-width: 1024px) 50vw, 28vw"
-                                        priority
-                                    />
-                                    <span className="absolute bottom-2.5 right-2.5 rounded-md bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm sm:bottom-3 sm:right-3 sm:text-xs">
-                                        {t('hero.mockAfter')}
-                                    </span>
-                                </div>
-                            </div>
+                                {/* Before label */}
+                                <span className="pointer-events-none absolute bottom-2.5 left-2.5 z-20 rounded-md bg-background/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur-sm sm:bottom-3 sm:left-3 sm:text-xs">
+                                    {t('hero.mockBefore')}
+                                </span>
 
-                            {/* Center divider handle */}
-                            <div className="absolute left-1/2 top-[calc(50%-20px)] z-10 flex h-9 w-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-background bg-background shadow-lg">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-muted-foreground">
-                                    <path d="M4.5 3L1.5 7L4.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M9.5 3L12.5 7L9.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                                {/* After label */}
+                                <span className="pointer-events-none absolute bottom-2.5 right-2.5 z-20 rounded-md bg-primary/80 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm sm:bottom-3 sm:right-3 sm:text-xs">
+                                    {t('hero.mockAfter')}
+                                </span>
                             </div>
 
                             {/* Bottom bar with description + CTA */}

@@ -328,13 +328,13 @@ export function Step3Result({ basePath = ROUTES.CONFIGURATOR.ROOT }: Step3Result
                         </div>
                     ) : isSingleImage ? (
                         /* Single image: full-size display */
-                        <div className="group relative h-full min-h-0 overflow-hidden rounded-2xl border border-[--border-crisp] shadow-[--shadow-enamel] animate-scale-in">
+                        <div className="group relative h-full min-h-0 overflow-hidden rounded-2xl border border-[--border-crisp] shadow-[--shadow-enamel] bg-muted/30 animate-scale-in">
                             <Image
                                 src={generatedImageUrls[0]}
                                 alt={`Generated ${category?.name ?? 'furniture'} design`}
                                 fill
                                 priority
-                                className="object-cover transition-opacity duration-300"
+                                className="object-contain transition-opacity duration-300"
                                 sizes="(max-width: 768px) 100vw, 55vw"
                                 unoptimized={generatedImageUrls[0].startsWith('http')}
                             />

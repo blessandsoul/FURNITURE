@@ -10,7 +10,7 @@ export function TrustBadgesSection(): React.JSX.Element {
         { icon: CheckCircle, stat: '1,200+', labelKey: 'trustBadges.ordersCompleted' as const },
         { icon: Star, stat: '4.9★', labelKey: 'trustBadges.fromCustomers' as const },
         { icon: MapPin, stat: '12', labelKey: 'trustBadges.citiesCovered' as const },
-        { icon: Timer, stat: '3 wks', labelKey: 'trustBadges.averageDelivery' as const },
+        { icon: Timer, stat: t('trustBadges.averageDeliveryValue'), labelKey: 'trustBadges.averageDelivery' as const },
     ];
 
     return (

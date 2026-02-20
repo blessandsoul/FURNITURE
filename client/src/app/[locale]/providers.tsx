@@ -1,7 +1,6 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider as ReduxProvider } from 'react-redux';
 import { ThemeProvider } from 'next-themes';
 import { Toaster } from 'sonner';
@@ -9,6 +8,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { store } from '@/store';
 import { AuthInitializer } from '@/features/auth/components/AuthInitializer';
+import { Agentation } from 'agentation';
 
 export function Providers({
     children,
@@ -42,11 +42,11 @@ export function Providers({
                     attribute="class"
                     defaultTheme="system"
                     enableSystem
->
+                >
                     <AuthInitializer>{children}</AuthInitializer>
                     <Toaster position="top-right" richColors />
+                    <Agentation />
                 </ThemeProvider>
-                <ReactQueryDevtools initialIsOpen={false} />
             </QueryClientProvider>
         </ReduxProvider>
     );

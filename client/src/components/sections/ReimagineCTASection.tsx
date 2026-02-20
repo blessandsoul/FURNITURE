@@ -1,18 +1,67 @@
 'use client';
 
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { Camera, ArrowRight, Sparkle, Sliders } from '@phosphor-icons/react';
+import { ImageCompare } from '@/components/ui/ImageCompare';
 import { ROUTES } from '@/lib/constants/routes';
+import { cn } from '@/lib/utils';
+
+const PAIRS = [
+    { before: '/gallery/before-after-3a.jpg', after: '/gallery/before-after-3b.jpg' },
+    { before: '/gallery/before-after-1a.jpg', after: '/gallery/before-after-1b.jpg' },
+    { before: '/gallery/before-after-2a.jpg', after: '/gallery/before-after-2b.jpg' },
+] as const;
+
+const CYCLE_INTERVAL = 6000;
 
 export function ReimagineCTASection(): React.JSX.Element {
     const t = useTranslations('Home');
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [isDragging, setIsDragging] = useState(false);
+    const pausedRef = useRef(false);
 
     const HIGHLIGHTS = [
         { icon: Camera, textKey: 'reimagineCTA.highlight1' as const },
         { icon: Sliders, textKey: 'reimagineCTA.highlight2' as const },
         { icon: Sparkle, textKey: 'reimagineCTA.highlight3' as const },
     ];
+
+    // Auto-cycle — pause when user is dragging the slider
+    useEffect(() => {
+        if (isDragging) return;
+
+        const prefersReducedMotion = window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+        ).matches;
+        if (prefersReducedMotion) return;
+
+        const timer = setInterval(() => {
+            if (!pausedRef.current) {
+                setActiveIndex((prev) => (prev + 1) % PAIRS.length);
+            }
+        }, CYCLE_INTERVAL);
+
+        return (): void => clearInterval(timer);
+    }, [isDragging]);
+
+    const handleDotClick = useCallback((index: number): void => {
+        setActiveIndex(index);
+    }, []);
+
+    const handleSliderDragStart = useCallback((): void => {
+        setIsDragging(true);
+        pausedRef.current = true;
+    }, []);
+
+    const handleSliderDragEnd = useCallback((): void => {
+        setIsDragging(false);
+        // Resume auto-cycle after a delay so it doesn't instantly switch
+        setTimeout(() => {
+            pausedRef.current = false;
+        }, 2000);
+    }, []);
 
     return (
         <section className="container mx-auto px-4 py-20 md:px-6 lg:px-8">
@@ -62,31 +111,59 @@ export function ReimagineCTASection(): React.JSX.Element {
                         </div>
                     </div>
 
-                    {/* Right: Visual preview mock */}
+                    {/* Right: Interactive Before/After slider with cycling */}
                     <div className="relative w-full max-w-xs shrink-0 md:max-w-sm">
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[--border-crisp] bg-muted/30 shadow-sm">
-                            {/* Simulated before/after split */}
-                            <div className="absolute inset-0 flex">
-                                <div className="flex w-1/2 items-center justify-center border-r border-dashed border-[--border-crisp] bg-muted/50">
-                                    <div className="text-center">
-                                        <Camera className="mx-auto h-8 w-8 text-muted-foreground/40" />
-                                        <p className="mt-2 text-xs text-muted-foreground/60">{t('reimagineCTA.mockBefore')}</p>
-                                    </div>
+                        <div
+                            className="relative overflow-hidden rounded-xl border border-[--border-crisp] shadow-sm"
+                            onPointerDown={handleSliderDragStart}
+                            onPointerUp={handleSliderDragEnd}
+                            onPointerCancel={handleSliderDragEnd}
+                        >
+                            {PAIRS.map((pair, index) => (
+                                <div
+                                    key={pair.before}
+                                    className={cn(
+                                        'motion-safe:transition-opacity motion-safe:duration-500',
+                                        index === activeIndex
+                                            ? 'relative opacity-100'
+                                            : 'pointer-events-none absolute inset-0 opacity-0',
+                                    )}
+                                >
+                                    <ImageCompare
+                                        beforeSrc={pair.before}
+                                        afterSrc={pair.after}
+                                        beforeAlt={t('reimagineCTA.mockBefore')}
+                                        afterAlt={t('reimagineCTA.mockAfter')}
+                                        className="aspect-4/3"
+                                    />
                                 </div>
-                                <div className="flex w-1/2 items-center justify-center bg-primary/5">
-                                    <div className="text-center">
-                                        <Sparkle className="mx-auto h-8 w-8 text-primary/40" />
-                                        <p className="mt-2 text-xs text-primary/60">{t('reimagineCTA.mockAfter')}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* Center divider handle */}
-                            <div className="absolute left-1/2 top-1/2 z-10 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[--border-crisp] bg-background shadow-sm">
-                                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="text-muted-foreground">
-                                    <path d="M4.5 3L1.5 7L4.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                    <path d="M9.5 3L12.5 7L9.5 11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                            </div>
+                            ))}
+
+                            {/* Labels */}
+                            <span className="pointer-events-none absolute bottom-2 left-2 z-20 rounded-md bg-background/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground backdrop-blur-sm">
+                                {t('reimagineCTA.mockBefore')}
+                            </span>
+                            <span className="pointer-events-none absolute bottom-2 right-2 z-20 rounded-md bg-primary/80 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground backdrop-blur-sm">
+                                {t('reimagineCTA.mockAfter')}
+                            </span>
+                        </div>
+
+                        {/* Dot indicators */}
+                        <div className="mt-3 flex items-center justify-center gap-1.5">
+                            {PAIRS.map((pair, index) => (
+                                <button
+                                    key={pair.before}
+                                    type="button"
+                                    onClick={(): void => handleDotClick(index)}
+                                    aria-label={`Show transformation ${index + 1}`}
+                                    className={cn(
+                                        'h-1.5 rounded-full motion-safe:transition-all motion-safe:duration-300',
+                                        index === activeIndex
+                                            ? 'w-4 bg-primary'
+                                            : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50',
+                                    )}
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>
